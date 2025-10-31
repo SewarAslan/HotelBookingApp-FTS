@@ -1,4 +1,4 @@
-import { Draft } from "Immer";
+import { Draft } from "immer";
 import type { AuthState, AuthAction } from "../types/AuthReducerType";
 import { AUTH_ACTIONS } from "../../../constants/actionTypes";
 
@@ -8,7 +8,7 @@ export const initialAuthState: AuthState = {
   isAuthenticated: false,
 };
 
-function authReducer(draft: Draft<AuthState>, action: AuthAction) {
+export function authReducer(draft: Draft<AuthState>, action: AuthAction) {
   switch (action.type) {
     case AUTH_ACTIONS.LOGIN_SUCCESS:
       draft.token = action.payload.token;
@@ -17,8 +17,12 @@ function authReducer(draft: Draft<AuthState>, action: AuthAction) {
       break;
 
     case AUTH_ACTIONS.LOGOUT:
-      (draft.token = null),
-        (draft.userType = null),
-        draft.isAuthenticated - false;
+      draft.token = null;
+      draft.userType = null;
+      draft.isAuthenticated = false;
+      break;
+
+    default:
+      return draft;
   }
 }
