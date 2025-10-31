@@ -1,4 +1,4 @@
-import { Draft } from "immer";
+import type { Draft } from "immer";
 import type { AuthState, AuthAction } from "../types/AuthReducerType";
 import { AUTH_ACTIONS } from "../../../constants/actionTypes";
 
