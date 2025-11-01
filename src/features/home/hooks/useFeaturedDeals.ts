@@ -3,7 +3,7 @@ import { STATUS } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
 import type { FeaturedDealDto } from "../../../api/HotelBookingApi";
 
-export default function useFeaturedDeals() {
+export function useFeaturedDeals() {
   const [data, setData] = useState<FeaturedDealDto[] | null>(null);
   const [status, setStatus] = useState<string>(STATUS.IDLE);
   const [error, setError] = useState<null | string>(null);
