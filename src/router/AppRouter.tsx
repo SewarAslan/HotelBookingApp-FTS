@@ -19,7 +19,7 @@ export function AppRouter() {
           }
         />
         <Route
-          path="/admin"
+          path={ROUTES.ADMIN}
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <AdminDashboard />
