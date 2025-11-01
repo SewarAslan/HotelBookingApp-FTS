@@ -41,7 +41,7 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
               px-1.5 py-0.5 rounded-full font-medium shadow-sm
             "
           >
-            -{discount}%
+            -{discount * 100}%
           </span>
         )}
       </div>
