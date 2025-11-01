@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
+import type { RecentHotelResultDto } from "../../../api/HotelBookingApi";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import type { FeaturedDealDto } from "../../../api/HotelBookingApi";
 
-export function useFeaturedDeals() {
-  const [data, setData] = useState<FeaturedDealDto[] | null>(null);
+export function useRecentHotels(userId: number) {
+  const [data, setData] = useState<RecentHotelResultDto[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<null | string>(null);
 
-  async function fetchDeals() {
+  async function fetchRecentHotels() {
     setStatus(STATUS.LOADING);
     setError(null);
     try {
-      const response = await apiClient.api.homeFeaturedDealsList();
+      const response = await apiClient.api.homeUsersRecentHotelsList(userId);
 
       setData(response.data);
       setStatus(STATUS.SUCCESS);
@@ -23,7 +23,7 @@ export function useFeaturedDeals() {
     }
   }
   useEffect(() => {
-    fetchDeals();
+    fetchRecentHotels();
   }, []);
-  return { data, status, error, refetch: fetchDeals };
+  return { data, status, error, refetch: fetchRecentHotels };
 }
