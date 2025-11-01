@@ -6,6 +6,7 @@ import { AUTH_ACTIONS } from "../../../constants/actionTypes";
 import { apiClient } from "../../../api/client";
 import type { AuthState } from "../types/AuthReducerType";
 import type { UserType } from "../../../types/types";
+import { STORAGE_KEYS } from "../../../constants/storageKeys";
 
 function loadAuthFromSession(): AuthState {
   const token = sessionStorage.getItem("token");
@@ -36,8 +37,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const { userType, authentication } = data;
 
-      sessionStorage.setItem("token", authentication);
-      sessionStorage.setItem("userType", userType);
+      sessionStorage.setItem(STORAGE_KEYS.TOKEN, authentication);
+      sessionStorage.setItem(STORAGE_KEYS.USER_TYPE, userType);
 
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
@@ -52,14 +53,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   function logout() {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("userType");
+    sessionStorage.removeItem(STORAGE_KEYS.TOKEN);
+    sessionStorage.removeItem(STORAGE_KEYS.USER_TYPE);
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
   }
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const userType = sessionStorage.getItem("userType");
+    const token = sessionStorage.getItem(STORAGE_KEYS.TOKEN);
+    const userType = sessionStorage.getItem(STORAGE_KEYS.USER_TYPE);
 
     if (token && userType) {
       dispatch({

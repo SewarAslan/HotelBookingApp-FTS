@@ -3,14 +3,15 @@ import LoginPage from "../pages/LoginPage";
 import HomePage from "../pages/HomePage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
+import { ROUTES } from "../constants/routes";
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route
-          path="/"
+          path={ROUTES.HOME}
           element={
             <ProtectedRoute>
               <HomePage />
