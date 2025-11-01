@@ -14,10 +14,12 @@ export function useLogin() {
       setError(null);
       const userType = await login(username, password);
       console.log("✅ Logged in as:", userType);
-      if (userType === "Admin") navigate("/Admin");
+      if (userType === "Admin") navigate("/admin");
       else navigate("/");
     } catch (error) {
-      setError("user name or password is invalid");
+      setError(
+        "something went wrong, please check your username and  password"
+      );
       console.log(error);
     } finally {
       setIsLoading(false);

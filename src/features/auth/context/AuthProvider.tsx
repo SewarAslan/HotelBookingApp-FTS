@@ -4,9 +4,23 @@ import { AuthContext } from "./AuthContext";
 import { authReducer, initialAuthState } from "./AuthReducer";
 import { AUTH_ACTIONS } from "../../../constants/actionTypes";
 import { apiClient } from "../../../api/client";
+import type { AuthState } from "../types/AuthReducerType";
+import type { UserType } from "../../../types/types";
 
+function loadAuthFromSession(): AuthState {
+  const token = sessionStorage.getItem("token");
+  const userType = sessionStorage.getItem("userType") as UserType | null;
+  if (token && userType) {
+    return { token, userType, isAuthenticated: true };
+  }
+  return initialAuthState;
+}
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useImmerReducer(authReducer, initialAuthState);
+  const [state, dispatch] = useImmerReducer(
+    authReducer,
+    initialAuthState,
+    loadAuthFromSession
+  );
 
   async function login(username: string, password: string) {
     try {
