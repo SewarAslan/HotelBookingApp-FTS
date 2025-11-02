@@ -1,3 +1,3 @@
 export const PLACEHOLDERS = {
-  ROOM: "src/assets/placeholderRoom.png",
+  ROOM: "/images/placeholderRoom.png",
 } as const;

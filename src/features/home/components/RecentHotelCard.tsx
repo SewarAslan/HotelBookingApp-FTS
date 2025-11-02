@@ -32,6 +32,9 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
       <div className="relative w-full h-36 sm:h-40">
         <img
           src={thumbnailUrl || PLACEHOLDERS.ROOM}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = PLACEHOLDERS.ROOM;
+          }}
           alt={hotelName ? `${hotelName} photo` : "Hotel photo"}
           className="w-full h-full object-cover"
           loading="lazy"

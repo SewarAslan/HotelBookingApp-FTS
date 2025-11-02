@@ -1,5 +1,4 @@
 export const STORAGE_KEYS = {
   TOKEN: "token",
-  USER_TYPE: "userType",
-  THEME: "theme",
+  AUTH_USER: "authUser",
 } as const;

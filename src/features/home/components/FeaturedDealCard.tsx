@@ -30,6 +30,9 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
       <div className="relative w-full h-36 sm:h-40">
         <img
           src={roomPhotoUrl || PLACEHOLDERS.ROOM}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = PLACEHOLDERS.ROOM;
+          }}
           alt={hotelName ? `${hotelName} room photo` : "Hotel room"}
           className="w-full h-full object-cover"
           loading="lazy"

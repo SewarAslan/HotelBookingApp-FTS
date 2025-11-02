@@ -5,17 +5,22 @@ import { authReducer, initialAuthState } from "./AuthReducer";
 import { AUTH_ACTIONS } from "../../../constants/actionTypes";
 import { apiClient } from "../../../api/client";
 import type { AuthState } from "../types/AuthReducerType";
-import type { UserType } from "../../../types/types";
 import { STORAGE_KEYS } from "../../../constants/storageKeys";
+import { decodeJWT } from "../../../utils/jwtHelpers";
 
 function loadAuthFromSession(): AuthState {
-  const token = sessionStorage.getItem("token");
-  const userType = sessionStorage.getItem("userType") as UserType | null;
-  if (token && userType) {
-    return { token, userType, isAuthenticated: true };
+  const token = sessionStorage.getItem(STORAGE_KEYS.TOKEN);
+  const userString = sessionStorage.getItem(STORAGE_KEYS.AUTH_USER);
+  if (token && userString) {
+    return {
+      token,
+      userType: JSON.parse(userString).userType, // نستخرجه من الـ object
+      isAuthenticated: true,
+    };
   }
   return initialAuthState;
 }
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useImmerReducer(
     authReducer,
@@ -35,17 +40,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           ? JSON.parse(response.data)
           : response.data;
 
-      const { userType, authentication } = data;
+      const { authentication } = data;
+      const decoded = decodeJWT(authentication);
+      if (!decoded) throw new Error("Failed to decode user info from token");
 
       sessionStorage.setItem(STORAGE_KEYS.TOKEN, authentication);
-      sessionStorage.setItem(STORAGE_KEYS.USER_TYPE, userType);
+      sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(decoded));
 
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
-        payload: { token: authentication, userType },
+        payload: { token: authentication, userType: decoded.userType },
       });
 
-      return userType;
+      return decoded.userType;
     } catch (error) {
       console.error("❌ Login failed:", error);
       throw error;
@@ -54,18 +61,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   function logout() {
     sessionStorage.removeItem(STORAGE_KEYS.TOKEN);
-    sessionStorage.removeItem(STORAGE_KEYS.USER_TYPE);
+    sessionStorage.removeItem(STORAGE_KEYS.AUTH_USER);
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
   }
 
   useEffect(() => {
     const token = sessionStorage.getItem(STORAGE_KEYS.TOKEN);
-    const userType = sessionStorage.getItem(STORAGE_KEYS.USER_TYPE);
-
-    if (token && userType) {
+    const userString = sessionStorage.getItem(STORAGE_KEYS.AUTH_USER);
+    if (token && userString) {
+      const user = JSON.parse(userString);
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
-        payload: { token, userType: userType as "Admin" | "User" },
+        payload: { token, userType: user.userType },
       });
     }
   }, []);
