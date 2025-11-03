@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography } from "@mui/material";
 import { ThemeToggleButton } from "../components/ThemeToggleButton";
-import CarouselSection from "../features/home/components/CaruselSection";
+import CarouselSection from "../features/home/components/CarouselSection";
 import { useFeaturedDeals } from "../features/home/hooks/useFeaturedDeals";
 import FeaturedDealCard from "../features/home/components/FeaturedDealCard";
 import { useRecentHotels } from "../features/home/hooks/useRecentHotels";

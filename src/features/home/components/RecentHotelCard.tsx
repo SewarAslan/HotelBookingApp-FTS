@@ -1,12 +1,22 @@
 import React from "react";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Box,
+  useTheme,
+} from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
 import type { RecentHotelResultDto } from "../../../api/HotelBookingApi";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
-
 interface RecentHotelCardProps {
   hotel: RecentHotelResultDto;
 }
 
 const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
+  const theme = useTheme();
+
   const {
     hotelName,
     starRating,
@@ -22,56 +32,125 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
     : null;
 
   return (
-    <div
-      className="
-        flex flex-col bg-white rounded-lg overflow-hidden shadow-sm
-        hover:shadow-md hover:scale-[1.015] transition-all duration-300
-        max-w-xs sm:max-w-sm w-full
-      "
+    <Card
+      elevation={3}
+      sx={{
+        maxWidth: 300,
+        width: "100%",
+        borderRadius: 3,
+        overflow: "hidden",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        animation: theme.animations.fadeInUp,
+        "&:hover": {
+          transform: "translateY(-4px)",
+          boxShadow:
+            theme.palette.mode === "light"
+              ? "0 6px 22px rgba(124, 58, 237, 0.15)"
+              : "0 6px 22px rgba(167, 139, 250, 0.25)",
+        },
+      }}
     >
-      <div className="relative w-full h-36 sm:h-40">
-        <img
-          src={thumbnailUrl || PLACEHOLDERS.ROOM}
+      {/* 🖼️ صورة الفندق */}
+      <Box sx={{ position: "relative" }}>
+        <CardMedia
+          component="img"
+          image={thumbnailUrl || PLACEHOLDERS.ROOM}
+          alt={hotelName || "Hotel"}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = PLACEHOLDERS.ROOM;
           }}
-          alt={hotelName ? `${hotelName} photo` : "Hotel photo"}
-          className="w-full h-full object-cover"
-          loading="lazy"
+          sx={{ height: 160, objectFit: "cover" }}
         />
-        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/40 to-transparent text-white text-[11px] px-2 py-1 font-medium">
+        {/* ✨ الشريط السفلي */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            bgcolor: "rgba(0,0,0,0.4)",
+            color: "#fff",
+            px: 1.5,
+            py: 0.5,
+            fontSize: 12,
+            fontWeight: 500,
+            backdropFilter: "blur(2px)",
+          }}
+        >
           Recently Visited
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <div className="flex flex-col p-3 gap-1.5 text-gray-700">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-sm text-gray-800 truncate">
+      {/* 💬 تفاصيل الفندق */}
+      <CardContent sx={{ p: 2 }}>
+        {/* 🏨 الاسم + المدينة */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+            color="text.primary"
+            noWrap
+          >
             {hotelName || "Unknown Hotel"}
-          </h3>
-          {cityName && <p className="text-xs text-gray-500">{cityName}</p>}
-        </div>
+          </Typography>
+          {cityName && (
+            <Typography variant="caption" color="text.secondary">
+              {cityName}
+            </Typography>
+          )}
+        </Box>
 
+        {/* ⭐ التقييم */}
         {starRating && (
-          <div className="text-yellow-400 text-xs">
-            {"★".repeat(Math.floor(starRating))}
-            {"☆".repeat(5 - Math.floor(starRating))}
-          </div>
+          <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <StarIcon
+                key={i}
+                fontSize="small"
+                sx={{
+                  color:
+                    i < Math.floor(starRating)
+                      ? "#facc15"
+                      : theme.palette.action.disabled,
+                }}
+              />
+            ))}
+          </Box>
         )}
 
+        {/* 💵 الأسعار */}
         {(priceLowerBound || priceUpperBound) && (
-          <p className="text-xs text-violet-600 font-medium">
+          <Typography
+            variant="body2"
+            sx={{
+              color: theme.palette.brand.violet,
+              fontWeight: 600,
+              mt: 1,
+            }}
+          >
             From ${priceLowerBound ?? "-"} - ${priceUpperBound ?? "-"}
-          </p>
+          </Typography>
         )}
 
+        {/* 🗓️ تاريخ الزيارة */}
         {formattedDate && (
-          <p className="text-[11px] text-gray-400 italic">
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            fontStyle="italic"
+            sx={{ mt: 0.5 }}
+          >
             Visited on {formattedDate}
-          </p>
+          </Typography>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 });
 
