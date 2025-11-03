@@ -2,22 +2,24 @@ import { useEffect, useState } from "react";
 import type { RecentHotelResultDto } from "../../../api/HotelBookingApi";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import { STORAGE_KEYS } from "../../../constants/storageKeys";
-import { useAuth } from "../../auth/hooks/useAuth";
+import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../store/store";
 export function useRecentHotels() {
   const [data, setData] = useState<RecentHotelResultDto[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<null | string>(null);
-  const { state } = useAuth();
+  const { isAuthenticated, AuthUser } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   async function fetchRecentHotels() {
-    const userString = sessionStorage.getItem(STORAGE_KEYS.AUTH_USER);
-    const authUser = userString ? JSON.parse(userString) : null;
-    const userId = authUser?.userId;
+    const userId = AuthUser?.userId || Number(Cookies.get("userId"));
+
     setStatus(STATUS.LOADING);
     setError(null);
     try {
-      if (!state.isAuthenticated || !userId) return;
+      if (!isAuthenticated || !userId) return;
       const response = await apiClient.api.homeUsersRecentHotelsList(userId);
 
       setData(response.data);
@@ -29,7 +31,7 @@ export function useRecentHotels() {
     }
   }
   useEffect(() => {
-    fetchRecentHotels();
-  }, []);
+    if (isAuthenticated) fetchRecentHotels();
+  }, [isAuthenticated]);
   return { data, status, error, refetch: fetchRecentHotels };
 }

@@ -1,8 +1,9 @@
 import AuthForm from "../features/auth/components/AuthForm";
-import { useLogin } from "../features/auth/hooks/useLogin";
+import { useAuthActions } from "../features/auth/hooks/useAuthActions";
 
 export default function LoginPage() {
-  const { handleLogin, isLoading, error } = useLogin();
+  const { handleLogin, loading, error } = useAuthActions();
+
   async function onSubmit(values: { username: string; password: string }) {
     await handleLogin(values.username, values.password);
   }
@@ -12,7 +13,7 @@ export default function LoginPage() {
       <AuthForm
         title="Smart Stays, Simple Clicks."
         onSubmit={onSubmit}
-        isLoading={isLoading}
+        isLoading={loading}
         error={error}
       />
     </div>
