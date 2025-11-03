@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
 import type { FeaturedDealDto } from "../../../api/HotelBookingApi";
@@ -8,7 +8,7 @@ export function useFeaturedDeals() {
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<null | string>(null);
 
-  async function fetchDeals() {
+  const fetchDeals = useCallback(async () => {
     setStatus(STATUS.LOADING);
     setError(null);
     try {
@@ -21,9 +21,9 @@ export function useFeaturedDeals() {
       setError("something went wrong!");
       console.log(error);
     }
-  }
+  }, []);
   useEffect(() => {
     fetchDeals();
-  }, []);
+  }, [fetchDeals]);
   return { data, status, error, refetch: fetchDeals };
 }

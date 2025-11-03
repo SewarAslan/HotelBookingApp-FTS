@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { RecentHotelResultDto } from "../../../api/HotelBookingApi";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
@@ -13,7 +13,7 @@ export function useRecentHotels() {
     (state: RootState) => state.auth
   );
 
-  async function fetchRecentHotels() {
+  const fetchRecentHotels = useCallback(async () => {
     const userId = AuthUser?.userId || Number(Cookies.get("userId"));
 
     setStatus(STATUS.LOADING);
@@ -29,9 +29,9 @@ export function useRecentHotels() {
       setError("something went wrong!");
       console.log(error);
     }
-  }
+  }, [AuthUser?.userId, isAuthenticated]);
   useEffect(() => {
     if (isAuthenticated) fetchRecentHotels();
-  }, [isAuthenticated]);
+  }, [fetchRecentHotels, isAuthenticated]);
   return { data, status, error, refetch: fetchRecentHotels };
 }

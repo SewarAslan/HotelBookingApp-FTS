@@ -131,9 +131,9 @@ const CarouselSection = <T,>({
                   py: 3,
                   px: 4,
                   animation: theme.animations.fadeInUp,
-                  "&::-webkit-scrollbar": { display: "none" },
-                  "-ms-overflow-style": "none",
-                  "scrollbar-width": "none",
+
+                  msOverflowStyle: "none",
+                  scrollbarWidth: "none",
                   "& > *": {
                     flex: "0 0 auto",
                     transition: "transform 0.3s ease, box-shadow 0.3s ease",

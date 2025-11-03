@@ -50,7 +50,6 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
         },
       }}
     >
-      {/* 🖼️ صورة الفندق */}
       <Box sx={{ position: "relative" }}>
         <CardMedia
           component="img"
@@ -61,7 +60,7 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
           }}
           sx={{ height: 160, objectFit: "cover" }}
         />
-        {/* ✨ الشريط السفلي */}
+
         <Box
           sx={{
             position: "absolute",
@@ -81,9 +80,7 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
         </Box>
       </Box>
 
-      {/* 💬 تفاصيل الفندق */}
       <CardContent sx={{ p: 2 }}>
-        {/* 🏨 الاسم + المدينة */}
         <Box
           sx={{
             display: "flex",
@@ -106,7 +103,6 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
           )}
         </Box>
 
-        {/* ⭐ التقييم */}
         {starRating && (
           <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
             {Array.from({ length: 5 }).map((_, i) => (
@@ -124,7 +120,6 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
           </Box>
         )}
 
-        {/* 💵 الأسعار */}
         {(priceLowerBound || priceUpperBound) && (
           <Typography
             variant="body2"
@@ -138,7 +133,6 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
           </Typography>
         )}
 
-        {/* 🗓️ تاريخ الزيارة */}
         {formattedDate && (
           <Typography
             variant="caption"

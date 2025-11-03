@@ -105,7 +105,7 @@ export default function AuthForm({
               "&:hover": { transform: "scale(1.05)" },
             }}
           />
-          <Typography variant="h5" fontWeight={700} color="primary">
+          <Typography variant="h6" fontWeight={700} color="primary">
             {title}
           </Typography>
         </Box>
