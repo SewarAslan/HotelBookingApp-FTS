@@ -9,7 +9,11 @@ import {
 } from "@mui/material";
 import { UI_IMAGES } from "../constants/UI_IMAGES";
 import { STATUS } from "../constants/status";
-import { MUI_COLORS, MUI_VARIANTS } from "../constants/muiTokens";
+import {
+  MUI_COLORS,
+  MUI_TYPOGRAPHY,
+  MUI_VARIANTS,
+} from "../constants/muiTokens";
 
 interface MessageCardProps {
   status: string;
@@ -45,7 +49,7 @@ const MessageCard = React.memo(
             thickness={4}
           />
           <Typography
-            variant={MUI_VARIANTS.BODY}
+            variant={MUI_TYPOGRAPHY.BODY2}
             color={"text." + MUI_COLORS.SECONDARY}
             fontWeight={500}
             sx={{ mt: 1 }}
@@ -80,7 +84,7 @@ const MessageCard = React.memo(
             sx={{ width: 80, height: 80, objectFit: "contain" }}
           />
           <Typography
-            variant={MUI_VARIANTS.BODY}
+            variant={MUI_TYPOGRAPHY.BODY2}
             color={"text." + MUI_COLORS.SECONDARY}
             sx={{ mt: 0.5 }}
           >
@@ -128,7 +132,7 @@ const MessageCard = React.memo(
             alt="empty"
             sx={{ width: 80, height: 80, objectFit: "contain" }}
           />
-          <Typography variant={MUI_VARIANTS.BODY} sx={{ mt: 0.5 }}>
+          <Typography variant={MUI_TYPOGRAPHY.BODY2} sx={{ mt: 0.5 }}>
             {message || "No data available."}
           </Typography>
         </Card>

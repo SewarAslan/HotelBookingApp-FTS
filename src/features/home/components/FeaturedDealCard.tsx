@@ -1,12 +1,28 @@
 import React from "react";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Box,
+  useTheme,
+  Chip,
+} from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
 import type { FeaturedDealDto } from "../../../api/HotelBookingApi";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
+import {
+  MUI_COLORS,
+  MUI_SIZES,
+  MUI_TYPOGRAPHY,
+} from "../../../constants/muiTokens";
 
 interface FeaturedDealCardProps {
   deal: FeaturedDealDto;
 }
 
 const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
+  const theme = useTheme();
   const {
     roomPhotoUrl,
     hotelName,
@@ -20,74 +36,147 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
   } = deal;
 
   return (
-    <div
-      className="
-        flex flex-col bg-white rounded-lg overflow-hidden shadow-sm
-        hover:shadow-md hover:scale-[1.015] transition-all duration-300
-        max-w-xs sm:max-w-sm w-full
-      "
+    <Card
+      elevation={3}
+      sx={{
+        maxWidth: 300,
+        width: "100%",
+        borderRadius: 3,
+        overflow: "hidden",
+        backgroundColor: theme.palette.background.paper,
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        animation: theme.animations.fadeInUp,
+        "&:hover": {
+          transform: "translateY(-4px)",
+          boxShadow:
+            theme.palette.mode === "light"
+              ? "0 6px 22px rgba(124, 58, 237, 0.15)"
+              : "0 6px 22px rgba(167, 139, 250, 0.25)",
+        },
+      }}
     >
-      <div className="relative w-full h-36 sm:h-40">
-        <img
-          src={roomPhotoUrl || PLACEHOLDERS.ROOM}
+      <Box sx={{ position: "relative" }}>
+        <CardMedia
+          component="img"
+          image={roomPhotoUrl || PLACEHOLDERS.ROOM}
+          alt={hotelName ? `${hotelName} room` : "Hotel room"}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = PLACEHOLDERS.ROOM;
           }}
-          alt={hotelName ? `${hotelName} room photo` : "Hotel room"}
-          className="w-full h-full object-cover"
-          loading="lazy"
+          sx={{
+            height: 160,
+            objectFit: "cover",
+          }}
         />
-        {discount && discount != null && discount > 0 && (
-          <span
-            className="
-              absolute top-2 left-2 bg-violet-500 text-white text-[10px]
-              px-1.5 py-0.5 rounded-full font-medium shadow-sm
-            "
-          >
-            -{discount * 100}%
-          </span>
-        )}
-      </div>
 
-      <div className="flex flex-col flex-1 p-3 gap-1.5 text-gray-700">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-sm text-gray-800 truncate">
+        {discount && discount > 0 && (
+          <Chip
+            label={`-${discount * 100}%`}
+            size={MUI_SIZES.SMALL}
+            sx={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              bgcolor: theme.palette.brand.violet,
+              color: "#fff",
+              fontWeight: 600,
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
+            }}
+          />
+        )}
+      </Box>
+
+      <CardContent sx={{ p: 2 }}>
+        <Box
+          color={MUI_COLORS.PRIMARY}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant={MUI_TYPOGRAPHY.SUBTITLE1}
+            fontWeight={600}
+            color={MUI_COLORS.PRIMARY}
+            noWrap
+          >
             {hotelName || "Unknown Hotel"}
-          </h3>
-          {cityName && <p className="text-xs text-gray-500">{cityName}</p>}
-        </div>
+          </Typography>
+          <Typography
+            variant={MUI_TYPOGRAPHY.CAPTION}
+            color={"text." + MUI_COLORS.SECONDARY}
+          >
+            {cityName || ""}
+          </Typography>
+        </Box>
 
         {hotelStarRating && (
-          <div
-            className="text-yellow-400 text-xs"
-            aria-label={`Hotel rating: ${hotelStarRating} out of 5`}
-          >
-            {"★".repeat(Math.floor(hotelStarRating))}
-            {"☆".repeat(5 - Math.floor(hotelStarRating))}
-          </div>
+          <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <StarIcon
+                key={i}
+                fontSize={MUI_SIZES.SMALL}
+                sx={{
+                  color:
+                    i < Math.floor(hotelStarRating)
+                      ? "#facc15"
+                      : theme.palette.action.disabled,
+                }}
+              />
+            ))}
+          </Box>
         )}
 
-        <div className="flex items-center gap-1 text-xs mt-0.5">
+        <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
           {originalRoomPrice && (
-            <span className="line-through text-gray-400">
+            <Typography
+              variant={MUI_TYPOGRAPHY.BODY2}
+              sx={{
+                textDecoration: "line-through",
+                color: theme.palette.text.disabled,
+              }}
+            >
               ${originalRoomPrice}
-            </span>
+            </Typography>
           )}
-          {finalPrice && finalPrice != null && (
-            <span className="text-violet-600 font-semibold">${finalPrice}</span>
+          {finalPrice && (
+            <Typography
+              variant={MUI_TYPOGRAPHY.BODY2}
+              fontWeight={600}
+              color={MUI_COLORS.PRIMARY}
+            >
+              ${finalPrice}
+            </Typography>
           )}
-        </div>
+        </Box>
 
         {title && (
-          <p className="text-violet-700 text-xs font-medium mt-1">{title}</p>
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            color={theme.palette.brand.lavender}
+            fontWeight={400}
+            sx={{ mt: 1 }}
+          >
+            {title}
+          </Typography>
         )}
         {description && (
-          <p className="text-[11px] text-gray-500 line-clamp-2 leading-snug">
+          <Typography
+            variant={MUI_TYPOGRAPHY.CAPTION}
+            color={"text." + MUI_COLORS.SECONDARY}
+            sx={{
+              display: "-webkit-box",
+              overflow: "hidden",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+            }}
+          >
             {description}
-          </p>
+          </Typography>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 });
 

@@ -8,9 +8,6 @@ import { keyframes } from "@mui/system";
 
 export type AppMode = "light" | "dark";
 
-/* ================================
-   🎬 Animations
-================================ */
 export const fadeInUp = keyframes`
   from { opacity: 0; transform: translate3d(0, 12px, 0); }
   to   { opacity: 1; transform: translate3d(0, 0, 0); }
@@ -22,9 +19,6 @@ export const softFloat = keyframes`
   100% { transform: translateY(0); }
 `;
 
-/* ================================
-   🧩 Extend Theme Types (Palette + Animations)
-================================ */
 declare module "@mui/material/styles" {
   interface Palette {
     gradient: {
@@ -50,7 +44,6 @@ declare module "@mui/material/styles" {
     };
   }
 
-  // ✅ نضيف دعم لأنيميشن داخل theme
   interface Theme {
     animations: {
       fadeInUp: string;
@@ -75,12 +68,15 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
     ...(mode === "light"
       ? {
           primary: { main: "#7c3aed", light: "#a78bfa", dark: "#5b21b6" },
-          secondary: { main: "#c084fc", dark: "#9a6df0" },
-          error: { main: "#ef4444" },
-          success: { main: "#10b981" },
-          warning: { main: "#f59e0b" },
-          info: { main: "#3b82f6" },
-          background: { default: "#f3e8ff", paper: "#ffffff" },
+          secondary: { main: "#dab8fbff", dark: "#c09dffff" },
+          error: { main: "#f83f3fff" },
+          success: { main: "#b8f4e0ff" },
+          warning: { main: "#e9d7a3ff" },
+          info: { main: "#9fbdedff" },
+          background: {
+            default: "linear-gradient(180deg, #faf5ff 0%, #ffffff 100%)",
+            paper: "#ffffff",
+          },
           text: { primary: "#211127", secondary: "#54395e" },
           brand: {
             lavender: "#a78bfa",
@@ -95,11 +91,14 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
       : {
           primary: { main: "#a78bfa", light: "#c4b5fd", dark: "#7c3aed" },
           secondary: { main: "#9a6df0" },
-          error: { main: "#f87171" },
-          success: { main: "#34d399" },
-          warning: { main: "#fbbf24" },
-          info: { main: "#60a5fa" },
-          background: { default: "#221127", paper: "#341e3b" },
+          error: { main: "#f83f3fff" },
+          success: { main: "#b8f4e0ff" },
+          warning: { main: "#e9d7a3ff" },
+          info: { main: "##9fbdedff" },
+          background: {
+            default: "linear-gradient(180deg, #1c0f27 0%, #2a1840 100%)",
+            paper: "#51337692",
+          },
           text: { primary: "#f3f4f6", secondary: "#cbd5e1" },
           brand: {
             lavender: "#c4b5fd",
@@ -112,16 +111,16 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
           },
         }),
   },
-  shape: { borderRadius: 14 },
+  shape: { borderRadius: 4 },
   typography: {
     fontFamily:
       "Inter, Tajawal, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-    h1: { fontWeight: 800, letterSpacing: -0.5 },
-    h2: { fontWeight: 700, letterSpacing: -0.3 },
-    h3: { fontWeight: 700 },
-    h4: { fontWeight: 700 },
-    h5: { fontWeight: 600 },
-    h6: { fontWeight: 600 },
+    h1: { fontWeight: 800, letterSpacing: -0.5, fontSize: 50 },
+    h2: { fontWeight: 700, letterSpacing: -0.3, fontSize: 40 },
+    h3: { fontWeight: 700, fontSize: 45 },
+    h4: { fontWeight: 700, fontSize: 40 },
+    h5: { fontWeight: 600, fontSize: 35 },
+    h6: { fontWeight: 600, fontSize: 50 },
     button: { textTransform: "none", fontWeight: 600 },
     subtitle1: { opacity: 0.9 },
     subtitle2: { opacity: 0.85 },
@@ -141,7 +140,6 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
 export const createAppTheme = (mode: AppMode): Theme => {
   let theme = createTheme(getDesignTokens(mode));
 
-  // ✅ نضيف الأنيميشنات داخل الـ theme نفسه
   theme = createTheme(theme, {
     animations: {
       fadeInUp: `${fadeInUp} 0.6s ${theme.transitions.easing.easeOut}`,
@@ -149,7 +147,6 @@ export const createAppTheme = (mode: AppMode): Theme => {
     },
 
     components: {
-      /* 🌐 Global Styles */
       MuiCssBaseline: {
         styleOverrides: {
           "*, *::before, *::after": { boxSizing: "border-box" },
@@ -176,11 +173,11 @@ export const createAppTheme = (mode: AppMode): Theme => {
         },
       },
 
-      /* 🔘 Button */
       MuiButton: {
         defaultProps: { disableElevation: true },
         styleOverrides: {
           root: {
+            backgroundColor: theme.palette.background.default,
             borderRadius: 12,
             fontWeight: 600,
             textTransform: "none",
@@ -212,7 +209,6 @@ export const createAppTheme = (mode: AppMode): Theme => {
         ],
       },
 
-      /* 🃏 Card */
       MuiCard: {
         styleOverrides: {
           root: {
@@ -230,7 +226,6 @@ export const createAppTheme = (mode: AppMode): Theme => {
         },
       },
 
-      /* 📦 Paper */
       MuiPaper: {
         styleOverrides: {
           root: {
@@ -240,20 +235,19 @@ export const createAppTheme = (mode: AppMode): Theme => {
         },
       },
 
-      /* 💬 Tooltip */
       MuiTooltip: {
         styleOverrides: {
           tooltip: {
             fontSize: 12,
             borderRadius: 8,
             backdropFilter: "blur(2px)",
-            background: theme.palette.mode === "light" ? "#111827" : "#e5e7eb",
-            color: theme.palette.mode === "light" ? "#f9fafb" : "#111827",
+            background:
+              theme.palette.mode === "light" ? "#1c1127ff" : "#e9e5ebff",
+            color: theme.palette.mode === "light" ? "#faf9fbff" : "#1c1127ff",
           },
         },
       },
 
-      /* 🍞 Snackbar */
       MuiSnackbarContent: {
         styleOverrides: {
           root: {
@@ -267,7 +261,6 @@ export const createAppTheme = (mode: AppMode): Theme => {
         },
       },
 
-      /* 💀 Skeleton */
       MuiSkeleton: {
         styleOverrides: {
           root: { animation: `${softFloat} 3.2s ease-in-out infinite` },
