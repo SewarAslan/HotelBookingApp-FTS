@@ -78,7 +78,7 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
           warning: { main: "#ffdf5d" },
           info: { main: "#29b6f6" },
           background: {
-            default: "#efe2d1",
+            default: "#f5ebe0",
             paper: "#fffaf3",
           },
           text: { primary: "#112127ff", secondary: "#6b3d1cff" },

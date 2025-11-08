@@ -5,6 +5,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
 import { ROUTES } from "../constants/routes";
 import MainLayout from "../layouts/MainLayout";
+import SearchResultsPage from "../pages/SearchResultsPage";
 
 export function AppRouter() {
   return (
@@ -17,6 +18,14 @@ export function AppRouter() {
             element={
               <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/results"
+            element={
+              <ProtectedRoute>
+                <SearchResultsPage />
               </ProtectedRoute>
             }
           />
