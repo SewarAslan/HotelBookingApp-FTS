@@ -42,9 +42,9 @@ const FlexSection = <T,>({
     <Box
       component="section"
       sx={{
-        py: theme.spacing(4),
-        mt: theme.spacing(4),
-        mb: theme.spacing(3),
+        py: theme.spacing(1),
+        mt: theme.spacing(0),
+        mb: theme.spacing(0),
         gap: theme.spacing(3),
         backgroundColor: "transparent",
         transition: "background 0.4s ease",

@@ -54,13 +54,13 @@ const CarouselSection = <T,>({
     <Box
       component="section"
       sx={{
-        py: theme.spacing(4),
-        mt: theme.spacing(4),
-        mb: theme.spacing(3),
+        py: theme.spacing(2),
+        mt: theme.spacing(1),
+        mb: theme.spacing(1),
         gap: theme.spacing(3),
         position: "relative",
         background: "transparent",
-        overflow: "hidden",
+        overflow: "visible",
         transition: "background 0.4s ease",
         animation: theme.animations.fadeInUp,
       }}
@@ -71,7 +71,7 @@ const CarouselSection = <T,>({
           fontWeight={700}
           color={MUI_COLORS.PRIMARY}
           sx={{
-            mb: 3,
+            mb: 1,
             textAlign: { xs: "center", sm: "left" },
             animation: theme.animations.fadeInUp,
           }}
@@ -94,6 +94,7 @@ const CarouselSection = <T,>({
                 position: "relative",
                 "&:hover .scroll-btn": {
                   opacity: 1,
+
                   pointerEvents: "auto",
                 },
               }}
@@ -111,13 +112,10 @@ const CarouselSection = <T,>({
                   opacity: 0,
                   pointerEvents: "none",
                   bgcolor: "transparent",
-                  color: theme.palette.brand.violet,
+                  color: theme.palette.secondary.dark,
                   transition: "opacity 0.3s ease",
                   "&:hover": {
-                    bgcolor:
-                      theme.palette.mode === "light"
-                        ? "rgba(167,139,250,0.08)"
-                        : "rgba(167,139,250,0.15)",
+                    bgcolor: theme.palette.secondary.light,
                   },
                 }}
               >
@@ -132,7 +130,8 @@ const CarouselSection = <T,>({
                     gap: 3,
                     overflowX: "auto",
                     scrollBehavior: "smooth",
-                    py: 3,
+                    pt: 1,
+                    pb: 3,
                     px: 4,
                     animation: theme.animations.fadeInUp,
                     msOverflowStyle: "none",
@@ -169,13 +168,10 @@ const CarouselSection = <T,>({
                   opacity: 0,
                   pointerEvents: "none",
                   bgcolor: "transparent",
-                  color: theme.palette.brand.violet,
+                  color: theme.palette.secondary.dark,
                   transition: "opacity 0.3s ease",
                   "&:hover": {
-                    bgcolor:
-                      theme.palette.mode === "light"
-                        ? "rgba(167,139,250,0.08)"
-                        : "rgba(167,139,250,0.15)",
+                    bgcolor: theme.palette.secondary.light,
                   },
                 }}
               >

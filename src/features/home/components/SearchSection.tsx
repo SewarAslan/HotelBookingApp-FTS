@@ -65,13 +65,13 @@ export default function SearchSection() {
             <Box
               component="section"
               sx={{
-                py: theme.spacing(4),
-                mt: theme.spacing(4),
-                mb: theme.spacing(3),
+                py: theme.spacing(1),
+                mt: theme.spacing(1),
+                mb: theme.spacing(1),
                 gap: theme.spacing(3),
                 position: "relative",
-                background: "transparent",
-                overflow: "hidden",
+                background: "none",
+                overflow: "visible",
                 transition: "background 0.4s ease",
                 animation: theme.animations.fadeInUp,
                 display: "flex",
@@ -86,14 +86,14 @@ export default function SearchSection() {
                   maxWidth: 1100,
                   borderRadius: theme.shape.borderRadius,
                   backdropFilter: "blur(6px)",
-                  backgroundColor: theme.palette.background.paper,
+                  backgroundColor: theme.palette.gradient.tertiary,
                 }}
               >
                 <Typography
                   variant={MUI_TYPOGRAPHY.H4}
                   sx={{
-                    mb: 3,
-                    color: theme.palette.text.primary,
+                    mb: 2,
+                    color: theme.palette.secondary.main,
                     textAlign: "center",
                     height: "56px",
                   }}
