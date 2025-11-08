@@ -54,12 +54,15 @@ const CarouselSection = <T,>({
     <Box
       component="section"
       sx={{
-        py: { xs: 4, sm: 6 },
-        mt: 6,
+        py: theme.spacing(4),
+        mt: theme.spacing(4),
+        mb: theme.spacing(3),
+        gap: theme.spacing(3),
         position: "relative",
         background: "transparent",
         overflow: "hidden",
         transition: "background 0.4s ease",
+        animation: theme.animations.fadeInUp,
       }}
     >
       <Container maxWidth={MUI_BREAKPOINTS.XL}>
@@ -76,109 +79,110 @@ const CarouselSection = <T,>({
           {sectionTitle}
         </Typography>
 
-        <MessageCard
-          status={status}
-          error={error}
-          data={data}
-          message={`Loading ${sectionTitle.toLowerCase()}...`}
-          onRetry={refetch}
-        />
-
-        {shouldRenderList && (
-          <Box
-            sx={{
-              position: "relative",
-              "&:hover .scroll-btn": {
-                opacity: 1,
-                pointerEvents: "auto",
-              },
-            }}
-          >
-            <IconButton
-              className="scroll-btn"
-              onClick={() => scroll("left")}
-              aria-label="scroll left"
+        {status !== STATUS.SUCCESS ? (
+          <MessageCard
+            status={status}
+            error={error}
+            data={data}
+            message={`Loading ${sectionTitle.toLowerCase()}...`}
+            onRetry={refetch}
+          />
+        ) : (
+          shouldRenderList && (
+            <Box
               sx={{
-                position: "absolute",
-                left: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                zIndex: 10,
-                opacity: 0,
-                pointerEvents: "none",
-                bgcolor: "transparent",
-                color: theme.palette.brand.violet,
-                transition: "opacity 0.3s ease",
-                "&:hover": {
-                  bgcolor:
-                    theme.palette.mode === "light"
-                      ? "rgba(167,139,250,0.08)"
-                      : "rgba(167,139,250,0.15)",
+                position: "relative",
+                "&:hover .scroll-btn": {
+                  opacity: 1,
+                  pointerEvents: "auto",
                 },
               }}
             >
-              <ChevronLeftRoundedIcon sx={{ fontSize: 40 }} />
-            </IconButton>
-
-            <Box sx={{ overflow: "visible" }}>
-              <Box
-                ref={carouselRef}
+              <IconButton
+                className="scroll-btn"
+                onClick={() => scroll("left")}
+                aria-label="scroll left"
                 sx={{
-                  display: "flex",
-                  gap: 3,
-                  overflowX: "auto",
-                  scrollBehavior: "smooth",
-                  py: 3,
-                  px: 4,
-                  animation: theme.animations.fadeInUp,
-
-                  msOverflowStyle: "none",
-                  scrollbarWidth: "none",
-                  "& > *": {
-                    flex: "0 0 auto",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    "&:hover": {
-                      transform: "translateY(-6px) scale(1.02)",
-                      zIndex: 2,
-                    },
+                  position: "absolute",
+                  left: 0,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 10,
+                  opacity: 0,
+                  pointerEvents: "none",
+                  bgcolor: "transparent",
+                  color: theme.palette.brand.violet,
+                  transition: "opacity 0.3s ease",
+                  "&:hover": {
+                    bgcolor:
+                      theme.palette.mode === "light"
+                        ? "rgba(167,139,250,0.08)"
+                        : "rgba(167,139,250,0.15)",
                   },
                 }}
               >
-                {data.map((item, index) => (
-                  <CardComponent
-                    key={getKey?.(item, index) ?? index}
-                    data={item}
-                  />
-                ))}
-              </Box>
-            </Box>
+                <ChevronLeftRoundedIcon sx={{ fontSize: 40 }} />
+              </IconButton>
 
-            <IconButton
-              className="scroll-btn"
-              onClick={() => scroll("right")}
-              aria-label="scroll right"
-              sx={{
-                position: "absolute",
-                right: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                zIndex: 10,
-                opacity: 0,
-                pointerEvents: "none",
-                bgcolor: "transparent",
-                color: theme.palette.brand.violet,
-                transition: "opacity 0.3s ease",
-                "&:hover": {
-                  bgcolor:
-                    theme.palette.mode === "light"
-                      ? "rgba(167,139,250,0.08)"
-                      : "rgba(167,139,250,0.15)",
-                },
-              }}
-            >
-              <ChevronRightRoundedIcon sx={{ fontSize: 40 }} />
-            </IconButton>
-          </Box>
+              <Box sx={{ overflow: "visible" }}>
+                <Box
+                  ref={carouselRef}
+                  sx={{
+                    display: "flex",
+                    gap: 3,
+                    overflowX: "auto",
+                    scrollBehavior: "smooth",
+                    py: 3,
+                    px: 4,
+                    animation: theme.animations.fadeInUp,
+                    msOverflowStyle: "none",
+                    scrollbarWidth: "none",
+                    "& > *": {
+                      flex: "0 0 auto",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      "&:hover": {
+                        transform: "translateY(-6px) scale(1.02)",
+                        zIndex: 2,
+                      },
+                    },
+                  }}
+                >
+                  {data.map((item, index) => (
+                    <CardComponent
+                      key={getKey?.(item, index) ?? index}
+                      data={item}
+                    />
+                  ))}
+                </Box>
+              </Box>
+
+              <IconButton
+                className="scroll-btn"
+                onClick={() => scroll("right")}
+                aria-label="scroll right"
+                sx={{
+                  position: "absolute",
+                  right: 0,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 10,
+                  opacity: 0,
+                  pointerEvents: "none",
+                  bgcolor: "transparent",
+                  color: theme.palette.brand.violet,
+                  transition: "opacity 0.3s ease",
+                  "&:hover": {
+                    bgcolor:
+                      theme.palette.mode === "light"
+                        ? "rgba(167,139,250,0.08)"
+                        : "rgba(167,139,250,0.15)",
+                  },
+                }}
+              >
+                <ChevronRightRoundedIcon sx={{ fontSize: 40 }} />
+              </IconButton>
+            </Box>
+          )
         )}
       </Container>
     </Box>

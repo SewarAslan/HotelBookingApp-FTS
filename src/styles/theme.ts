@@ -24,11 +24,13 @@ declare module "@mui/material/styles" {
     gradient: {
       primary: string;
       secondary: string;
+      tertiary: string;
     };
     brand: {
-      lavender: string;
-      violet: string;
-      rose: string;
+      white: string;
+      orange: string;
+      yellow: string;
+      turquoise: string;
     };
   }
 
@@ -36,11 +38,13 @@ declare module "@mui/material/styles" {
     gradient?: {
       primary?: string;
       secondary?: string;
+      tertiary?: string;
     };
     brand?: {
-      lavender?: string;
-      violet?: string;
-      rose?: string;
+      white?: string;
+      orange?: string;
+      yellow?: string;
+      turquoise?: string;
     };
   }
 
@@ -67,54 +71,59 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
     mode,
     ...(mode === "light"
       ? {
-          primary: { main: "#7c3aed", light: "#a78bfa", dark: "#5b21b6" },
-          secondary: { main: "#dab8fbff", dark: "#c09dffff" },
-          error: { main: "#f83f3fff" },
-          success: { main: "#b8f4e0ff" },
-          warning: { main: "#e9d7a3ff" },
-          info: { main: "#9fbdedff" },
+          primary: { main: "#ff8c42", light: "#ffb56b", dark: "#c35e00" }, // برتقالي رئيسي
+          secondary: { main: "#23a79eff", light: "#8fd3cdff", dark: "#009e91" }, // تركواز ثانوي
+          error: { main: "#ff4d4f" },
+          success: { main: "#4caf50" },
+          warning: { main: "#ffdf5d" },
+          info: { main: "#29b6f6" },
           background: {
-            default: "linear-gradient(180deg, #faf5ff 0%, #ffffff 100%)",
-            paper: "#ffffff",
+            default: "#ffffff",
+            paper: "#fffaf3",
           },
-          text: { primary: "#211127", secondary: "#54395e" },
+          text: { primary: "#112127ff", secondary: "#6b3d1cff" },
           brand: {
-            lavender: "#a78bfa",
-            violet: "#7c3aed",
-            rose: "#c084fc",
+            white: "#ffffff",
+            orange: "#ff8c42",
+            yellow: "#ffdf5d",
+            turquoise: "#00cfc1",
           },
           gradient: {
-            primary: "linear-gradient(135deg, #a78bfa, #7c3aed)",
-            secondary: "linear-gradient(135deg, #c084fc, #9a6df0)",
+            primary: "linear-gradient(135deg, #ffb56b, #ff8c42)",
+            secondary: "linear-gradient(135deg, #6df3e8, #00cfc1)",
+            tertiary: "linear-gradient(135deg, #ffffff, #00cfc1, #ffdf5d)",
           },
         }
       : {
-          primary: { main: "#a78bfa", light: "#c4b5fd", dark: "#7c3aed" },
-          secondary: { main: "#9a6df0" },
-          error: { main: "#f83f3fff" },
-          success: { main: "#b8f4e0ff" },
-          warning: { main: "#e9d7a3ff" },
-          info: { main: "##9fbdedff" },
+          primary: { main: "#ffb56b", light: "#ffd18f", dark: "#c35e00" },
+          secondary: { main: "#6df3e8", light: "#a7fbf9", dark: "#009e91" },
+          error: { main: "#ff4d4f" },
+          success: { main: "#81c784" },
+          warning: { main: "#ffdf5d" },
+          info: { main: "#4fc3f7" },
           background: {
-            default: "linear-gradient(180deg, #1c0f27 0%, #2a1840 100%)",
-            paper: "#51337692",
+            default: "#1b1b1b",
+            paper: "#1f2d2e",
           },
           text: { primary: "#f3f4f6", secondary: "#cbd5e1" },
           brand: {
-            lavender: "#c4b5fd",
-            violet: "#a78bfa",
-            rose: "#d8b4fe",
+            white: "#f8f9fa",
+            orange: "#ffd18f",
+            yellow: "#ffea91",
+            turquoise: "#a7fbf9",
           },
           gradient: {
-            primary: "linear-gradient(135deg, #7c3aed, #a78bfa)",
-            secondary: "linear-gradient(135deg, #9a6df0, #c084fc)",
+            primary: "linear-gradient(135deg, #ff8c42, #ffb56b)",
+            secondary: "linear-gradient(135deg, #00cfc1, #6df3e8)",
+            tertiary:
+              "linear-gradient(135deg, #0f0b0bff, #2e5c5bff, #706538ff)",
           },
         }),
   },
   shape: { borderRadius: 4 },
   typography: {
     fontFamily:
-      "Inter, Tajawal, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+      "Inter, Tajawal, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans‑serif",
     h1: { fontWeight: 800, letterSpacing: -0.5, fontSize: 50 },
     h2: { fontWeight: 700, letterSpacing: -0.3, fontSize: 40 },
     h3: { fontWeight: 700, fontSize: 45 },
@@ -143,7 +152,7 @@ export const createAppTheme = (mode: AppMode): Theme => {
   theme = createTheme(theme, {
     animations: {
       fadeInUp: `${fadeInUp} 0.6s ${theme.transitions.easing.easeOut}`,
-      softFloat: `${softFloat} 3.2s ease-in-out infinite`,
+      softFloat: `${softFloat} 3.2s ease‑in‑out infinite`,
     },
 
     components: {
@@ -160,15 +169,15 @@ export const createAppTheme = (mode: AppMode): Theme => {
           "*::-webkit-scrollbar": { width: 10, height: 10 },
           "*::-webkit-scrollbar-thumb": {
             backgroundColor:
-              theme.palette.mode === "light" ? "#d4d4d8" : "#3f3f46",
+              theme.palette.mode === "light" ? "#e0e0e0" : "#4a4a4a",
             borderRadius: 999,
             border:
               theme.palette.mode === "light"
-                ? "2px solid #f8fafc"
-                : "2px solid #0f172a",
+                ? "2px solid #ffffff"
+                : "2px solid #1b1b1b",
           },
           "*::-webkit-scrollbar-track": {
-            background: theme.palette.mode === "light" ? "#f1f5f9" : "#0b1222",
+            background: theme.palette.mode === "light" ? "#f5f5f5" : "#141414",
           },
         },
       },
@@ -189,8 +198,8 @@ export const createAppTheme = (mode: AppMode): Theme => {
               transform: "translateY(-1px)",
               boxShadow:
                 theme.palette.mode === "light"
-                  ? "0 8px 22px rgba(124, 58, 237, 0.18)"
-                  : "0 8px 22px rgba(167, 139, 250, 0.25)",
+                  ? "0 8px 22px rgba(255,140,66,0.18)"
+                  : "0 8px 22px rgba(255,181,107,0.25)",
             },
             "&:active": { transform: "translateY(0)" },
           },
@@ -242,8 +251,8 @@ export const createAppTheme = (mode: AppMode): Theme => {
             borderRadius: 8,
             backdropFilter: "blur(2px)",
             background:
-              theme.palette.mode === "light" ? "#1c1127ff" : "#e9e5ebff",
-            color: theme.palette.mode === "light" ? "#faf9fbff" : "#1c1127ff",
+              theme.palette.mode === "light" ? "#112327ff" : "#e9e5ebff",
+            color: theme.palette.mode === "light" ? "#faf9fbff" : "#112127ff",
           },
         },
       },
@@ -263,7 +272,20 @@ export const createAppTheme = (mode: AppMode): Theme => {
 
       MuiSkeleton: {
         styleOverrides: {
-          root: { animation: `${softFloat} 3.2s ease-in-out infinite` },
+          root: { animation: `${softFloat} 3.2s ease‑in‑out infinite` },
+        },
+      },
+
+      MuiDateCalendar: {
+        styleOverrides: {
+          root: {
+            color: theme.palette.primary.main,
+            borderRadius: "14px",
+            borderWidth: "1px",
+            borderColor: theme.palette.primary.dark,
+            border: "1px solid",
+            backgroundColor: theme.palette.background.paper,
+          },
         },
       },
     },

@@ -10,7 +10,7 @@ import type { DecodedUser } from "../types/User";
 
 export interface AuthState {
   token: string | null;
-  AuthUser: DecodedUser | null;
+  authUser: DecodedUser | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
@@ -18,8 +18,8 @@ export interface AuthState {
 
 const initialState: AuthState = {
   token: Cookies.get("token") || null,
-  AuthUser: Cookies.get("AuthUser")
-    ? JSON.parse(Cookies.get("AuthUser")!)
+  authUser: Cookies.get("authUser")
+    ? JSON.parse(Cookies.get("authUser")!)
     : null,
   isAuthenticated: !!Cookies.get("token"),
   loading: false,
@@ -27,7 +27,7 @@ const initialState: AuthState = {
 };
 
 export const loginUser = createAsyncThunk<
-  { token: string; AuthUser: DecodedUser },
+  { token: string; authUser: DecodedUser },
   { username: string; password: string },
   { rejectValue: string }
 >("auth/loginUser", async (credentials, { rejectWithValue }) => {
@@ -46,9 +46,9 @@ export const loginUser = createAsyncThunk<
     if (!decoded) throw new Error("Failed to decode token");
 
     Cookies.set("token", authentication, { expires: 7 });
-    Cookies.set("AuthUser", JSON.stringify(decoded), { expires: 7 });
+    Cookies.set("authUser", JSON.stringify(decoded), { expires: 7 });
 
-    return { token: authentication, AuthUser: decoded };
+    return { token: authentication, authUser: decoded };
   } catch (err) {
     console.error("❌ Login failed", err);
     return rejectWithValue("Invalid username or password");
@@ -61,9 +61,9 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       Cookies.remove("token");
-      Cookies.remove("AuthUser");
+      Cookies.remove("authUser");
       state.token = null;
-      state.AuthUser = null;
+      state.authUser = null;
       state.isAuthenticated = false;
     },
   },
@@ -77,11 +77,11 @@ const authSlice = createSlice({
         loginUser.fulfilled,
         (
           state,
-          action: PayloadAction<{ token: string; AuthUser: DecodedUser }>
+          action: PayloadAction<{ token: string; authUser: DecodedUser }>
         ) => {
           state.loading = false;
           state.token = action.payload.token;
-          state.AuthUser = action.payload.AuthUser;
+          state.authUser = action.payload.authUser;
           state.isAuthenticated = true;
         }
       )

@@ -48,10 +48,6 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
         animation: theme.animations.fadeInUp,
         "&:hover": {
           transform: "translateY(-4px)",
-          boxShadow:
-            theme.palette.mode === "light"
-              ? "0 6px 22px rgba(124, 58, 237, 0.15)"
-              : "0 6px 22px rgba(167, 139, 250, 0.25)",
         },
       }}
     >
@@ -77,10 +73,10 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
               position: "absolute",
               top: 10,
               left: 10,
-              bgcolor: theme.palette.brand.violet,
-              color: "#fff",
+              bgcolor: theme.palette.secondary.main,
+              color: theme.palette.background.default,
               fontWeight: 600,
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
+              boxShadow: theme.shadows[3],
             }}
           />
         )}
@@ -120,7 +116,7 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
                 sx={{
                   color:
                     i < Math.floor(hotelStarRating)
-                      ? "#facc15"
+                      ? theme.palette.brand.yellow
                       : theme.palette.action.disabled,
                 }}
               />
@@ -154,9 +150,11 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
         {title && (
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
-            color={theme.palette.brand.lavender}
             fontWeight={400}
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              color: theme.palette.brand.turquoise,
+            }}
           >
             {title}
           </Typography>

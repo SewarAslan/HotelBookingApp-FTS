@@ -12,15 +12,15 @@ export function ProtectedRoute({
   children,
   allowedRoles,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, AuthUser } = useSelector(
+  const { isAuthenticated, authUser } = useSelector(
     (state: RootState) => state.auth
   );
 
-  if (!isAuthenticated || !AuthUser) {
+  if (!isAuthenticated || !authUser) {
     return <Navigate to={ROUTES.LOGIN} replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(AuthUser.userType)) {
+  if (allowedRoles && !allowedRoles.includes(authUser.userType)) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
 

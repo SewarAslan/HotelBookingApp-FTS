@@ -10,10 +10,12 @@ import {
   CircularProgress,
   InputAdornment,
   useTheme,
+  alpha,
 } from "@mui/material";
 import { loginSchema } from "../../../constants/authSchemas";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
+import { PLACEHOLDERS } from "../../../constants/placeHolders";
 
 interface AuthFormProps {
   title: string;
@@ -46,10 +48,7 @@ export default function AuthForm({
         alignItems: "center",
         justifyContent: "center",
         p: 2,
-        background:
-          theme.palette.mode === "light"
-            ? "linear-gradient(135deg, #f3e8ff, #ede9fe)"
-            : "linear-gradient(135deg, #2a1840, #3c2060)",
+        background: theme.palette.gradient.tertiary,
         position: "relative",
         overflow: "hidden",
       }}
@@ -59,9 +58,7 @@ export default function AuthForm({
           position: "absolute",
           inset: 0,
           background:
-            theme.palette.mode === "light"
-              ? "radial-gradient(circle at top right, rgba(125, 64, 165, 0.6), transparent 70%)"
-              : "radial-gradient(circle at top right, rgba(124,58,237,0.2), transparent 70%)",
+            "radial-gradient(circle at top right, rgba(255, 255, 255, 0.6), transparent 70%)",
           filter: "blur(60px)",
         }}
       />
@@ -74,10 +71,8 @@ export default function AuthForm({
           width: "100%",
           p: { xs: 3, sm: 4 },
           backdropFilter: "blur(20px)",
-          backgroundColor:
-            theme.palette.mode === "light"
-              ? "rgba(255, 255, 255, 0.54)"
-              : "rgba(25,25,35,0.7)",
+          backgroundColor: alpha(theme.palette.background.paper, 0.8),
+
           boxShadow: theme.shadows[3],
           borderRadius: 4,
 
@@ -97,7 +92,7 @@ export default function AuthForm({
           <Box
             component="img"
             alt="Hotel Booking Logo"
-            src="data:image/svg+xml;utf8,%3Csvg%20viewBox%3D%2235%2035%20189%20122%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20aria-label%3D%22Hotel%20booking%20S-key%20logo%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22lavenderGrad%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23C4B5FD%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23A78BFA%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%2296%22%20cy%3D%2296%22%20r%3D%2256%22%20stroke%3D%22url(%23lavenderGrad)%22%20stroke-width%3D%2210%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M120%2078c0-12-10-22-28-22-18%200-28%208-28%2018%200%2010%208%2014%2024%2018l6%201c18%204%2026%209%2026%2020%200%2012-12%2020-30%2020s-30-8-30-22%22%20stroke%3D%22url(%23lavenderGrad)%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%2F%3E%3Crect%20x%3D%22136%22%20y%3D%2291%22%20width%3D%2288%22%20height%3D%2210%22%20rx%3D%225%22%20fill%3D%22url(%23lavenderGrad)%22%2F%3E%3Crect%20x%3D%22210%22%20y%3D%2291%22%20width%3D%228%22%20height%3D%2218%22%20rx%3D%223%22%20fill%3D%22url(%23lavenderGrad)%22%2F%3E%3Crect%20x%3D%22196%22%20y%3D%2291%22%20width%3D%228%22%20height%3D%2212%22%20rx%3D%223%22%20fill%3D%22url(%23lavenderGrad)%22%2F%3E%3C%2Fsvg%3E"
+            src={PLACEHOLDERS.LOGO}
             sx={{
               width: 60,
               mb: 1,

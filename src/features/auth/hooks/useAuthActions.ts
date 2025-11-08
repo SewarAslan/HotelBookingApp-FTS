@@ -8,17 +8,17 @@ export function useAuthActions() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { loading, error, isAuthenticated, AuthUser, token } = useSelector(
+  const { loading, error, isAuthenticated, authUser, token } = useSelector(
     (state: RootState) => state.auth
   );
 
   const handleLogin = async (username: string, password: string) => {
     const result = await dispatch(loginUser({ username, password }));
 
-    if (loginUser.fulfilled.match(result)) {
-      const { AuthUser } = result.payload;
+    if (loginUser.fulfilled.match(result) && result.payload) {
+      const { authUser } = result.payload;
 
-      if (AuthUser.userType === "Admin") navigate(ROUTES.ADMIN);
+      if (authUser.userType === "Admin") navigate(ROUTES.ADMIN);
       else navigate(ROUTES.HOME);
     }
   };
@@ -34,7 +34,7 @@ export function useAuthActions() {
     loading,
     error,
     isAuthenticated,
-    AuthUser,
+    authUser,
     token,
   };
 }

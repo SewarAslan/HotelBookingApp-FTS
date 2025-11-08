@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   useTheme,
+  alpha,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import type { RecentHotelResultDto } from "../../../api/HotelBookingApi";
@@ -43,10 +44,6 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
         animation: theme.animations.fadeInUp,
         "&:hover": {
           transform: "translateY(-4px)",
-          boxShadow:
-            theme.palette.mode === "light"
-              ? "0 6px 22px rgba(124, 58, 237, 0.15)"
-              : "0 6px 22px rgba(167, 139, 250, 0.25)",
         },
       }}
     >
@@ -67,8 +64,10 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
             bottom: 0,
             left: 0,
             width: "100%",
-            bgcolor: "rgba(0,0,0,0.4)",
-            color: "#fff",
+            bgcolor: alpha(theme.palette.background.default, 0.4),
+            color: theme.palette.getContrastText(
+              theme.palette.background.default
+            ),
             px: 1.5,
             py: 0.5,
             fontSize: 12,
@@ -112,7 +111,7 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
                 sx={{
                   color:
                     i < Math.floor(starRating)
-                      ? "#facc15"
+                      ? theme.palette.brand.yellow
                       : theme.palette.action.disabled,
                 }}
               />
@@ -124,7 +123,7 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
           <Typography
             variant="body2"
             sx={{
-              color: theme.palette.brand.violet,
+              color: theme.palette.primary.main,
               fontWeight: 600,
               mt: 1,
             }}

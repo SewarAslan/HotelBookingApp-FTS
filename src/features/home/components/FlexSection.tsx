@@ -42,10 +42,13 @@ const FlexSection = <T,>({
     <Box
       component="section"
       sx={{
-        py: { xs: 3, sm: 5 },
-        mt: 4,
+        py: theme.spacing(4),
+        mt: theme.spacing(4),
+        mb: theme.spacing(3),
+        gap: theme.spacing(3),
         backgroundColor: "transparent",
         transition: "background 0.4s ease",
+        animation: theme.animations.fadeInUp,
       }}
     >
       <Container maxWidth={MUI_BREAKPOINTS.XL}>
@@ -62,39 +65,41 @@ const FlexSection = <T,>({
           {sectionTitle}
         </Typography>
 
-        <MessageCard
-          status={status}
-          error={error}
-          data={data}
-          message={`Loading ${sectionTitle.toLowerCase()}...`}
-          onRetry={refetch}
-        />
-
-        {shouldRenderList && (
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              alignItems: "stretch",
-              gap: `${gap}px`,
-              animation: `${theme.animations.fadeInUp} 0.8s ease`,
-            }}
-          >
-            {data.map((item, index) => (
-              <Box
-                key={getKey?.(item, index) ?? index}
-                sx={{
-                  flex: `1 1 ${minWidth}px`,
-                  maxWidth: `${maxWidth}px`,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <CardComponent data={item} />
-              </Box>
-            ))}
-          </Box>
+        {status !== STATUS.SUCCESS ? (
+          <MessageCard
+            status={status}
+            error={error}
+            data={data}
+            message={`Loading ${sectionTitle.toLowerCase()}...`}
+            onRetry={refetch}
+          />
+        ) : (
+          shouldRenderList && (
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "stretch",
+                gap: `${gap}px`,
+                animation: `${theme.animations.fadeInUp} 0.8s ease`,
+              }}
+            >
+              {data.map((item, index) => (
+                <Box
+                  key={getKey?.(item, index) ?? index}
+                  sx={{
+                    flex: `1 1 ${minWidth}px`,
+                    maxWidth: `${maxWidth}px`,
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CardComponent data={item} />
+                </Box>
+              ))}
+            </Box>
+          )
         )}
       </Container>
     </Box>
