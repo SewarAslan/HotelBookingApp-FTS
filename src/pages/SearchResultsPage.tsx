@@ -1,43 +1,52 @@
-import { Box, Container, useTheme } from "@mui/material";
-import { useLocation } from "react-router-dom";
-import { parseSearchParams } from "../utils/url";
-
-import { FiltersSidebar, ResultsList } from "../features/search/components";
+import React from "react";
+import { Box, useTheme, Container } from "@mui/material";
+import { FiltersSidebar, SortMenu } from "../features/search/components";
+import ResultsList from "../features/search/components/ResultsList";
+import { MUI_BREAKPOINTS } from "../constants/muiTokens";
 
 export default function SearchResultsPage() {
   const theme = useTheme();
-  const location = useLocation();
-  const searchParams = parseSearchParams(location.search);
 
   return (
-    <Container
-      maxWidth="xl"
+    <Box
       sx={{
         display: "flex",
-        gap: 3,
-        py: 4,
-        minHeight: "80vh",
+        flexDirection: { xs: "column", md: "row" },
+        minHeight: "100vh",
+        background: theme.palette.background.default,
+        animation: theme.animations.fadeInUp,
       }}
     >
       <Box
+        component="aside"
         sx={{
-          flexBasis: { xs: "100%", md: "25%" },
-          background: theme.palette.background.paper,
-          borderRadius: 2,
-          boxShadow:
-            theme.palette.mode === "light"
-              ? "0 4px 20px rgba(0,0,0,0.05)"
-              : "0 4px 20px rgba(0,0,0,0.25)",
-          p: 2,
-          height: "fit-content",
+          width: { xs: "100%", md: 260 },
+          borderRight: {
+            md: `1px solid ${theme.palette.divider}`,
+          },
+          borderBottom: {
+            xs: `1px solid ${theme.palette.divider}`,
+            md: "none",
+          },
+          backgroundColor: theme.palette.background.paper,
         }}
       >
-        <FiltersSidebar params={searchParams} />
+        <FiltersSidebar />
       </Box>
 
-      <Box sx={{ flexGrow: 1 }}>
-        <ResultsList params={searchParams} />
-      </Box>
-    </Container>
+      <Container
+        maxWidth={MUI_BREAKPOINTS.XL}
+        sx={{
+          flexGrow: 1,
+          py: 3,
+          px: { xs: 2, md: 4 },
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <SortMenu />
+        <ResultsList />
+      </Container>
+    </Box>
   );
 }
