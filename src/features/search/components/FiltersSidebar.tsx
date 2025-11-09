@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -25,9 +25,16 @@ export default function FiltersSidebar() {
     });
   }, []);
 
-  const handleStarChange = (star: number) => {
-    params.set("starRate", String(star));
+  const updateUrl = (key: string, value: string | null) => {
+    if (value) params.set(key, value);
+    else params.delete(key);
     navigate({ search: params.toString() });
+  };
+
+  const handleStarChange = (star: number) => {
+    const current = params.get("starRate");
+    const newStar = current === String(star) ? null : String(star);
+    updateUrl("starRate", newStar);
   };
 
   const handleAmenityToggle = (name: string) => {
@@ -35,9 +42,8 @@ export default function FiltersSidebar() {
     const updated = current.includes(name)
       ? current.filter((a) => a !== name)
       : [...current, name];
-    if (updated.length > 0) params.set("amenities", updated.join(","));
-    else params.delete("amenities");
-    navigate({ search: params.toString() });
+
+    updateUrl("amenities", updated.length > 0 ? updated.join(",") : null);
   };
 
   return (
@@ -49,7 +55,7 @@ export default function FiltersSidebar() {
         borderRight: `1px solid ${theme.palette.divider}`,
       }}
     >
-      <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={700} mb={1}>
+      <Typography variant={MUI_TYPOGRAPHY.H5} fontWeight={700} mb={1}>
         Filters
       </Typography>
 
@@ -59,7 +65,12 @@ export default function FiltersSidebar() {
       {[5, 4, 3, 2, 1].map((star) => (
         <FormControlLabel
           key={star}
-          control={<Checkbox onChange={() => handleStarChange(star)} />}
+          control={
+            <Checkbox
+              checked={params.get("starRate") === String(star)}
+              onChange={() => handleStarChange(star)}
+            />
+          }
           label={`${star} Stars`}
         />
       ))}
@@ -72,7 +83,17 @@ export default function FiltersSidebar() {
       {amenities.map((a) => (
         <FormControlLabel
           key={a.name}
-          control={<Checkbox onChange={() => handleAmenityToggle(a.name!)} />}
+          control={
+            <Checkbox
+              checked={
+                params
+                  .get("amenities")
+                  ?.split(",")
+                  .includes(a.name || "") || false
+              }
+              onChange={() => handleAmenityToggle(a.name!)}
+            />
+          }
           label={a.name}
         />
       ))}
