@@ -18,6 +18,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { searchSchema } from "../../../constants/searchSchema";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { buildSearchParams } from "../../../utils/url";
+import { formatDate } from "../../../utils/date";
 
 export default function SearchSection() {
   const theme = useTheme();
@@ -37,16 +39,16 @@ export default function SearchSection() {
       }}
       validationSchema={searchSchema}
       onSubmit={(values) => {
-        const params = new URLSearchParams({
+        const query = buildSearchParams({
           city: values.city,
-          checkIn: values.checkInDate.format("YYYY-MM-DD"),
-          checkOut: values.checkOutDate.format("YYYY-MM-DD"),
-          adults: String(values.adults),
-          children: String(values.children),
-          rooms: String(values.rooms),
+          checkInDate: formatDate(values.checkInDate),
+          checkOutDate: formatDate(values.checkOutDate),
+          adults: values.adults,
+          children: values.children,
+          rooms: values.rooms,
         });
 
-        navigate(`/search-results?${params.toString()}`);
+        navigate(`/results?${query}`);
       }}
     >
       {({ values, setFieldValue }) => {
