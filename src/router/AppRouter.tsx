@@ -1,25 +1,38 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
-import HomePage from "../pages/HomePage";
+import HomePage from "../features/home/pages/HomePage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
 import { ROUTES } from "../constants/routes";
+import MainLayout from "../layouts/MainLayout";
+import SearchResultsPage from "../pages/SearchResultsPage";
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route element={<MainLayout />}>
+          <Route
+            path={ROUTES.HOME}
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/results"
+            element={
+              <ProtectedRoute>
+                <SearchResultsPage />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+
         <Route
-          path={ROUTES.HOME}
-          element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
+          path={ROUTES.ADMIN}
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <AdminDashboard />
