@@ -21,13 +21,13 @@ export default function HomePage() {
         sectionTitle="Featured Deals"
         useDataHook={useFeaturedDeals}
         CardComponent={({ data }) => <FeaturedDealCard deal={data} />}
-        getKey={(deal) => deal.hotelId}
+        getKey={(deal) => deal.hotelId ?? 0}
       />
       <CarouselSection
         sectionTitle="Recent Visited"
         useDataHook={useRecentHotels}
         CardComponent={({ data }) => <RecentHotelCard hotel={data} />}
-        getKey={(hotel) => hotel.hotelId}
+        getKey={(hotel) => hotel.hotelId ?? 0}
       />
       <FlexSection
         sectionTitle="Trending Destinations"
