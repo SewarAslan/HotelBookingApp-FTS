@@ -7,11 +7,14 @@ export default function LoginPage() {
     await handleLogin(values.username, values.password);
   }
   return (
-    <AuthForm
-      title="Smart Stays, Simple Clicks."
-      onSubmit={onSubmit}
-      isLoading={isLoading}
-      error={error}
-    />
+    <div>
+      {" "}
+      <AuthForm
+        title="Smart Stays, Simple Clicks."
+        onSubmit={onSubmit}
+        isLoading={isLoading}
+        error={error}
+      />
+    </div>
   );
 }
