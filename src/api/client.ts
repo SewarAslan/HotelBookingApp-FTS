@@ -9,7 +9,6 @@ export const apiClient = new Api({
     const token = Cookies.get("token");
     return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
   },
-
   customFetch: async (
     input: RequestInfo | URL,
     init?: RequestInit
@@ -17,12 +16,12 @@ export const apiClient = new Api({
     try {
       const response = await fetch(input, init);
 
-      if (response.status === 401) {
-        console.warn(
-          "⚠️ Token expired or unauthorized, redirecting to login..."
-        );
+      const isLoginRequest = String(input).includes("auth/authenticate");
+
+      if (response.status === 401 && !isLoginRequest) {
+        console.warn("⚠️ Token expired, redirecting to login...");
         Cookies.remove("token");
-        Cookies.remove("user");
+        Cookies.remove("authUser");
         window.location.href = ROUTES.LOGIN;
       }
 

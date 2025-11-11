@@ -25,7 +25,7 @@ interface CarouselSectionProps<T> {
     refetch: () => void;
   };
   CardComponent: React.ComponentType<{ data: T }>;
-  getKey?: (item: T, index: number) => undefined | number;
+  getKey?: (item: T, index: number) => string | number;
 }
 
 const CarouselSection = <T,>({
@@ -57,11 +57,7 @@ const CarouselSection = <T,>({
         py: theme.spacing(2),
         mt: theme.spacing(1),
         mb: theme.spacing(1),
-        gap: theme.spacing(3),
         position: "relative",
-        background: "transparent",
-        overflow: "visible",
-        transition: "background 0.4s ease",
         animation: theme.animations.fadeInUp,
       }}
     >
@@ -73,7 +69,6 @@ const CarouselSection = <T,>({
           sx={{
             mb: 1,
             textAlign: { xs: "center", sm: "left" },
-            animation: theme.animations.fadeInUp,
           }}
         >
           {sectionTitle}
@@ -94,11 +89,11 @@ const CarouselSection = <T,>({
                 position: "relative",
                 "&:hover .scroll-btn": {
                   opacity: 1,
-
                   pointerEvents: "auto",
                 },
               }}
             >
+              {/* Arrows */}
               <IconButton
                 className="scroll-btn"
                 onClick={() => scroll("left")}
@@ -111,18 +106,35 @@ const CarouselSection = <T,>({
                   zIndex: 10,
                   opacity: 0,
                   pointerEvents: "none",
-                  bgcolor: "transparent",
+                  backdropFilter: "blur(8px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(8px) saturate(160%)",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  border: "1px solid rgba(255,255,255,0.2)",
                   color: theme.palette.secondary.dark,
-                  transition: "opacity 0.3s ease",
+                  transition: "opacity 0.3s ease, background-color 0.3s ease",
                   "&:hover": {
-                    bgcolor: theme.palette.secondary.light,
+                    backgroundColor: "rgba(255, 255, 255, 0.25)",
                   },
                 }}
               >
                 <ChevronLeftRoundedIcon sx={{ fontSize: 40 }} />
               </IconButton>
 
-              <Box sx={{ overflow: "visible" }}>
+              {/* Outer box with fade */}
+              <Box
+                sx={{
+                  position: "relative",
+                  overflow: "hidden",
+                  maskImage:
+                    "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+                  WebkitMaskImage:
+                    "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskSize: "100% 100%",
+                  WebkitMaskSize: "100% 100%",
+                }}
+              >
                 <Box
                   ref={carouselRef}
                   sx={{
@@ -133,9 +145,9 @@ const CarouselSection = <T,>({
                     pt: 1,
                     pb: 3,
                     px: 4,
-                    animation: theme.animations.fadeInUp,
                     msOverflowStyle: "none",
                     scrollbarWidth: "none",
+                    "&::-webkit-scrollbar": { display: "none" },
                     "& > *": {
                       flex: "0 0 auto",
                       transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -167,11 +179,14 @@ const CarouselSection = <T,>({
                   zIndex: 10,
                   opacity: 0,
                   pointerEvents: "none",
-                  bgcolor: "transparent",
+                  backdropFilter: "blur(8px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(8px) saturate(160%)",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  border: "1px solid rgba(255,255,255,0.2)",
                   color: theme.palette.secondary.dark,
-                  transition: "opacity 0.3s ease",
+                  transition: "opacity 0.3s ease, background-color 0.3s ease",
                   "&:hover": {
-                    bgcolor: theme.palette.secondary.light,
+                    backgroundColor: "rgba(255, 255, 255, 0.25)",
                   },
                 }}
               >

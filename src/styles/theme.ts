@@ -32,6 +32,10 @@ declare module "@mui/material/styles" {
       yellow: string;
       turquoise: string;
     };
+    customBackgrounds: {
+      gradient: string;
+      glass: string;
+    };
   }
 
   interface PaletteOptions {
@@ -45,6 +49,10 @@ declare module "@mui/material/styles" {
       orange?: string;
       yellow?: string;
       turquoise?: string;
+    };
+    customBackgrounds?: {
+      gradient?: string;
+      glass?: string;
     };
   }
 
@@ -79,7 +87,7 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
           info: { main: "#29b6f6" },
           background: {
             default: "#f5ebe0",
-            paper: "#fffaf3",
+            paper: "#fffaf3ff",
           },
           text: { primary: "#112127ff", secondary: "#6b3d1cff" },
           brand: {
@@ -93,9 +101,13 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
             secondary: "linear-gradient(135deg, #6df3e8, #00cfc1)",
             tertiary: "linear-gradient(135deg, #ffffff, #00cfc1, #ffdf5d)",
           },
+          customBackgrounds: {
+            gradient: "linear-gradient(135deg, #a8edea 0%, #fed6a3 100%)",
+            glass: "rgba(255, 255, 255, 0.65)",
+          },
         }
       : {
-          primary: { main: "#ffb56b", light: "#ffd18f", dark: "#c35e00" },
+          primary: { main: "#dfa871ff", light: "#ffd18f", dark: "#c35e00" },
           secondary: { main: "#6df3e8", light: "#a7fbf9", dark: "#009e91" },
           error: { main: "#ff4d4f" },
           success: { main: "#81c784" },
@@ -117,6 +129,10 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
             secondary: "linear-gradient(135deg, #00cfc1, #6df3e8)",
             tertiary:
               "linear-gradient(135deg, #0f0b0bff, #2e5c5bff, #706538ff)",
+          },
+          customBackgrounds: {
+            gradient: "linear-gradient(135deg, #1b1b1b 0%, #141817ff 100%)",
+            glass: "rgba(60, 60, 60, 0.35)",
           },
         }),
   },

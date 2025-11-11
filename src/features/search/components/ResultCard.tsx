@@ -5,8 +5,9 @@ import {
   CardContent,
   Typography,
   Box,
-  useTheme,
+  Button,
   Chip,
+  useTheme,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import type { SearchResultDto } from "../../../api/HotelBookingApi";
@@ -37,19 +38,29 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
     <Card
       elevation={3}
       sx={{
-        width: 300,
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        alignItems: "stretch",
         borderRadius: 3,
         overflow: "hidden",
         transition: "transform 0.3s ease",
         "&:hover": { transform: "translateY(-4px)" },
+        width: "100%",
+        maxWidth: 900,
+        mx: "auto",
       }}
     >
-      <Box sx={{ position: "relative" }}>
+      {/* 🖼️ صورة الفندق */}
+      <Box sx={{ position: "relative", flexShrink: 0 }}>
         <CardMedia
           component="img"
           image={roomPhotoUrl || PLACEHOLDERS.ROOM}
           alt={hotelName || "Hotel"}
-          sx={{ height: 160, objectFit: "cover" }}
+          sx={{
+            width: { xs: "100%", sm: 180 },
+            height: { xs: 180, sm: "100%" },
+            objectFit: "cover",
+          }}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = PLACEHOLDERS.ROOM;
           }}
@@ -70,59 +81,83 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
         )}
       </Box>
 
-      <CardContent>
-        <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={600}>
-          {hotelName}
-        </Typography>
-        <Typography
-          variant={MUI_TYPOGRAPHY.BODY2}
-          color={theme.palette.text.secondary}
-        >
-          {cityName}
-        </Typography>
+      {/* 📋 التفاصيل */}
+      <CardContent
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          p: 2.5,
+        }}
+      >
+        <Box>
+          <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={700}>
+            {hotelName}
+          </Typography>
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            color={theme.palette.text.secondary}
+          >
+            {cityName} • {roomType}
+          </Typography>
 
-        <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <StarIcon
-              key={i}
-              fontSize="small"
-              sx={{
-                color:
-                  i < Math.floor(starRating ?? 0)
-                    ? theme.palette.brand.yellow
-                    : theme.palette.action.disabled,
-              }}
-            />
-          ))}
+          <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <StarIcon
+                key={i}
+                fontSize="small"
+                sx={{
+                  color:
+                    i < Math.floor(starRating ?? 0)
+                      ? theme.palette.brand.yellow
+                      : theme.palette.action.disabled,
+                }}
+              />
+            ))}
+          </Box>
         </Box>
 
-        <Typography
-          variant={MUI_TYPOGRAPHY.BODY2}
-          color={theme.palette.text.secondary}
-          mt={0.5}
+        <Box
+          sx={{
+            mt: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          {roomType}
-        </Typography>
-
-        <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
-          {discount && (
+          <Box>
+            {discount && (
+              <Typography
+                variant={MUI_TYPOGRAPHY.BODY2}
+                sx={{
+                  textDecoration: "line-through",
+                  color: theme.palette.text.disabled,
+                }}
+              >
+                ${roomPrice?.toFixed(0)}
+              </Typography>
+            )}
             <Typography
-              variant={MUI_TYPOGRAPHY.BODY2}
-              sx={{
-                textDecoration: "line-through",
-                color: theme.palette.text.disabled,
-              }}
+              variant={MUI_TYPOGRAPHY.BODY1}
+              fontWeight={700}
+              color={theme.palette.primary.main}
             >
-              ${roomPrice?.toFixed(0)}
+              ${discountedPrice?.toFixed(0)}
             </Typography>
-          )}
-          <Typography
-            variant={MUI_TYPOGRAPHY.BODY1}
-            fontWeight={700}
-            color={theme.palette.primary.main}
+          </Box>
+
+          <Button
+            variant="gradient"
+            sx={{
+              fontWeight: 600,
+              px: 3,
+              py: 1,
+              borderRadius: 2,
+            }}
           >
-            ${discountedPrice?.toFixed(0)}
-          </Typography>
+            Book Now
+          </Button>
         </Box>
       </CardContent>
     </Card>

@@ -10,6 +10,7 @@ import ResultCardSkeleton from "./ResultCardSkeleton";
 export default function ResultsList() {
   const theme = useTheme();
   const { data, status, error, refetch } = useSearchResults();
+
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [data]);
@@ -69,10 +70,9 @@ export default function ResultsList() {
       <Box
         sx={{
           display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: 2,
-          rowGap: 3,
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 3,
           animation: `${theme.animations.fadeInUp} 0.4s ease`,
         }}
       >
@@ -80,8 +80,8 @@ export default function ResultsList() {
           <Box
             key={index}
             sx={{
-              flexBasis: { xs: "100%", sm: "45%", md: "30%" },
-              maxWidth: 300,
+              width: "100%",
+              maxWidth: { xs: "100%", sm: 600, md: 900 },
               display: "flex",
               justifyContent: "center",
             }}

@@ -1,6 +1,5 @@
 import AuthForm from "../features/auth/components/AuthForm";
 import { useAuthActions } from "../features/auth/hooks/useAuthActions";
-import { ThemeToggleButton } from "../components/ThemeToggleButton";
 
 export default function LoginPage() {
   const { handleLogin, loading, error } = useAuthActions();
@@ -10,7 +9,6 @@ export default function LoginPage() {
   }
   return (
     <>
-      <ThemeToggleButton />{" "}
       <AuthForm
         title="Smart Stays, Simple Clicks."
         onSubmit={onSubmit}
