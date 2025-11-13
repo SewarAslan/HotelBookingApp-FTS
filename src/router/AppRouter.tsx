@@ -6,40 +6,50 @@ import AdminDashboard from "../pages/AdminDashboard";
 import { ROUTES } from "../constants/routes";
 import MainLayout from "../layouts/MainLayout";
 import SearchResultsPage from "../pages/SearchResultsPage";
+import HotelDetailsPage from "../pages/HotelDetailsPage";
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+
         <Route element={<MainLayout />}>
           <Route
             path={ROUTES.HOME}
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["User", "Admin"]}>
                 <HomePage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/results"
+            path={ROUTES.RESULTS}
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["User", "Admin"]}>
                 <SearchResultsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.ADMIN}
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hotel/:id"
+            element={
+              <ProtectedRoute allowedRoles={["User", "Admin"]}>
+                <HotelDetailsPage />
               </ProtectedRoute>
             }
           />
         </Route>
 
-        <Route
-          path={ROUTES.ADMIN}
-          element={
-            <ProtectedRoute allowedRoles={["Admin"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
       </Routes>
     </BrowserRouter>
   );

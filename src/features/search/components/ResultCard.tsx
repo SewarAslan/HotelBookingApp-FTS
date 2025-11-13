@@ -13,6 +13,7 @@ import StarIcon from "@mui/icons-material/Star";
 import type { SearchResultDto } from "../../../api/HotelBookingApi";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface ResultCardProps {
   data: SearchResultDto;
@@ -20,7 +21,11 @@ interface ResultCardProps {
 
 const ResultCard = React.memo(({ data }: ResultCardProps) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const {
+    hotelId,
     hotelName,
     cityName,
     roomPhotoUrl,
@@ -30,9 +35,25 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
     discount,
   } = data;
 
+  // ✅ حساب السعر بعد الخصم
   const discountedPrice = discount
     ? roomPrice && roomPrice - roomPrice * discount
     : roomPrice;
+
+  // ✅ نقرأ التواريخ من الـURL (لنرسلها للصفحة التالية)
+  const currentParams = new URLSearchParams(location.search);
+  const checkInDate = currentParams.get("checkInDate");
+  const checkOutDate = currentParams.get("checkOutDate");
+
+  // 🧭 دالة التنقل إلى صفحة الفندق
+  const handleNavigate = () => {
+    if (!hotelId) return;
+    navigate(
+      `/hotel/${hotelId}?checkInDate=${checkInDate ?? ""}&checkOutDate=${
+        checkOutDate ?? ""
+      }`
+    );
+  };
 
   return (
     <Card
@@ -48,7 +69,9 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
         width: "100%",
         maxWidth: 900,
         mx: "auto",
+        cursor: "pointer", // ✨ حتى المستخدم يعرف إنها قابلة للنقر
       }}
+      onClick={handleNavigate} // ✨ الكارد كله قابل للنقر
     >
       {/* 🖼️ صورة الفندق */}
       <Box sx={{ position: "relative", flexShrink: 0 }}>
@@ -92,9 +115,23 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
         }}
       >
         <Box>
-          <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={700}>
+          {/* 🏨 اسم الفندق (قابل للنقر أيضًا) */}
+          <Typography
+            variant={MUI_TYPOGRAPHY.H6}
+            fontWeight={700}
+            sx={{
+              color: theme.palette.primary.main,
+              cursor: "pointer",
+              "&:hover": { textDecoration: "underline" },
+            }}
+            onClick={(e) => {
+              e.stopPropagation(); // حتى ما ينفذ onClick تبع الكارد مرتين
+              handleNavigate();
+            }}
+          >
             {hotelName}
           </Typography>
+
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
             color={theme.palette.text.secondary}
@@ -155,8 +192,12 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
               py: 1,
               borderRadius: 2,
             }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNavigate();
+            }}
           >
-            Book Now
+            View Details
           </Button>
         </Box>
       </CardContent>
