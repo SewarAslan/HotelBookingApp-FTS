@@ -17,19 +17,23 @@ import {
   MenuItem,
   Divider,
   ListItemIcon,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ThemeToggleButton } from "./ThemeToggleButton";
 import { useAuthActions } from "../features/auth/hooks";
-import { MUI_TYPOGRAPHY } from "../constants/muiTokens";
+import { MUI_COLORS, MUI_TYPOGRAPHY } from "../constants/muiTokens";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { useCart } from "../features/checkout/hooks/useCart";
 
 export default function Header() {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const { handleLogout, authUser } = useAuthActions();
+  const { count } = useCart();
 
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -138,9 +142,14 @@ export default function Header() {
                 {label}
               </Button>
             ))}
-
+            {authUser?.userType !== "Admin" && (
+              <IconButton onClick={() => navigate("/checkout")}>
+                <Badge badgeContent={count} color={MUI_COLORS.SECONDARY}>
+                  <ShoppingCartOutlinedIcon color={MUI_COLORS.PRIMARY} />
+                </Badge>
+              </IconButton>
+            )}
             <ThemeToggleButton />
-
             <Tooltip title="Account settings">
               <IconButton onClick={handleOpenUserMenu} size="small">
                 <Avatar
@@ -218,7 +227,6 @@ export default function Header() {
           </Box>
         )}
 
-        {/* 📱 Mobile Menu Button */}
         {isMobile && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <ThemeToggleButton />
@@ -229,7 +237,6 @@ export default function Header() {
         )}
       </Toolbar>
 
-      {/* 📱 Drawer (Mobile) */}
       <Drawer
         anchor="right"
         open={drawerOpen}
