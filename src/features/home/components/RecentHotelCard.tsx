@@ -9,8 +9,9 @@ import {
   alpha,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import type { RecentHotelResultDto } from "../../../api/HotelBookingApi";
+import type { RecentHotelResultDto } from "../../../api/Api";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
+import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 interface RecentHotelCardProps {
   hotel: RecentHotelResultDto;
 }
@@ -64,10 +65,8 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
             bottom: 0,
             left: 0,
             width: "100%",
-            bgcolor: alpha(theme.palette.background.default, 0.4),
-            color: theme.palette.getContrastText(
-              theme.palette.background.default
-            ),
+            bgcolor: alpha(theme.palette.customBackgrounds.glass, 0.7),
+            color: theme.palette.primary.dark,
             px: 1.5,
             py: 0.5,
             fontSize: 12,
@@ -88,15 +87,15 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
           }}
         >
           <Typography
-            variant="subtitle1"
+            variant={MUI_TYPOGRAPHY.BODY1}
             fontWeight={600}
-            color="text.primary"
+            color={theme.palette.primary.main}
             noWrap
           >
             {hotelName || "Unknown Hotel"}
           </Typography>
           {cityName && (
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant={MUI_TYPOGRAPHY.CAPTION} color="text.secondary">
               {cityName}
             </Typography>
           )}
@@ -121,11 +120,10 @@ const RecentHotelCard = React.memo(({ hotel }: RecentHotelCardProps) => {
 
         {(priceLowerBound || priceUpperBound) && (
           <Typography
-            variant="body2"
+            variant={MUI_TYPOGRAPHY.BODY2}
             sx={{
-              color: theme.palette.primary.main,
-              fontWeight: 600,
               mt: 1,
+              color: theme.palette.brand.turquoise,
             }}
           >
             From ${priceLowerBound ?? "-"} - ${priceUpperBound ?? "-"}

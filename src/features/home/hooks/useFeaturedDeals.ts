@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import type { FeaturedDealDto } from "../../../api/HotelBookingApi";
+import type { FeaturedDealDto } from "../../../api/Api";
 import type { HookResult } from "../../../types/hooksResult";
 
 export function useFeaturedDeals(): HookResult<FeaturedDealDto> {

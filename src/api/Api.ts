@@ -149,18 +149,21 @@ export interface HotelAmenityForUpdateDto {
 }
 
 export interface HotelDto {
-  /** @format int32 */
-  id?: number;
-  name?: string | null;
-  description?: string | null;
-  hotelType?: HotelType;
-  /** @format int32 */
-  starRating?: number;
+  hotelName?: string;
+  location?: string;
+  description?: string;
   /** @format double */
   latitude?: number;
   /** @format double */
   longitude?: number;
-  rooms?: RoomDto[] | null;
+  amenities?: HotelAmenityDto[];
+  /** @format int32 */
+  starRating?: number;
+  /** @format int32 */
+  availableRooms?: number;
+  imageUrl?: string;
+  /** @format int32 */
+  cityId?: number;
 }
 
 export interface HotelForCreationDto {
@@ -1210,11 +1213,12 @@ export class Api<
       },
       params: RequestParams = {},
     ) =>
-      this.request<void, ProblemDetails>({
+      this.request<HotelDto, ProblemDetails>({
         path: `/api/hotels/${hotelId}`,
         method: "GET",
         query: query,
         secure: true,
+        format: "json",
         ...params,
       }),
 
@@ -1324,9 +1328,9 @@ export class Api<
      */
     hotelsAvailableRoomsList: (
       hotelId: number,
-      query?: {
-        checkInDate?: string;
-        CheckOutDate?: string;
+      query: {
+        checkInDate: string;
+        CheckOutDate: string;
       },
       params: RequestParams = {},
     ) =>

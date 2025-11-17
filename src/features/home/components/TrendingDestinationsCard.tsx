@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardMedia, Box, Typography } from "@mui/material";
-import type { Destination } from "../../../api/HotelBookingApi";
+import type { Destination } from "../../../api/Api";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 

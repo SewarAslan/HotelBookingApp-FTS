@@ -8,7 +8,7 @@ import {
   type SelectChangeEvent,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MUI_VARIANTS } from "../../../constants/muiTokens";
+import { MUI_COLORS, MUI_VARIANTS } from "../../../constants/muiTokens";
 
 export default function SortMenu() {
   const theme = useTheme();
@@ -35,7 +35,7 @@ export default function SortMenu() {
         size="small"
         sx={{
           minWidth: 180,
-          borderRadius: 2,
+          borderRadius: 3,
           backdropFilter: "blur(12px) saturate(160%)",
           WebkitBackdropFilter: "blur(12px) saturate(160%)",
           backgroundColor: theme.palette.customBackgrounds.glass,
@@ -54,19 +54,19 @@ export default function SortMenu() {
           MenuProps={{
             PaperProps: {
               sx: {
-                mt: 1,
                 borderRadius: 2,
-                backgroundColor: theme.palette.background.paper,
-                boxShadow:
-                  theme.palette.mode === "light"
-                    ? "0 4px 20px rgba(0,0,0,0.05)"
-                    : "0 4px 20px rgba(0,0,0,0.35)",
+                backgroundColor: theme.palette.customBackgrounds.glass,
+                color: theme.palette.secondary.main,
               },
             },
           }}
         >
-          <MenuItem value="">Default</MenuItem>
-          <MenuItem value="priceAsc">Price (Low → High)</MenuItem>
+          <MenuItem value="" autoFocus>
+            Default
+          </MenuItem>
+          <MenuItem color={MUI_COLORS.SECONDARY} value="priceAsc">
+            Price (Low → High)
+          </MenuItem>
           <MenuItem value="priceDesc">Price (High → Low)</MenuItem>
           <MenuItem value="ratingDesc">Rating</MenuItem>
           <MenuItem value="discountDesc">Discount</MenuItem>

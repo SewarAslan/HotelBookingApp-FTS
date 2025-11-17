@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { RecentHotelResultDto } from "../../../api/HotelBookingApi";
+import type { RecentHotelResultDto } from "../../../api/Api";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
 

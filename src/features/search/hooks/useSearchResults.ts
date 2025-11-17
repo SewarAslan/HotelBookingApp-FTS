@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import type { SearchResultDto } from "../../../api/HotelBookingApi";
+import type { SearchResultDto } from "../../../api/Api";
 import type { HookResult } from "../../../types/hooksResult";
 import { useLocation } from "react-router-dom";
 import { parseSearchParams } from "../../../utils/url";
@@ -20,7 +20,6 @@ export function useSearchResults(): HookResult<SearchResultDto> {
   const fetchResults = async () => {
     setStatus(STATUS.LOADING);
     try {
-      // 1️⃣ جلب البيانات الأساسية من السيرفر
       const response = await apiClient.api.homeSearchList({
         city: params.city,
         checkInDate: params.checkInDate,
@@ -34,13 +33,11 @@ export function useSearchResults(): HookResult<SearchResultDto> {
 
       let results = response.data;
 
-      // 2️⃣ فلترة محلية حسب عدد النجوم
       if (params.starRate && results) {
         const targetStars = Number(params.starRate);
         results = results.filter((hotel) => hotel.starRating === targetStars);
       }
 
-      // 3️⃣ فلترة محلية حسب الخدمات (amenities)
       if (params.amenities && results) {
         const selected = params.amenities
           .split(",")
@@ -52,7 +49,6 @@ export function useSearchResults(): HookResult<SearchResultDto> {
         );
       }
 
-      // 4️⃣ Sorting محلي (priceAsc, priceDesc, ratingDesc, discountDesc)
       if (params.sort && results) {
         switch (params.sort) {
           case "priceAsc":
@@ -70,7 +66,6 @@ export function useSearchResults(): HookResult<SearchResultDto> {
         }
       }
 
-      // ✅ تعيين النتائج النهائية
       setData(results);
       setStatus(STATUS.SUCCESS);
     } catch (err) {

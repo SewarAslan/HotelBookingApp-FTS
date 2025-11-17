@@ -14,7 +14,6 @@ export default function MainLayout() {
         display: "flex",
         flexDirection: "column",
         transition: "background 0.5s ease",
-        overflowX: "hidden",
       }}
     >
       <Header />

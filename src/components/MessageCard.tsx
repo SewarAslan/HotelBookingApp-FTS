@@ -19,7 +19,7 @@ interface MessageCardProps {
   status: string;
   message?: string;
   error?: string | null;
-  data?: unknown[] | null;
+  data?: unknown | unknown[] | null;
   onRetry?: () => void;
 }
 

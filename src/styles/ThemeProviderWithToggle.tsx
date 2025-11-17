@@ -30,7 +30,6 @@ export default function ThemeProviderWithToggle({
   const initialMode: AppMode =
     cookieMode ?? (systemPrefersDark ? "dark" : "light");
 
-  //
   const [mode, setMode] = React.useState<AppMode>(initialMode);
 
   const theme = React.useMemo(() => createAppTheme(mode), [mode]);

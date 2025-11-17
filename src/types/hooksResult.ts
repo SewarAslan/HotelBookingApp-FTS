@@ -6,3 +6,9 @@ export interface HookResult<T> {
   error: string | null;
   refetch: () => Promise<void>;
 }
+export interface HotelResult<T> {
+  data: T | null;
+  status: StatusType;
+  error: string | null;
+  refetch: () => Promise<void>;
+}

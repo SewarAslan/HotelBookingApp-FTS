@@ -10,9 +10,10 @@ import {
   useTheme,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import type { SearchResultDto } from "../../../api/HotelBookingApi";
+import type { SearchResultDto } from "../../../api/Api";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
-import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
+import { MUI_SIZES, MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface ResultCardProps {
   data: SearchResultDto;
@@ -20,7 +21,11 @@ interface ResultCardProps {
 
 const ResultCard = React.memo(({ data }: ResultCardProps) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const {
+    hotelId,
     hotelName,
     cityName,
     roomPhotoUrl,
@@ -34,10 +39,25 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
     ? roomPrice && roomPrice - roomPrice * discount
     : roomPrice;
 
+  const currentParams = new URLSearchParams(location.search);
+  const checkInDate = currentParams.get("checkInDate");
+  const checkOutDate = currentParams.get("checkOutDate");
+
+  const handleNavigate = () => {
+    console.log("Rendering hotel:", hotelId, hotelName);
+    if (!hotelId) return;
+    navigate(
+      `/hotel/${hotelId}?checkInDate=${checkInDate ?? ""}&checkOutDate=${
+        checkOutDate ?? ""
+      }`
+    );
+  };
+
   return (
     <Card
       elevation={3}
       sx={{
+        backgroundColor: theme.palette.customBackgrounds.glass,
         display: "flex",
         flexDirection: { xs: "column", sm: "row" },
         alignItems: "stretch",
@@ -48,9 +68,10 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
         width: "100%",
         maxWidth: 900,
         mx: "auto",
+        cursor: "pointer",
       }}
+      onClick={handleNavigate}
     >
-      {/* 🖼️ صورة الفندق */}
       <Box sx={{ position: "relative", flexShrink: 0 }}>
         <CardMedia
           component="img"
@@ -68,20 +89,20 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
         {discount && discount > 0 && (
           <Chip
             label={`-${Math.round(discount * 100)}%`}
-            size="small"
+            size={MUI_SIZES.SMALL}
             sx={{
               position: "absolute",
               top: 10,
               left: 10,
               bgcolor: theme.palette.secondary.main,
-              color: "#fff",
+              color: theme.palette.background.default,
+
               fontWeight: 600,
             }}
           />
         )}
       </Box>
 
-      {/* 📋 التفاصيل */}
       <CardContent
         sx={{
           flex: 1,
@@ -92,12 +113,26 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
         }}
       >
         <Box>
-          <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={700}>
+          <Typography
+            variant={MUI_TYPOGRAPHY.H6}
+            fontWeight={700}
+            sx={{
+              color: theme.palette.primary.main,
+              cursor: "pointer",
+              "&:hover": { textDecoration: "underline" },
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNavigate();
+            }}
+          >
             {hotelName}
           </Typography>
+
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
-            color={theme.palette.text.secondary}
+            color={theme.palette.secondary.dark}
+            fontWeight={600}
           >
             {cityName} • {roomType}
           </Typography>
@@ -155,8 +190,12 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
               py: 1,
               borderRadius: 2,
             }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNavigate();
+            }}
           >
-            Book Now
+            Book Now!
           </Button>
         </Box>
       </CardContent>
