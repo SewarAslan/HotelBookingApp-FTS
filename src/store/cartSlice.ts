@@ -15,31 +15,46 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
 }
-
-const initialState: CartState = {
-  items: [],
+const loadCart = (): CartState => {
+  try {
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : { items: [] };
+  } catch {
+    return { items: [] };
+  }
 };
 
+const initialState: CartState = loadCart();
+
+const saveCart = (state: CartState) => {
+  try {
+    localStorage.setItem("cart", JSON.stringify(state));
+  } catch {
+    console.error("Failed to save cart");
+  }
+};
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
       state.items.push(action.payload);
+      saveCart(state);
     },
 
     removeFromCart: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(
         (item) => item.roomId !== action.payload
       );
+      saveCart(state);
     },
 
     clearCart: (state) => {
       state.items = [];
+      saveCart(state);
     },
   },
 });
 
 export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
-
 export default cartSlice.reducer;

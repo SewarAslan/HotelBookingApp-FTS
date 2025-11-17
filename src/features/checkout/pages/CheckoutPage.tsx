@@ -1,5 +1,5 @@
 import { Box, Container, Typography, useTheme } from "@mui/material";
-// import ItemsSection from "../components/ItemsSection";
+import ItemsSection from "../components/ItemsSection";
 // import UserInfoSection from "../components/UserInfoSection";
 // import CheckoutButton from "../components/CheckoutButton";
 import { useCart } from "../hooks/useCart";
@@ -73,7 +73,7 @@ export default function CheckoutPage() {
             gap: 3,
           }}
         >
-          {/* <ItemsSection items={items} /> */}
+          <ItemsSection items={items} />
 
           {/* <UserInfoSection /> */}
 
