@@ -7,6 +7,8 @@ import { ROUTES } from "../constants/routes";
 import MainLayout from "../layouts/MainLayout";
 import SearchResultsPage from "../pages/SearchResultsPage";
 import HotelDetailsPage from "../pages/HotelDetailsPage";
+import AppSnackbar from "../components/AppSnackbar";
+import CheckoutPage from "../features/checkout/pages/CheckoutPage";
 
 export function AppRouter() {
   return (
@@ -14,7 +16,14 @@ export function AppRouter() {
       <Routes>
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
 
-        <Route element={<MainLayout />}>
+        <Route
+          element={
+            <>
+              <AppSnackbar />
+              <MainLayout />
+            </>
+          }
+        >
           <Route
             path={ROUTES.HOME}
             element={
@@ -28,6 +37,14 @@ export function AppRouter() {
             element={
               <ProtectedRoute allowedRoles={["User", "Admin"]}>
                 <SearchResultsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.CHECKOUT}
+            element={
+              <ProtectedRoute allowedRoles={["User"]}>
+                <CheckoutPage />
               </ProtectedRoute>
             }
           />

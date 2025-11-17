@@ -70,7 +70,13 @@ export default function AvailableRoomsSection({
         }}
       >
         {data.map((room) => (
-          <RoomCard key={room.roomId} room={room} />
+          <RoomCard
+            key={room.roomId}
+            room={room}
+            hotelId={hotelId}
+            checkInDate={checkInDate}
+            checkOutDate={checkOutDate}
+          />
         ))}
       </Box>
     </Box>

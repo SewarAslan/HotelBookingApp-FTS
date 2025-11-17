@@ -9,6 +9,7 @@ import {
   useTheme,
   Container,
   Tooltip,
+  Button,
 } from "@mui/material";
 import type { RoomAvailabilityResultDto } from "../../../api/Api";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
@@ -19,13 +20,25 @@ import {
 } from "../../../constants/muiTokens";
 import ChildCareOutlinedIcon from "@mui/icons-material/ChildCareOutlined";
 import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined";
+import { useCart } from "../../checkout/hooks/useCart";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../../../store/snackbarSlice";
 export default function RoomCard({
   room,
+  hotelId,
+  checkInDate,
+  checkOutDate,
 }: {
   room: RoomAvailabilityResultDto;
+  hotelId: number;
+  checkInDate: string;
+  checkOutDate: string;
 }) {
   const amenities = room.roomAmenities ?? [];
   const theme = useTheme();
+  const { addToCart } = useCart();
+  const dispatch = useDispatch();
+
   return (
     <Card
       elevation={3}
@@ -41,7 +54,6 @@ export default function RoomCard({
         width: "100%",
         maxWidth: 900,
         mx: "auto",
-        cursor: "pointer",
       }}
     >
       <Box sx={{ position: "relative", flexShrink: 0 }}>
@@ -180,6 +192,39 @@ export default function RoomCard({
             </Box>
           )}
         </Box>
+        <Button
+          variant="gradient"
+          sx={{
+            fontWeight: 600,
+            my: 2,
+
+            borderRadius: 2,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+
+            addToCart({
+              roomId: room.roomId,
+              hotelId,
+              roomType: room.roomType,
+              roomPhotoUrl: room.roomPhotoUrl,
+              price: room.price,
+              capacityOfAdults: room.capacityOfAdults,
+              capacityOfChildren: room.capacityOfChildren,
+              checkInDate,
+              checkOutDate,
+            });
+
+            dispatch(
+              showSnackbar({
+                message: "Room added to cart!",
+                severity: "success",
+              })
+            );
+          }}
+        >
+          Book Now
+        </Button>
       </CardContent>
     </Card>
   );
