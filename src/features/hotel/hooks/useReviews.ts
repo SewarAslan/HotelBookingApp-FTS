@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import type { ReviewDto } from "../../../api/HotelBookingApi";
+import type { ReviewDto } from "../../../api/Api";
 import type { HookResult } from "../../../types/hooksResult";
 
 export function useReviews(id: number): HookResult<ReviewDto> {

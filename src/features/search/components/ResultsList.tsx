@@ -76,9 +76,9 @@ export default function ResultsList() {
           animation: `${theme.animations.fadeInUp} 0.4s ease`,
         }}
       >
-        {data?.map((item, index) => (
+        {data?.map((item) => (
           <Box
-            key={index}
+            key={item.hotelId}
             sx={{
               width: "100%",
               maxWidth: { xs: "100%", sm: 600, md: 900 },

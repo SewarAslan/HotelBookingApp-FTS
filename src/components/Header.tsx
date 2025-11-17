@@ -67,16 +67,15 @@ export default function Header() {
   return (
     <AppBar
       position="sticky"
-      color="transparent"
-      elevation={2}
       sx={{
+        top: 0,
+        zIndex: theme.zIndex.drawer + 1,
         backdropFilter: "blur(12px) saturate(160%)",
         WebkitBackdropFilter: "blur(12px) saturate(160%)",
         backgroundColor:
           theme.palette.customBackgrounds?.glass ??
           theme.palette.background.paper,
         borderBottom: `1px solid rgba(255,255,255,0.18)`,
-        zIndex: theme.zIndex.appBar,
         boxShadow: "0 8px 24px rgba(0, 0, 0, 0.05)",
       }}
     >
@@ -167,10 +166,10 @@ export default function Header() {
                   mt: 1.5,
                   borderRadius: 2,
                   minWidth: 220,
-                  backgroundColor: theme.palette.customBackgrounds.glass, // ✅ خلفية زجاجية
-                  backdropFilter: "blur(12px) saturate(160%)", // ✅ تأثير زجاجي
-                  WebkitBackdropFilter: "blur(12px) saturate(160%)", // ✅ دعم Safari
-                  border: "1px solid rgba(255,255,255,0.18)", // ✅ حدود خفيفة
+                  backgroundColor: theme.palette.customBackgrounds.glass,
+                  backdropFilter: "blur(12px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(12px) saturate(160%)",
+                  border: "1px solid rgba(255,255,255,0.18)",
                   boxShadow:
                     theme.palette.mode === "light"
                       ? "0 8px 30px rgba(0,0,0,0.06)"

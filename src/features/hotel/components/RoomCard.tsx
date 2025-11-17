@@ -1,0 +1,186 @@
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Box,
+  Chip,
+  Stack,
+  useTheme,
+  Container,
+  Tooltip,
+} from "@mui/material";
+import type { RoomAvailabilityResultDto } from "../../../api/Api";
+import { PLACEHOLDERS } from "../../../constants/placeHolders";
+import {
+  MUI_COLORS,
+  MUI_TYPOGRAPHY,
+  MUI_VARIANTS,
+} from "../../../constants/muiTokens";
+import ChildCareOutlinedIcon from "@mui/icons-material/ChildCareOutlined";
+import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined";
+export default function RoomCard({
+  room,
+}: {
+  room: RoomAvailabilityResultDto;
+}) {
+  const amenities = room.roomAmenities ?? [];
+  const theme = useTheme();
+  return (
+    <Card
+      elevation={3}
+      sx={{
+        backgroundColor: theme.palette.customBackgrounds.glass,
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        alignItems: "stretch",
+        borderRadius: 3,
+        overflow: "hidden",
+        transition: "transform 0.3s ease",
+        "&:hover": { transform: "translateY(-4px)" },
+        width: "100%",
+        maxWidth: 900,
+        mx: "auto",
+        cursor: "pointer",
+      }}
+    >
+      <Box sx={{ position: "relative", flexShrink: 0 }}>
+        <CardMedia
+          component="img"
+          src={room.roomPhotoUrl ?? PLACEHOLDERS.ROOM}
+          alt={room.roomType ?? "Room Image"}
+          sx={{
+            width: { xs: "100%", sm: 180 },
+            height: { xs: 180, sm: "100%" },
+            objectFit: "cover",
+          }}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = PLACEHOLDERS.ROOM;
+          }}
+        />
+      </Box>
+
+      <CardContent
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          p: 2.5,
+        }}
+      >
+        <Box>
+          <Container
+            disableGutters
+            sx={{
+              display: "flex",
+
+              justifyContent: "space-between",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography
+                variant={MUI_TYPOGRAPHY.H6}
+                fontWeight={700}
+                sx={{
+                  color: theme.palette.secondary.main,
+                  cursor: "pointer",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+              >
+                {room.roomType}
+              </Typography>
+              <Typography
+                variant={MUI_TYPOGRAPHY.CAPTION}
+                fontWeight={500}
+                color={theme.palette.primary.main}
+              >
+                Room #{room.roomNumber}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography
+                variant={MUI_TYPOGRAPHY.BODY1}
+                fontWeight={700}
+                color={theme.palette.primary.main}
+              >
+                ${room.price} / night
+              </Typography>
+
+              <Typography
+                variant={MUI_TYPOGRAPHY.BODY2}
+                fontWeight={600}
+                color={
+                  room.availability
+                    ? theme.palette.success.main
+                    : theme.palette.error.main
+                }
+              >
+                {room.availability ? "✔ Available" : "✘ Not Available"}
+              </Typography>
+            </Box>
+          </Container>
+
+          <Container
+            disableGutters
+            sx={{
+              display: "flex",
+              gap: 2,
+              py: 1,
+            }}
+          >
+            <Typography
+              variant={MUI_TYPOGRAPHY.BODY2}
+              color="text.secondary"
+              fontWeight={700}
+            >
+              <EmojiEmotionsOutlinedIcon /> : {room.capacityOfAdults}
+            </Typography>
+            <Typography
+              variant={MUI_TYPOGRAPHY.BODY2}
+              color="text.secondary"
+              fontWeight={700}
+            >
+              <ChildCareOutlinedIcon /> : {room.capacityOfChildren}
+            </Typography>
+          </Container>
+
+          {amenities?.length > 0 && (
+            <Box sx={{ mt: 1 }}>
+              <Stack direction="row" flexWrap="wrap" gap={1}>
+                {amenities.map((amenity) => (
+                  <Tooltip
+                    key={amenity.name}
+                    title={amenity.description || "No description"}
+                    placement="top"
+                    arrow
+                  >
+                    <Chip
+                      label={amenity.name}
+                      color={MUI_COLORS.PRIMARY}
+                      variant={MUI_VARIANTS.OUTLINED}
+                      sx={{
+                        borderRadius: 3,
+                        fontWeight: 600,
+                        px: 1.5,
+                        py: 1.5,
+                        cursor: "pointer",
+                      }}
+                    />
+                  </Tooltip>
+                ))}
+              </Stack>
+            </Box>
+          )}
+        </Box>
+      </CardContent>
+    </Card>
+  );
+}

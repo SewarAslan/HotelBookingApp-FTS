@@ -1,5 +1,5 @@
 import { ROUTES } from "../constants/routes";
-import { Api } from "./HotelBookingApi";
+import { Api } from "./Api";
 import Cookies from "js-cookie";
 
 export const apiClient = new Api({

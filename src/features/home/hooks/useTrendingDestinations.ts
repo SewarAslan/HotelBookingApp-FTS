@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import type { Destination } from "../../../api/HotelBookingApi";
+import type { Destination } from "../../../api/Api";
 import type { HookResult } from "../../../types/hooksResult";
 
 export function useTrendingDestinations(): HookResult<Destination> {

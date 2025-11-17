@@ -1,40 +1,41 @@
 import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import type { RoomAvailabilityResultDto } from "../../../api/HotelBookingApi";
-import type { HookResult } from "../../../types/hooksResult";
+import type { RoomAvailabilityResultDto } from "../../../api/Api";
 
 export function useRoomAvailability(
-  id: number,
-  checkInDate?: string,
-  checkOutDate?: string
-): HookResult<RoomAvailabilityResultDto> {
+  hotelId: number,
+  checkInDate: string,
+  checkOutDate: string
+) {
   const [data, setData] = useState<RoomAvailabilityResultDto[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<string | null>(null);
 
   const fetchRooms = useCallback(async () => {
-    if (!id) return;
     setStatus(STATUS.LOADING);
     setError(null);
 
     try {
-      const res = (await apiClient.api.hotelsAvailableRoomsList(id, {
+      const res = await apiClient.api.hotelsAvailableRoomsList(hotelId, {
         checkInDate,
         CheckOutDate: checkOutDate,
-      })) as unknown as { data: RoomAvailabilityResultDto[] };
-      setData(res.data);
+      });
+
+      setData(res.data ?? []);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
-      console.error(err);
-      setError("Failed to load available rooms");
+      console.error("Failed to load rooms:", err);
+      setError("Failed to load rooms");
       setStatus(STATUS.ERROR);
     }
-  }, [id, checkInDate, checkOutDate]);
+  }, [hotelId, checkInDate, checkOutDate]);
 
   useEffect(() => {
-    fetchRooms();
-  }, [fetchRooms]);
+    if (hotelId && checkInDate && checkOutDate) {
+      fetchRooms();
+    }
+  }, [fetchRooms, hotelId, checkInDate, checkOutDate]);
 
   return { data, status, error, refetch: fetchRooms };
 }

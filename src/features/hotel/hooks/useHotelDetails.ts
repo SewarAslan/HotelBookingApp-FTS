@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import type { HotelDto } from "../../../api/Api";
+import type { HotelResult } from "../../../types/hooksResult";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
-import type { HotelDto } from "../../../api/HotelBookingApi";
-import type { HotelResult } from "../../../types/hooksResult";
 
 export function useHotelDetails(id: number): HotelResult<HotelDto> {
   const [data, setData] = useState<HotelDto | null>(null);
@@ -13,24 +13,23 @@ export function useHotelDetails(id: number): HotelResult<HotelDto> {
     setStatus(STATUS.LOADING);
     setError(null);
     try {
-      const res = (await apiClient.api.getHotel(id, {
+      const res = await apiClient.api.getHotel(id, {
         includeRooms: false,
-      })) as unknown as {
-        data: HotelDto;
-      };
+      });
 
-      setData(res.data);
+      console.log("hotel details response:", res);
+      setData(res.data ?? null);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
+      console.log("hotel fetch error:", err);
       setError("Failed to load hotel details");
       setStatus(STATUS.ERROR);
-      console.log(err);
     }
   }, [id]);
 
   useEffect(() => {
     if (id) fetchHotel();
-  }, [fetchHotel, id]);
+  }, [id, fetchHotel]);
 
   return { data, status, error, refetch: fetchHotel };
 }

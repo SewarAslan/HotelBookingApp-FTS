@@ -9,13 +9,14 @@ import {
   Chip,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import type { FeaturedDealDto } from "../../../api/HotelBookingApi";
+import type { FeaturedDealDto } from "../../../api/Api";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
 import {
   MUI_COLORS,
   MUI_SIZES,
   MUI_TYPOGRAPHY,
 } from "../../../constants/muiTokens";
+import { useNavigate } from "react-router-dom";
 
 interface FeaturedDealCardProps {
   deal: FeaturedDealDto;
@@ -24,6 +25,7 @@ interface FeaturedDealCardProps {
 const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
   const theme = useTheme();
   const {
+    hotelId,
     roomPhotoUrl,
     hotelName,
     cityName,
@@ -34,10 +36,16 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
     title,
     description,
   } = deal;
-
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    console.log("Rendering hotel:", hotelId, hotelName);
+    if (!hotelId) return;
+    navigate(`/hotel/${hotelId}?checkInDate=&checkOutDate=`);
+  };
   return (
     <Card
       elevation={3}
+      onClick={handleNavigate}
       sx={{
         maxWidth: 300,
         width: "100%",
@@ -48,6 +56,7 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
         animation: theme.animations.fadeInUp,
         "&:hover": {
           transform: "translateY(-4px)",
+          cursor: "pointer",
         },
       }}
     >
@@ -96,6 +105,10 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
             fontWeight={600}
             color={MUI_COLORS.PRIMARY}
             noWrap
+            sx={{
+              cursor: "pointer",
+              "&:hover": { textDecoration: "underline" },
+            }}
           >
             {hotelName || "Unknown Hotel"}
           </Typography>

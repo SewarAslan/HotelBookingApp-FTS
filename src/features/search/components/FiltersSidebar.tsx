@@ -8,7 +8,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { apiClient } from "../../../api/client";
-import type { FilterAmenityDto } from "../../../api/HotelBookingApi";
+import type { FilterAmenityDto } from "../../../api/Api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 

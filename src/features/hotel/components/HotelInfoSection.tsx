@@ -1,7 +1,26 @@
-import { Box, Typography, Divider, Stack, Chip, useTheme } from "@mui/material";
+import {
+  Typography,
+  Divider,
+  Stack,
+  Chip,
+  useTheme,
+  Card,
+  CardContent,
+  Box,
+  Tooltip,
+} from "@mui/material";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import StarIcon from "@mui/icons-material/Star";
 import { useHotelDetails, useHotelAmenities } from "../hooks";
 import { STATUS } from "../../../constants/status";
 import MessageCard from "../../../components/MessageCard";
+import {
+  MUI_COLORS,
+  MUI_SIZES,
+  MUI_TYPOGRAPHY,
+  MUI_VARIANTS,
+} from "../../../constants/muiTokens";
+import MapSection from "./MapSection";
 
 interface HotelInfoSectionProps {
   hotelId: number;
@@ -23,8 +42,7 @@ export default function HotelInfoSection({ hotelId }: HotelInfoSectionProps) {
     refetch: refetchAmenities,
   } = useHotelAmenities(hotelId);
 
-  // 🟡 عرض الحالة العامة (loading / error / empty)
-  if (hotelStatus !== STATUS.SUCCESS) {
+  if (hotelStatus !== STATUS.SUCCESS || !hotel) {
     return (
       <MessageCard
         status={hotelStatus}
@@ -41,98 +59,132 @@ export default function HotelInfoSection({ hotelId }: HotelInfoSectionProps) {
     );
   }
 
-  if (!hotel)
-    return (
-      <MessageCard
-        status={STATUS.SUCCESS}
-        data={[]}
-        message="No hotel details found."
-      />
-    );
-
-  // 🟢 الحالة الناجحة:
   return (
-    <Box
+    <Card
+      elevation={3}
       sx={{
-        p: 3,
         borderRadius: 3,
-        boxShadow:
-          theme.palette.mode === "light"
-            ? "0 4px 18px rgba(0,0,0,0.05)"
-            : "0 4px 18px rgba(0,0,0,0.25)",
-        background: theme.palette.background.paper,
         animation: theme.animations.fadeInUp,
+        background: theme.palette.customBackgrounds.glass,
       }}
     >
-      {/* 🏨 Hotel name */}
-      <Typography variant="h4" fontWeight={700} gutterBottom>
-        {hotel.name ?? "Unnamed Hotel"}
-      </Typography>
-
-      {/* ⭐ Rating */}
-      {hotel.starRating ? (
-        <Typography variant="body2" color="text.secondary" mb={1}>
-          {"⭐".repeat(hotel.starRating)} ({hotel.starRating} Stars)
+      <CardContent>
+        <Typography
+          variant={MUI_TYPOGRAPHY.H5}
+          fontWeight={900}
+          color={theme.palette.primary.main}
+        >
+          {hotel.hotelName ?? "Unnamed Hotel"}
         </Typography>
-      ) : (
-        <Typography variant="body2" color="text.secondary" mb={1}>
-          No rating available
-        </Typography>
-      )}
 
-      {/* 🗺️ Location */}
-      {hotel.latitude && hotel.longitude && (
-        <Typography variant="body2" color="text.secondary" mb={2}>
-          📍 Coordinates: {hotel.latitude.toFixed(3)},{" "}
-          {hotel.longitude.toFixed(3)}
-        </Typography>
-      )}
-
-      <Divider sx={{ my: 2 }} />
-
-      {/* 📝 Description */}
-      <Typography variant="body1" mb={2}>
-        {hotel.description ?? "No description provided for this hotel."}
-      </Typography>
-
-      <Divider sx={{ my: 2 }} />
-
-      {/* 🏋️ Amenities */}
-      <Typography variant="h6" mb={1}>
-        Amenities
-      </Typography>
-
-      {amenityStatus !== STATUS.SUCCESS ? (
-        <MessageCard
-          status={amenityStatus}
-          error={amenityError}
-          data={amenities}
-          onRetry={refetchAmenities}
-          message={
-            amenityStatus === STATUS.LOADING
-              ? "Loading amenities..."
-              : amenityStatus === STATUS.ERROR
-              ? "Failed to load amenities"
-              : "No amenities available."
-          }
-        />
-      ) : amenities && amenities.length > 0 ? (
-        <Stack direction="row" flexWrap="wrap" gap={1}>
-          {amenities.map((a, i) => (
-            <Chip
+        {hotel.latitude && hotel.location && (
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <LocationOnIcon
+              fontSize={MUI_SIZES.SMALL}
+              color={MUI_COLORS.SECONDARY}
+            />
+            <Typography
+              variant={MUI_TYPOGRAPHY.BODY1}
+              color={MUI_COLORS.SECONDARY}
+              fontWeight={500}
+            >
+              {hotel.location}
+            </Typography>
+          </Stack>
+        )}
+        <Box sx={{ display: "flex", alignItems: "center", mt: 0.5, mb: 2 }}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <StarIcon
               key={i}
-              label={a.name}
-              color="primary"
-              variant="outlined"
-              sx={{ borderRadius: "8px", fontSize: "0.9rem" }}
+              fontSize="small"
+              sx={{
+                color:
+                  i < Math.floor(hotel.starRating ?? 0)
+                    ? theme.palette.brand.yellow
+                    : theme.palette.action.disabled,
+              }}
             />
           ))}
-        </Stack>
-      ) : (
-        <Typography color="text.secondary" fontSize="0.9rem">
-          No amenities available.
+        </Box>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography
+          variant={MUI_TYPOGRAPHY.BODY2}
+          mb={2}
+          color="text.secondary"
+          fontWeight={400}
+        >
+          {hotel.description ?? "No description provided for this hotel."}
         </Typography>
-      )}
-    </Box>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography
+          variant={MUI_TYPOGRAPHY.H6}
+          fontWeight={600}
+          color={MUI_COLORS.PRIMARY}
+          mb={1}
+        >
+          Location
+        </Typography>
+        <MapSection hotelId={hotelId} />
+        <Divider sx={{ my: 2 }} />
+
+        <Typography
+          variant={MUI_TYPOGRAPHY.H6}
+          fontWeight={600}
+          color={MUI_COLORS.PRIMARY}
+          mb={1}
+        >
+          Amenities
+        </Typography>
+
+        {amenityStatus !== STATUS.SUCCESS ? (
+          <MessageCard
+            status={amenityStatus}
+            error={amenityError}
+            data={amenities}
+            onRetry={refetchAmenities}
+            message={
+              amenityStatus === STATUS.LOADING
+                ? "Loading amenities..."
+                : amenityStatus === STATUS.ERROR
+                ? "Failed to load amenities"
+                : "No amenities available."
+            }
+          />
+        ) : amenities && amenities.length > 0 ? (
+          <Stack direction="row" flexWrap="wrap" gap={1}>
+            {amenities.map((a) => (
+              <Tooltip
+                key={a.id}
+                title={a.description || "No description"}
+                placement="top"
+                arrow
+              >
+                <Chip
+                  label={a.name}
+                  color={MUI_COLORS.SECONDARY}
+                  variant={MUI_VARIANTS.OUTLINED}
+                  sx={{
+                    borderRadius: 3,
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    px: 1.5,
+                    py: 0.5,
+                    cursor: "pointer",
+                  }}
+                />
+              </Tooltip>
+            ))}
+          </Stack>
+        ) : (
+          <Typography color={MUI_COLORS.SECONDARY} fontSize="0.9rem">
+            No amenities available.
+          </Typography>
+        )}
+      </CardContent>
+    </Card>
   );
 }
