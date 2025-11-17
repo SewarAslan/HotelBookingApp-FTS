@@ -1,25 +1,24 @@
-import { Box, Card, TextField, Typography, useTheme } from "@mui/material";
-import { Field } from "formik";
+import { Box, TextField, Typography } from "@mui/material";
+import { Field, useFormikContext } from "formik";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 
 export default function UserInfoSection() {
-  const theme = useTheme();
+  const { errors, touched } = useFormikContext<{
+    customerName: string;
+    email: string;
+    phone: string;
+  }>();
 
   return (
-    <Card
-      elevation={4}
+    <Box
       sx={{
         p: 3,
         borderRadius: 3,
-        backgroundColor: theme.palette.customBackgrounds.glass,
-        border: `1px solid ${theme.palette.divider}`,
+        backgroundColor: "rgba(255,255,255,0.1)",
+        mt: 3,
       }}
     >
-      <Typography
-        variant={MUI_TYPOGRAPHY.H6}
-        fontWeight={700}
-        sx={{ mb: 2, color: theme.palette.secondary.main }}
-      >
+      <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={700} mb={2}>
         Contact Information
       </Typography>
 
@@ -30,6 +29,8 @@ export default function UserInfoSection() {
           label="Full Name"
           variant="outlined"
           fullWidth
+          error={touched.customerName && Boolean(errors.customerName)}
+          helperText={touched.customerName && errors.customerName}
         />
 
         <Field
@@ -38,6 +39,8 @@ export default function UserInfoSection() {
           label="Email"
           variant="outlined"
           fullWidth
+          error={touched.email && Boolean(errors.email)}
+          helperText={touched.email && errors.email}
         />
 
         <Field
@@ -46,8 +49,10 @@ export default function UserInfoSection() {
           label="Phone"
           variant="outlined"
           fullWidth
+          error={touched.phone && Boolean(errors.phone)}
+          helperText={touched.phone && errors.phone}
         />
       </Box>
-    </Card>
+    </Box>
   );
 }

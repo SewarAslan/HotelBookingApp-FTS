@@ -31,8 +31,8 @@ export default function RoomCard({
 }: {
   room: RoomAvailabilityResultDto;
   hotelId: number;
-  checkInDate: string;
-  checkOutDate: string;
+  checkInDate?: string;
+  checkOutDate?: string;
 }) {
   const amenities = room.roomAmenities ?? [];
   const theme = useTheme();
@@ -125,18 +125,6 @@ export default function RoomCard({
               >
                 ${room.price} / night
               </Typography>
-
-              <Typography
-                variant={MUI_TYPOGRAPHY.BODY2}
-                fontWeight={600}
-                color={
-                  room.availability
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
-                }
-              >
-                {room.availability ? "✔ Available" : "✘ Not Available"}
-              </Typography>
             </Box>
           </Container>
 
@@ -192,39 +180,41 @@ export default function RoomCard({
             </Box>
           )}
         </Box>
-        <Button
-          variant="gradient"
-          sx={{
-            fontWeight: 600,
-            my: 2,
+        {checkInDate && checkOutDate && (
+          <Button
+            variant="gradient"
+            sx={{
+              fontWeight: 600,
+              my: 2,
 
-            borderRadius: 2,
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
+              borderRadius: 2,
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
 
-            addToCart({
-              roomId: room.roomId,
-              hotelId,
-              roomType: room.roomType,
-              roomPhotoUrl: room.roomPhotoUrl,
-              price: room.price,
-              capacityOfAdults: room.capacityOfAdults,
-              capacityOfChildren: room.capacityOfChildren,
-              checkInDate,
-              checkOutDate,
-            });
+              addToCart({
+                roomId: room.roomId,
+                hotelId,
+                roomType: room.roomType,
+                roomPhotoUrl: room.roomPhotoUrl,
+                price: room.price,
+                capacityOfAdults: room.capacityOfAdults,
+                capacityOfChildren: room.capacityOfChildren,
+                checkInDate,
+                checkOutDate,
+              });
 
-            dispatch(
-              showSnackbar({
-                message: "Room added to cart!",
-                severity: "success",
-              })
-            );
-          }}
-        >
-          Book Now
-        </Button>
+              dispatch(
+                showSnackbar({
+                  message: "Room added to cart!",
+                  severity: "success",
+                })
+              );
+            }}
+          >
+            Book Now
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

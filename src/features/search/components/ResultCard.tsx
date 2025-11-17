@@ -195,7 +195,7 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
               handleNavigate();
             }}
           >
-            Book Now!
+            More Details!
           </Button>
         </Box>
       </CardContent>

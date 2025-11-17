@@ -9,6 +9,7 @@ import SearchResultsPage from "../pages/SearchResultsPage";
 import HotelDetailsPage from "../pages/HotelDetailsPage";
 import AppSnackbar from "../components/AppSnackbar";
 import CheckoutPage from "../features/checkout/pages/CheckoutPage";
+import ConfirmationPage from "../features/checkout/pages/ConfirmationPage";
 
 export function AppRouter() {
   return (
@@ -45,6 +46,14 @@ export function AppRouter() {
             element={
               <ProtectedRoute allowedRoles={["User"]}>
                 <CheckoutPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.CONFIRMATION}
+            element={
+              <ProtectedRoute allowedRoles={["User"]}>
+                <ConfirmationPage />
               </ProtectedRoute>
             }
           />

@@ -2,26 +2,40 @@ import { Box, Typography, useTheme } from "@mui/material";
 import MessageCard from "../../../components/MessageCard";
 import { STATUS } from "../../../constants/status";
 import { useRoomAvailability } from "../hooks/useRoomAvailability";
+import { useRoom } from "../hooks/useRoom";
 import RoomCard from "./RoomCard";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
+import { useLocation } from "react-router-dom";
 
 interface Props {
   hotelId: number;
-  checkInDate: string;
-  checkOutDate: string;
 }
 
-export default function AvailableRoomsSection({
-  hotelId,
-  checkInDate,
-  checkOutDate,
-}: Props) {
+export default function AvailableRoomsSection({ hotelId }: Props) {
   const theme = useTheme();
-  const { data, status, error, refetch } = useRoomAvailability(
+  const location = useLocation();
+
+  // 📌 Read URL params
+  const params = new URLSearchParams(location.search);
+  const urlCheckIn = params.get("checkInDate");
+  const urlCheckOut = params.get("checkOutDate");
+
+  const shouldUseAvailability = Boolean(urlCheckIn && urlCheckOut);
+
+  const availability = useRoomAvailability(
     hotelId,
-    checkInDate,
-    checkOutDate
+    urlCheckIn || "",
+    urlCheckOut || ""
   );
+
+  const allRooms = useRoom(hotelId);
+
+  const data = shouldUseAvailability ? availability.data : allRooms.data;
+  const status = shouldUseAvailability ? availability.status : allRooms.status;
+  const error = shouldUseAvailability ? availability.error : allRooms.error;
+  const refetch = shouldUseAvailability
+    ? availability.refetch
+    : allRooms.refetch;
 
   if (status !== STATUS.SUCCESS) {
     return (
@@ -31,10 +45,10 @@ export default function AvailableRoomsSection({
         data={data}
         message={
           status === STATUS.LOADING
-            ? "Loading available rooms..."
-            : status === STATUS.ERROR
-            ? "Failed to load rooms"
-            : "No rooms found"
+            ? shouldUseAvailability
+              ? "Loading available rooms..."
+              : "Loading rooms..."
+            : "Failed to load rooms"
         }
         onRetry={refetch}
       />
@@ -46,7 +60,11 @@ export default function AvailableRoomsSection({
       <MessageCard
         status={STATUS.SUCCESS}
         data={[]}
-        message="No rooms available for the selected dates."
+        message={
+          shouldUseAvailability
+            ? "No rooms available for the selected dates."
+            : "No rooms found."
+        }
       />
     );
   }
@@ -59,23 +77,17 @@ export default function AvailableRoomsSection({
         color={theme.palette.primary.main}
         mb={1}
       >
-        Available Rooms
+        {shouldUseAvailability ? "Available Rooms" : "All Rooms"}
       </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {data.map((room) => (
           <RoomCard
             key={room.roomId}
             room={room}
             hotelId={hotelId}
-            checkInDate={checkInDate}
-            checkOutDate={checkOutDate}
+            checkInDate={urlCheckIn ?? ""}
+            checkOutDate={urlCheckOut ?? ""}
           />
         ))}
       </Box>
