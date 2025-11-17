@@ -1,14 +1,17 @@
 import { Box, Container, Typography, useTheme } from "@mui/material";
 import ItemsSection from "../components/ItemsSection";
 import UserInfoSection from "../components/UserInfoSection";
-// import CheckoutButton from "../components/CheckoutButton";
+import CheckoutButton from "../components/CheckoutButton";
 import { useCart } from "../hooks/useCart";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
+import { Form, Formik } from "formik";
+import { validationSchema } from "../../../constants/validationSchema";
+import { useAuthActions } from "../../auth";
 
 export default function CheckoutPage() {
   const theme = useTheme();
   const { items } = useCart();
-
+  const { authUser } = useAuthActions();
   const isEmpty = !items || items.length === 0;
 
   return (
@@ -66,19 +69,24 @@ export default function CheckoutPage() {
       )}
 
       {!isEmpty && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
+        <Formik
+          initialValues={{
+            customerName: authUser?.givenName
+              ? `${authUser?.givenName} ${authUser?.familyName ?? ""}`.trim()
+              : " ",
+            email: "",
+            phone: "",
           }}
+          validationSchema={validationSchema}
+          onSubmit={() => {}}
         >
-          <ItemsSection items={items} />
-
-          <UserInfoSection />
-
-          {/* <CheckoutButton items={items} /> */}
-        </Box>
+          <Form>
+            <ItemsSection items={items} />
+            <Box mt={3} />
+            <UserInfoSection />
+            <CheckoutButton />
+          </Form>
+        </Formik>
       )}
     </Container>
   );
