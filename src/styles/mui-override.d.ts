@@ -21,6 +21,7 @@ declare module "@mui/material/styles" {
 
 declare module "@mui/material/Button" {
   interface ButtonPropsVariantOverrides {
-    gradient: true;
+    "gradient-primary": true;
+    "gradient-secondary": true;
   }
 }
