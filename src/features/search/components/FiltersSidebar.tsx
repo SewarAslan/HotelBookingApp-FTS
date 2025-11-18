@@ -15,6 +15,8 @@ import { apiClient } from "../../../api/client";
 import type { FilterAmenityDto } from "../../../api/Api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 export default function FiltersSidebar() {
   const theme = useTheme();
@@ -28,26 +30,23 @@ export default function FiltersSidebar() {
   const [openAmenities, setOpenAmenities] = useState(true);
   const [openPrice, setOpenPrice] = useState(true);
 
-  // حالة السعر المحلي
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 300]);
+  const starRateFromUrl =
+    Number(new URLSearchParams(location.search).get("starRate")) || 0;
 
-  // لمنع الـ reset أثناء السحب
   const isDraggingRef = useRef(false);
 
-  // قراءة القيم من URL عند أي تغيير
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
     const min = params.has("priceMin") ? Number(params.get("priceMin")) : 0;
     const max = params.has("priceMax") ? Number(params.get("priceMax")) : 300;
 
-    // نحدّث فقط لو ما كنّاش بنسحب (تجنب الفليكر)
     if (!isDraggingRef.current) {
       setPriceRange([min, max]);
     }
   }, [location.search]);
 
-  // دالة تحديث URL آمنة (تتعامل مع 0 بشكل صحيح)
   const updateUrl = (key: string, value: string | number | null) => {
     const params = new URLSearchParams(location.search);
 
@@ -63,13 +62,11 @@ export default function FiltersSidebar() {
     }
   };
 
-  // Star Rating
   const handleStarChange = (_: unknown, value: number | number[]) => {
     const val = typeof value === "number" ? value : 0;
     updateUrl("starRate", val === 0 ? null : val);
   };
 
-  // Amenities
   const handleAmenityToggle = (name: string) => {
     const params = new URLSearchParams(location.search);
     const current = params.get("amenities")?.split(",") || [];
@@ -80,7 +77,6 @@ export default function FiltersSidebar() {
     updateUrl("amenities", updated.length > 0 ? updated.join(",") : null);
   };
 
-  // Clear All
   const handleClearAll = () => {
     const params = new URLSearchParams(location.search);
     [
@@ -99,7 +95,6 @@ export default function FiltersSidebar() {
     navigate(`${location.pathname}?${params.toString()}`, { replace: true });
   };
 
-  // جلب الـ Amenities
   useEffect(() => {
     void (async () => {
       try {
@@ -111,7 +106,6 @@ export default function FiltersSidebar() {
     })();
   }, []);
 
-  // تحديث المصفوفة المختارة للـ Amenities
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSelectedAmenities(params.get("amenities")?.split(",") || []);
@@ -133,7 +127,6 @@ export default function FiltersSidebar() {
         animation: theme.animations.fadeInUp,
       }}
     >
-      {/* Clear All */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
         <Typography
           onClick={handleClearAll}
@@ -158,7 +151,6 @@ export default function FiltersSidebar() {
 
       <Divider sx={{ my: 2 }} />
 
-      {/* Star Rating */}
       <Box
         sx={{
           display: "flex",
@@ -178,15 +170,30 @@ export default function FiltersSidebar() {
               fontWeight: 600,
               fontSize: "0.9rem",
               color: theme.palette.primary.dark,
+              display: "flex",
+              alignItems: "center",
+              gap: "2px",
             }}
           >
-            {location.search.includes("starRate")
-              ? "★".repeat(
-                  Number(new URLSearchParams(location.search).get("starRate"))
-                ) +
-                "☆".repeat(
-                  5 -
-                    Number(new URLSearchParams(location.search).get("starRate"))
+            {starRateFromUrl > 0
+              ? Array.from({ length: 5 }).map((_, i) =>
+                  i < starRateFromUrl ? (
+                    <StarIcon
+                      key={i}
+                      sx={{
+                        fontSize: "1rem",
+                        color: theme.palette.brand.yellow,
+                      }}
+                    />
+                  ) : (
+                    <StarBorderIcon
+                      key={i}
+                      sx={{
+                        fontSize: "1rem",
+                        color: theme.palette.action.disabled,
+                      }}
+                    />
+                  )
                 )
               : "Any Rating"}
           </Typography>
@@ -219,7 +226,6 @@ export default function FiltersSidebar() {
 
       <Divider sx={{ my: 2 }} />
 
-      {/* Price Range */}
       <Box
         sx={{
           display: "flex",
@@ -282,7 +288,6 @@ export default function FiltersSidebar() {
 
       <Divider sx={{ my: 2 }} />
 
-      {/* Amenities */}
       <Box
         sx={{
           display: "flex",

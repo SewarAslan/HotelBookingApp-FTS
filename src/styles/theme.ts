@@ -291,19 +291,6 @@ export const createAppTheme = (mode: AppMode): Theme => {
           root: { animation: `${softFloat} 3.2s ease‑in‑out infinite` },
         },
       },
-
-      MuiDateCalendar: {
-        styleOverrides: {
-          root: {
-            color: theme.palette.primary.main,
-            borderRadius: "14px",
-            borderWidth: "1px",
-            borderColor: theme.palette.primary.dark,
-            border: "1px solid",
-            backgroundColor: theme.palette.background.paper,
-          },
-        },
-      },
     },
   });
 
