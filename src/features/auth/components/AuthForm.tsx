@@ -15,6 +15,7 @@ import { loginSchema } from "../../../constants/authSchemas";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
+import { ThemeToggleButton } from "../../../components/ThemeToggleButton";
 
 interface AuthFormProps {
   title: string;
@@ -52,6 +53,20 @@ export default function AuthForm({
         overflow: "hidden",
       }}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          top: 50,
+          right: 50,
+          zIndex: 10,
+          backdropFilter: "blur(20px)",
+          backgroundColor: theme.palette.customBackgrounds.glass,
+          boxShadow: theme.shadows[3],
+          borderRadius: 14,
+        }}
+      >
+        <ThemeToggleButton />
+      </Box>
       <Box
         sx={{
           position: "absolute",
