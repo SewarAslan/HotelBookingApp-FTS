@@ -22,11 +22,55 @@ interface ItemsSectionProps {
 }
 
 export default function ItemsSection({ items }: ItemsSectionProps) {
+  const theme = useTheme();
+
+  const grandTotal = items.reduce((sum, item) => {
+    const start = dayjs(item.checkInDate);
+    const end = dayjs(item.checkOutDate);
+    const nights = Math.max(end.diff(start, "day"), 1);
+    const lineTotal = (item.price ?? 0) * nights;
+    return sum + lineTotal;
+  }, 0);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
       {items.map((item) => (
         <CheckoutItemCard key={item.roomId} item={item} />
       ))}
+
+      <Card
+        elevation={3}
+        sx={{
+          mt: 1,
+          p: 2,
+          borderRadius: 3,
+          backgroundColor: theme.palette.customBackgrounds.glass,
+          border: `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY1}
+            fontWeight={700}
+            color={theme.palette.secondary.main}
+          >
+            Total for all rooms
+          </Typography>
+          <Typography
+            variant={MUI_TYPOGRAPHY.H6}
+            fontWeight={800}
+            color={theme.palette.primary.main}
+          >
+            ${grandTotal.toFixed(2)}
+          </Typography>
+        </Box>
+      </Card>
     </Box>
   );
 }
@@ -34,14 +78,13 @@ export default function ItemsSection({ items }: ItemsSectionProps) {
 function CheckoutItemCard({ item }: { item: CartItem }) {
   const theme = useTheme();
   const { removeFromCart } = useCart();
-
   const { data: hotel } = useHotelDetails(item.hotelId);
 
   const start = dayjs(item.checkInDate);
   const end = dayjs(item.checkOutDate);
-  const nights = end.diff(start, "day");
-
-  const finalPrice = (item.price as number) * nights;
+  const nights = Math.max(end.diff(start, "day"), 1);
+  const pricePerNight = item.price ?? 0;
+  const lineTotal = pricePerNight * nights;
 
   return (
     <Card
@@ -75,6 +118,7 @@ function CheckoutItemCard({ item }: { item: CartItem }) {
           }}
         />
       </Box>
+
       <CardContent
         sx={{
           flex: 1,
@@ -122,9 +166,10 @@ function CheckoutItemCard({ item }: { item: CartItem }) {
         <Divider sx={{ my: 1 }} />
 
         <Stack
-          direction="row"
-          justifyContent="space-around"
-          alignItems={"center"}
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          spacing={1}
         >
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
@@ -145,6 +190,7 @@ function CheckoutItemCard({ item }: { item: CartItem }) {
               {end.format("YYYY-MM-DD")}
             </strong>
           </Typography>
+
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
             color={theme.palette.text.secondary}
@@ -158,14 +204,29 @@ function CheckoutItemCard({ item }: { item: CartItem }) {
 
         <Divider sx={{ my: 1 }} />
 
-        {/* 💰 السعر */}
-        <Typography
-          variant={MUI_TYPOGRAPHY.BODY1}
-          fontWeight={700}
-          sx={{ color: theme.palette.primary.main }}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
         >
-          Total: ${finalPrice}
-        </Typography>
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            color={theme.palette.text.secondary}
+          >
+            Price / night:{" "}
+            <strong style={{ color: theme.palette.secondary.dark }}>
+              ${pricePerNight.toFixed(2)}
+            </strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY1}
+            fontWeight={700}
+            sx={{ color: theme.palette.primary.main }}
+          >
+            Total: ${lineTotal.toFixed(2)}
+          </Typography>
+        </Stack>
       </CardContent>
     </Card>
   );

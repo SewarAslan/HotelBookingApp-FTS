@@ -1,54 +1,64 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
+import dayjs from "dayjs";
 import { apiClient } from "../../../api/client";
-import type { StatusType } from "../../../constants/status";
+import type { BookingRequest } from "../../../api/Api";
+import { STATUS, type StatusType } from "../../../constants/status";
+import type { CartItem } from "../../../store/cartSlice";
 
-export interface BookingRequest {
+interface CheckoutParams {
   customerName: string;
   hotelName: string;
-  roomNumber: string;
-  roomType: string;
-  bookingDateTime: string;
-  totalCost: number;
+  items: CartItem[];
   paymentMethod: string;
 }
 
-export interface BookingResponse {
-  bookingId: number;
-  message: string;
-}
-
 export function useCheckout() {
-  const [status, setStatus] = useState<StatusType>("idle");
+  const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<BookingResponse | null>(null);
 
-  const createBooking = useCallback(async (payload: BookingRequest) => {
-    setStatus("loading");
-    setError(null);
+  const createBooking = useCallback(
+    async ({
+      customerName,
+      hotelName,
+      items,
+      paymentMethod,
+    }: CheckoutParams) => {
+      if (!items.length) return false;
 
-    try {
-      await apiClient.api.bookingsCreate(payload);
+      setStatus(STATUS.LOADING);
+      setError(null);
 
-      setData(null);
-      setStatus("success");
-      return true;
-    } catch {
-      setError("Failed to create booking");
-      setStatus("error");
-      return false;
-    }
-  }, []);
+      try {
+        for (const item of items) {
+          const start = dayjs(item.checkInDate);
+          const end = dayjs(item.checkOutDate);
+          const nights = Math.max(end.diff(start, "day"), 1);
+          const totalCost = (item.price ?? 0) * nights;
 
-  const refetch = () => {
-    setStatus("idle");
-    setError(null);
-  };
+          const payload: BookingRequest = {
+            customerName,
+            hotelName,
+            roomNumber: String(item.roomId ?? ""),
+            roomType: item.roomType ?? "",
+            bookingDateTime: new Date().toISOString(),
+            totalCost,
+            paymentMethod,
+          };
 
-  return {
-    status,
-    error,
-    data,
-    createBooking,
-    refetch,
-  };
+          await apiClient.api.bookingsCreate(payload);
+        }
+
+        setStatus(STATUS.SUCCESS);
+        return true;
+      } catch (e) {
+        console.error("Failed to create bookings", e);
+        setError("Failed to complete booking. Please try again.");
+        setStatus(STATUS.ERROR);
+        return false;
+      }
+    },
+    []
+  );
+
+  return { createBooking, status, error };
 }
