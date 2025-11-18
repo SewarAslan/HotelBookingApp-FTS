@@ -1,87 +1,40 @@
-import {
-  Box,
-  Container,
-  Typography,
-  Snackbar,
-  Alert,
-  useTheme,
-} from "@mui/material";
+import { Box, Container, Typography, useTheme } from "@mui/material";
 import { Formik, Form } from "formik";
-import { useCart } from "../hooks/useCart";
-import { useCheckout } from "../hooks/useCheckout";
 import ItemsSection from "../components/ItemsSection";
 import UserInfoSection from "../components/UserInfoSection";
 import CheckoutButton from "../components/CheckoutButton";
+import { useCart } from "../hooks/useCart";
+import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 import { validationSchema } from "../../../constants/validationSchema";
 import { useAuthActions } from "../../auth";
-import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
-import { useHotelDetails } from "../../hotel/hooks/useHotelDetails";
-import { useState } from "react";
-import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 
 export default function CheckoutPage() {
   const theme = useTheme();
-  const navigate = useNavigate();
+  const { items } = useCart();
   const { authUser } = useAuthActions();
-  const { items, clearCart } = useCart();
-  const { createBooking, status, error } = useCheckout();
-
-  const isEmpty = items.length === 0;
-  const item = items[0];
-  const { data: hotel } = useHotelDetails(item?.hotelId ?? 0);
-
-  const [openError, setOpenError] = useState(false);
-
-  const handleCheckout = async (values: {
-    customerName: string;
-    email?: string;
-    phone?: string;
-  }) => {
-    if (items.length === 0) return;
-
-    const start = dayjs(item.checkInDate);
-    const end = dayjs(item.checkOutDate);
-    const nights = end.diff(start, "day");
-    const totalCost = (item.price as number) * nights;
-
-    const payload = {
-      customerName: values.customerName,
-      hotelName: hotel?.hotelName ?? "",
-      roomNumber: String(item.roomId ?? ""),
-      roomType: item.roomType ?? "",
-      bookingDateTime: new Date().toISOString(),
-      totalCost: totalCost,
-      paymentMethod: "visa",
-    };
-
-    const ok = await createBooking(payload);
-
-    if (ok) {
-      clearCart();
-      const bookingId = Math.floor(10000000 + Math.random() * 90000000);
-      navigate(`/confirmation?bookingId=${bookingId}`);
-    } else {
-      setOpenError(true);
-    }
-  };
+  const isEmpty = !items || items.length === 0;
 
   return (
     <Container
       maxWidth="md"
-      sx={{ py: 4, animation: theme.animations.fadeInUp }}
+      sx={{
+        py: 4,
+        animation: theme.animations.fadeInUp,
+      }}
     >
       <Typography
-        variant={MUI_TYPOGRAPHY.H4}
-        color={theme.palette.primary.main}
+        variant="h4"
         fontWeight={700}
-        textAlign="center"
-        mb={3}
+        sx={{
+          mb: 3,
+          textAlign: "center",
+          color: theme.palette.primary.main,
+        }}
       >
         Checkout
       </Typography>
 
-      {isEmpty ? (
+      {isEmpty && (
         <Box
           sx={{
             py: 6,
@@ -96,7 +49,7 @@ export default function CheckoutPage() {
           }}
         >
           <Typography
-            variant={MUI_TYPOGRAPHY.H6}
+            variant={MUI_TYPOGRAPHY.H5}
             sx={{
               color: theme.palette.secondary.dark,
               fontWeight: 700,
@@ -113,7 +66,9 @@ export default function CheckoutPage() {
             Add some rooms to your cart before proceeding to checkout.
           </Typography>
         </Box>
-      ) : (
+      )}
+
+      {!isEmpty && (
         <Formik
           initialValues={{
             customerName: authUser?.givenName
@@ -123,30 +78,16 @@ export default function CheckoutPage() {
             phone: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={handleCheckout}
+          onSubmit={() => {
+            // التحكم الكامل في btn نفسه (CheckoutButton)
+          }}
         >
-          {({ isValid, values }) => (
-            <Form>
-              <ItemsSection items={items} />
-              <UserInfoSection />
-
-              <CheckoutButton
-                loading={status === "loading"}
-                disabled={!isValid || items.length === 0}
-                onCheckout={() => handleCheckout(values)}
-              />
-
-              <Snackbar
-                open={openError}
-                autoHideDuration={4000}
-                onClose={() => setOpenError(false)}
-              >
-                <Alert severity="error" variant="filled">
-                  {error || "Failed to complete booking"}
-                </Alert>
-              </Snackbar>
-            </Form>
-          )}
+          <Form>
+            <ItemsSection items={items} />
+            <Box mt={3} />
+            <UserInfoSection />
+            <CheckoutButton />
+          </Form>
         </Formik>
       )}
     </Container>

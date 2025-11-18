@@ -13,7 +13,8 @@ export const MUI_VARIANTS = {
   OUTLINED: "outlined",
   TEXT: "text",
   CAPTION: "caption",
-  GRADIENT: "gradient",
+  GRADIENT: "gradient-primary",
+  GRADIENT2: "gradient-secondary",
 } as const;
 
 export const MUI_SIZES = {

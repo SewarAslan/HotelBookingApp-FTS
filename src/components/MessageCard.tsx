@@ -9,11 +9,7 @@ import {
 } from "@mui/material";
 import { UI_IMAGES } from "../constants/UI_IMAGES";
 import { STATUS } from "../constants/status";
-import {
-  MUI_COLORS,
-  MUI_TYPOGRAPHY,
-  MUI_VARIANTS,
-} from "../constants/muiTokens";
+import { MUI_TYPOGRAPHY } from "../constants/muiTokens";
 
 interface MessageCardProps {
   status: string;
@@ -27,32 +23,29 @@ const MessageCard = React.memo(
   ({ status, message, error, data, onRetry }: MessageCardProps) => {
     const theme = useTheme();
 
+    const baseCardStyles = {
+      height: 260,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      animation: theme.animations.fadeInUp,
+      background: "transparent",
+      textAlign: "center",
+    } as const;
+
     if (status === STATUS.LOADING) {
       return (
         <Card
           elevation={0}
-          sx={{
-            height: 260,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            color: theme.palette.primary.main,
-            gap: 2,
-            animation: theme.animations.fadeInUp,
-            background: "transparent",
-          }}
+          sx={{ ...baseCardStyles, color: theme.palette.primary.main }}
         >
-          <CircularProgress
-            color={MUI_COLORS.PRIMARY}
-            size={42}
-            thickness={4}
-          />
+          <CircularProgress color="inherit" size={42} thickness={4} />
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
-            color={"text." + MUI_COLORS.SECONDARY}
             fontWeight={500}
             sx={{ mt: 1 }}
+            color={theme.palette.primary.main}
           >
             {message || "Loading..."}
           </Typography>
@@ -64,18 +57,7 @@ const MessageCard = React.memo(
       return (
         <Card
           elevation={0}
-          sx={{
-            height: 260,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1.5,
-            textAlign: "center",
-            color: theme.palette.error.main,
-            background: "transparent",
-            animation: theme.animations.fadeInUp,
-          }}
+          sx={{ ...baseCardStyles, color: theme.palette.error.main, gap: 1.5 }}
         >
           <Box
             component="img"
@@ -85,7 +67,7 @@ const MessageCard = React.memo(
           />
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
-            color={"text." + MUI_COLORS.SECONDARY}
+            color={theme.palette.text.secondary}
             sx={{ mt: 0.5 }}
           >
             {error || "Something went wrong."}
@@ -93,7 +75,7 @@ const MessageCard = React.memo(
           {onRetry && (
             <Button
               onClick={onRetry}
-              variant={MUI_VARIANTS.GRADIENT}
+              variant="gradient-primary"
               sx={{
                 mt: 1,
                 px: 3,
@@ -114,16 +96,9 @@ const MessageCard = React.memo(
         <Card
           elevation={0}
           sx={{
-            height: 260,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1.5,
-            textAlign: "center",
+            ...baseCardStyles,
             color: theme.palette.text.secondary,
-            background: "transparent",
-            animation: theme.animations.fadeInUp,
+            gap: 1.5,
           }}
         >
           <Box
@@ -132,7 +107,11 @@ const MessageCard = React.memo(
             alt="empty"
             sx={{ width: 80, height: 80, objectFit: "contain" }}
           />
-          <Typography variant={MUI_TYPOGRAPHY.BODY2} sx={{ mt: 0.5 }}>
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            color={theme.palette.text.secondary}
+            sx={{ mt: 0.5 }}
+          >
             {message || "No data available."}
           </Typography>
         </Card>

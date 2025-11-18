@@ -33,11 +33,13 @@ export function useSearchResults(): HookResult<SearchResultDto> {
 
       let results = response.data;
 
+      // ⭐ STAR FILTER
       if (params.starRate && results) {
         const targetStars = Number(params.starRate);
         results = results.filter((hotel) => hotel.starRating === targetStars);
       }
 
+      // ⭐ AMENITIES FILTER
       if (params.amenities && results) {
         const selected = params.amenities
           .split(",")
@@ -49,6 +51,18 @@ export function useSearchResults(): HookResult<SearchResultDto> {
         );
       }
 
+      // ⭐ PRICE FILTER (NEW)
+      if ((params.priceMin || params.priceMax) && results) {
+        const min = params.priceMin ? Number(params.priceMin) : 0;
+        const max = params.priceMax ? Number(params.priceMax) : Infinity;
+
+        results = results.filter((hotel) => {
+          const price = hotel.roomPrice ?? 0;
+          return price >= min && price <= max;
+        });
+      }
+
+      // ⭐ SORTING
       if (params.sort && results) {
         switch (params.sort) {
           case "priceAsc":

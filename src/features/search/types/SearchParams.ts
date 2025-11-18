@@ -8,4 +8,6 @@ export interface SearchParams {
   sort?: string;
   starRate?: string;
   amenities?: string;
+  priceMin?: string;
+  priceMax?: string;
 }

@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography, useTheme } from "@mui/material";
 import { Field, useFormikContext } from "formik";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 
@@ -8,17 +8,22 @@ export default function UserInfoSection() {
     email: string;
     phone: string;
   }>();
-
+  const theme = useTheme();
   return (
     <Box
       sx={{
         p: 3,
         borderRadius: 3,
-        backgroundColor: "rgba(255,255,255,0.1)",
+        backgroundColor: theme.palette.customBackgrounds.glass,
         mt: 3,
       }}
     >
-      <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={700} mb={2}>
+      <Typography
+        variant={MUI_TYPOGRAPHY.H6}
+        fontWeight={700}
+        mb={2}
+        color={theme.palette.primary.main}
+      >
         Contact Information
       </Typography>
 

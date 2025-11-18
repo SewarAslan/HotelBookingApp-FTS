@@ -14,6 +14,8 @@ export function parseSearchParams(search: string): SearchParams {
     sort: params.get("sort") || undefined,
     starRate: params.get("starRate") || undefined,
     amenities: params.get("amenities") || undefined,
+    priceMin: params.get("priceMin") || undefined,
+    priceMax: params.get("priceMax") || undefined,
   };
 }
 
@@ -21,7 +23,7 @@ export function buildSearchParams(params: SearchParams): string {
   const searchParams = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
+    if (value !== undefined && value !== null) {
       searchParams.set(key, String(value));
     }
   });

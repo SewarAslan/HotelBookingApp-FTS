@@ -22,7 +22,7 @@ export default function Footer() {
       }}
     >
       <Typography
-        color={theme.palette.secondary.dark}
+        color={theme.palette.primary.main}
         sx={{
           fontWeight: 600,
         }}

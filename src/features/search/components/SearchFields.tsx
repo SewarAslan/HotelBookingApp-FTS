@@ -11,12 +11,17 @@ interface SearchFieldsProps {
   values: SearchValues;
   setFieldValue: FormikHelpers<SearchValues>["setFieldValue"];
   compact?: boolean;
+  errors?: {
+    checkInDate?: string;
+    checkOutDate?: string;
+  };
 }
 
 export default function SearchFields({
   values,
   setFieldValue,
   compact = false,
+  errors,
 }: SearchFieldsProps) {
   const theme = useTheme();
 
@@ -47,7 +52,11 @@ export default function SearchFields({
         }}
       />
 
-      <DateRangeFields values={values} setFieldValue={setFieldValue} />
+      <DateRangeFields
+        values={values}
+        setFieldValue={setFieldValue}
+        errors={errors}
+      />
 
       <Box
         sx={{

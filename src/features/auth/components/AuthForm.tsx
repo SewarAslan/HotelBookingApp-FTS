@@ -10,7 +10,6 @@ import {
   CircularProgress,
   InputAdornment,
   useTheme,
-  alpha,
 } from "@mui/material";
 import { loginSchema } from "../../../constants/authSchemas";
 import PersonIcon from "@mui/icons-material/Person";
@@ -71,8 +70,7 @@ export default function AuthForm({
           width: "100%",
           p: { xs: 3, sm: 4 },
           backdropFilter: "blur(20px)",
-          backgroundColor: alpha(theme.palette.background.paper, 0.8),
-
+          backgroundColor: theme.palette.customBackgrounds.glass,
           boxShadow: theme.shadows[3],
           borderRadius: 4,
 
@@ -181,7 +179,7 @@ export default function AuthForm({
               <Button
                 fullWidth
                 type="submit"
-                variant="gradient"
+                variant="gradient-primary"
                 disabled={isLoading}
                 sx={{
                   mt: 2,

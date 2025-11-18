@@ -1,139 +1,153 @@
-import {
-  Box,
-  Card,
-  Typography,
-  Button,
-  CircularProgress,
-  useTheme,
-} from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { apiClient } from "../../../api/client";
+import { Box, Button, Container, Typography, useTheme } from "@mui/material";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
-import type { BookingDetailsDto } from "../../../api/Api";
+
+interface BookingSummary {
+  customerName: string;
+  email: string;
+  phone: string;
+  hotelName: string;
+  totalCost: number;
+  bookingDateTime: string;
+  confirmationNumber: string;
+  numberOfRooms: number;
+}
 
 export default function ConfirmationPage() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { search } = useLocation();
+  const [searchParams] = useSearchParams();
+  const bookingId = searchParams.get("bookingId");
 
-  const params = new URLSearchParams(search);
-  const bookingId = Number(params.get("bookingId"));
+  const location = useLocation();
+  const state = location.state as { bookingSummary?: BookingSummary } | null;
+  const summary = state?.bookingSummary;
 
-  const [booking, setBooking] = useState<BookingDetailsDto | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!bookingId) return;
-
-    async function fetchBooking() {
-      try {
-        const res = await apiClient.api.getBooking(bookingId);
-        setBooking(res.data);
-      } catch (err) {
-        console.error("Failed to fetch booking info:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    void fetchBooking();
-  }, [bookingId]);
-
-  if (!bookingId) {
-    return (
-      <Typography color="error" textAlign="center" mt={4}>
-        Invalid booking reference.
-      </Typography>
-    );
-  }
-
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 6,
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (!booking) {
-    return (
-      <Typography color="error" textAlign="center" mt={4}>
-        Booking not found.
-      </Typography>
-    );
-  }
+  const hasData = Boolean(summary);
 
   return (
-    <Box
+    <Container
+      maxWidth="sm"
       sx={{
-        maxWidth: 600,
-        mx: "auto",
-        mt: 6,
+        py: 6,
         textAlign: "center",
         animation: theme.animations.fadeInUp,
       }}
     >
       <Typography
         variant={MUI_TYPOGRAPHY.H4}
-        fontWeight={700}
-        color={theme.palette.success.main}
-        mb={3}
+        fontWeight={800}
+        sx={{ mb: 2, color: theme.palette.primary.main }}
       >
-        🎉 Booking Confirmed!
+        Booking Confirmed 🎉
       </Typography>
 
-      <Card
-        elevation={4}
-        sx={{
-          p: 3,
-          borderRadius: 3,
-          backgroundColor: theme.palette.customBackgrounds.glass,
-          border: `1px solid ${theme.palette.divider}`,
-          textAlign: "left",
-        }}
+      <Typography
+        variant={MUI_TYPOGRAPHY.BODY1}
+        sx={{ mb: 3, color: theme.palette.text.secondary }}
       >
-        <Typography variant={MUI_TYPOGRAPHY.H6} fontWeight={700} mb={2}>
-          Booking Details
-        </Typography>
+        Thank you for booking with <strong>Smart Stays</strong>.
+      </Typography>
 
-        <Typography variant="body1">
-          <strong>Booking ID:</strong> {bookingId}
+      {bookingId && (
+        <Typography
+          variant={MUI_TYPOGRAPHY.BODY1}
+          sx={{ mb: 1, color: theme.palette.secondary.main }}
+        >
+          Booking ID: <strong>{bookingId}</strong>
         </Typography>
+      )}
 
-        <Typography variant="body1">
-          <strong>Hotel:</strong> {booking.hotelName}
+      {hasData ? (
+        <Box
+          sx={{
+            mt: 3,
+            p: 3,
+            borderRadius: 3,
+            backgroundColor: theme.palette.customBackgrounds.glass,
+            border: `1px solid ${theme.palette.divider}`,
+            textAlign: "left",
+          }}
+        >
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY1}
+            sx={{ mb: 1, color: theme.palette.primary.main }}
+          >
+            Name: <strong>{summary?.customerName}</strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            sx={{ mb: 1, color: theme.palette.text.secondary }}
+          >
+            Email: <strong>{summary?.email}</strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            sx={{ mb: 1, color: theme.palette.text.secondary }}
+          >
+            Phone: <strong>{summary?.phone}</strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY1}
+            sx={{ mt: 2, mb: 1, color: theme.palette.primary.main }}
+          >
+            Hotel: <strong>{summary?.hotelName}</strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            sx={{ mb: 1, color: theme.palette.text.secondary }}
+          >
+            Rooms: <strong>{summary?.numberOfRooms}</strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY1}
+            sx={{ mb: 1, color: theme.palette.primary.main }}
+          >
+            Total Paid: <strong>${summary?.totalCost.toFixed(2)}</strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            sx={{ mb: 1, color: theme.palette.text.secondary }}
+          >
+            Date:{" "}
+            <strong>
+              {summary?.bookingDateTime
+                ? new Date(summary.bookingDateTime).toLocaleString()
+                : "N/A"}
+            </strong>
+          </Typography>
+
+          <Typography
+            variant={MUI_TYPOGRAPHY.BODY2}
+            sx={{ mt: 2, color: theme.palette.secondary.main }}
+          >
+            Confirmation Number: <strong>{summary?.confirmationNumber}</strong>
+          </Typography>
+        </Box>
+      ) : (
+        <Typography
+          variant={MUI_TYPOGRAPHY.BODY2}
+          sx={{ mt: 3, color: theme.palette.text.secondary }}
+        >
+          Your booking was submitted, but we couldn't load the full details.
         </Typography>
+      )}
 
-        <Typography variant="body1">
-          <strong>Room:</strong> {booking.roomType} (#{booking.roomNumber})
-        </Typography>
-
-        <Typography variant="body1">
-          <strong>Total Cost:</strong> ${booking.totalCost}
-        </Typography>
-
-        <Typography variant="body1">
-          <strong>Date:</strong>{" "}
-          {booking.bookingDateTime
-            ? new Date(booking.bookingDateTime).toLocaleString()
-            : "N/A"}
-        </Typography>
-      </Card>
-
-      <Button
-        variant="gradient"
-        sx={{ mt: 4, px: 4, py: 1.5, fontWeight: 700, borderRadius: 3 }}
-        onClick={() => navigate("/")}
-      >
-        Back to Home
-      </Button>
-    </Box>
+      <Box sx={{ mt: 4 }}>
+        <Button
+          variant="gradient-primary"
+          onClick={() => navigate("/")}
+          sx={{ px: 5, py: 1.5, borderRadius: 3, fontWeight: 700 }}
+        >
+          Back to Home
+        </Button>
+      </Box>
+    </Container>
   );
 }

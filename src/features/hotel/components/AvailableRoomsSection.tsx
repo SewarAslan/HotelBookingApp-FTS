@@ -15,7 +15,6 @@ export default function AvailableRoomsSection({ hotelId }: Props) {
   const theme = useTheme();
   const location = useLocation();
 
-  // 📌 Read URL params
   const params = new URLSearchParams(location.search);
   const urlCheckIn = params.get("checkInDate");
   const urlCheckOut = params.get("checkOutDate");

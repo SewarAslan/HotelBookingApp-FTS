@@ -1,3 +1,5 @@
+// Header.tsx
+
 import { useState, useEffect } from "react";
 import {
   AppBar,
@@ -24,9 +26,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ThemeToggleButton } from "./ThemeToggleButton";
 import { useAuthActions } from "../features/auth/hooks";
-import { MUI_COLORS, MUI_TYPOGRAPHY } from "../constants/muiTokens";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { useCart } from "../features/checkout/hooks/useCart";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { MUI_COLORS } from "../constants/muiTokens";
 
 export default function Header() {
   const theme = useTheme();
@@ -80,7 +82,10 @@ export default function Header() {
           theme.palette.customBackgrounds?.glass ??
           theme.palette.background.paper,
         borderBottom: `1px solid rgba(255,255,255,0.18)`,
-        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.05)",
+        boxShadow:
+          theme.palette.mode === "light"
+            ? "0 8px 24px rgba(0, 0, 0, 0.05)"
+            : "0 8px 24px rgba(0, 0, 0, 0.35)",
       }}
     >
       <Toolbar
@@ -91,7 +96,7 @@ export default function Header() {
         }}
       >
         <Typography
-          variant={MUI_TYPOGRAPHY.H6}
+          variant="h6"
           fontWeight={800}
           sx={{
             background: theme.palette.primary.main,
@@ -112,19 +117,18 @@ export default function Header() {
                 key={label}
                 onClick={() => handleNavigate(path)}
                 sx={{
+                  fontWeight: 700,
+                  textTransform: "none",
                   backgroundColor: "transparent",
                   boxShadow: "none",
-                  fontWeight: 700,
+                  position: "relative",
                   color:
                     location.pathname === path
                       ? theme.palette.secondary.main
                       : theme.palette.primary.main,
-                  textTransform: "none",
-                  position: "relative",
                   "&:hover": {
                     color: theme.palette.secondary.main,
                     backgroundColor: "transparent",
-                    boxShadow: "none",
                   },
                   "&::after": {
                     content: '""',
@@ -136,20 +140,29 @@ export default function Header() {
                     background: theme.palette.secondary.main,
                     transition: "width 0.3s ease",
                   },
-                  "&:hover::after": { width: "100%" },
+                  "&:hover::after": {
+                    width: "100%",
+                  },
                 }}
               >
                 {label}
               </Button>
             ))}
+
             {authUser?.userType !== "Admin" && (
-              <IconButton onClick={() => navigate("/checkout")}>
-                <Badge badgeContent={count} color={MUI_COLORS.SECONDARY}>
-                  <ShoppingCartOutlinedIcon color={MUI_COLORS.PRIMARY} />
-                </Badge>
-              </IconButton>
+              <Tooltip title="Go to Cart">
+                <IconButton onClick={() => navigate("/checkout")}>
+                  {" "}
+                  <Badge badgeContent={count} color={MUI_COLORS.SECONDARY}>
+                    {" "}
+                    <ShoppingCartOutlinedIcon color={MUI_COLORS.PRIMARY} />{" "}
+                  </Badge>{" "}
+                </IconButton>
+              </Tooltip>
             )}
+
             <ThemeToggleButton />
+
             <Tooltip title="Account settings">
               <IconButton onClick={handleOpenUserMenu} size="small">
                 <Avatar
@@ -157,6 +170,7 @@ export default function Header() {
                     bgcolor: "transparent",
                     border: `2px solid ${theme.palette.secondary.main}`,
                     color: theme.palette.secondary.main,
+                    fontWeight: 600,
                   }}
                 >
                   {authUser?.givenName &&
@@ -178,7 +192,11 @@ export default function Header() {
                   backgroundColor: theme.palette.customBackgrounds.glass,
                   backdropFilter: "blur(12px) saturate(160%)",
                   WebkitBackdropFilter: "blur(12px) saturate(160%)",
-                  border: "1px solid rgba(255,255,255,0.18)",
+                  border: `1px solid ${
+                    theme.palette.mode === "light"
+                      ? "rgba(0,0,0,0.05)"
+                      : "rgba(255,255,255,0.08)"
+                  }`,
                   boxShadow:
                     theme.palette.mode === "light"
                       ? "0 8px 30px rgba(0,0,0,0.06)"
@@ -191,14 +209,11 @@ export default function Header() {
                   fontWeight={700}
                   color={theme.palette.secondary.main}
                 >
-                  {authUser?.givenName &&
-                    authUser?.familyName &&
-                    `${authUser.givenName} ${authUser.familyName}`}
+                  {authUser?.givenName && authUser?.familyName
+                    ? `${authUser.givenName} ${authUser.familyName}`
+                    : ""}
                 </Typography>
-                <Typography
-                  variant={MUI_TYPOGRAPHY.BODY2}
-                  color={theme.palette.primary.main}
-                >
+                <Typography variant="body2" color={theme.palette.primary.main}>
                   {authUser?.userType}
                 </Typography>
               </Box>
