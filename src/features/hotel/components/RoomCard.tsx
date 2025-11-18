@@ -23,6 +23,7 @@ import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined
 import { useCart } from "../../checkout/hooks/useCart";
 import { useDispatch } from "react-redux";
 import { showSnackbar } from "../../../store/snackbarSlice";
+import { useAuthActions } from "../../auth";
 export default function RoomCard({
   room,
   hotelId,
@@ -38,7 +39,7 @@ export default function RoomCard({
   const theme = useTheme();
   const { addToCart } = useCart();
   const dispatch = useDispatch();
-
+  const { authUser } = useAuthActions();
   return (
     <Card
       elevation={3}
@@ -180,7 +181,7 @@ export default function RoomCard({
             </Box>
           )}
         </Box>
-        {checkInDate && checkOutDate && (
+        {authUser?.userType === "User" && checkInDate && checkOutDate && (
           <Button
             variant="gradient-secondary"
             sx={{
