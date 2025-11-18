@@ -122,9 +122,9 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
             dark: "#c8641e",
           },
           secondary: {
-            main: "#6df3e8",
+            main: "#57fff1ff",
             light: "#a6eae8",
-            dark: "#0f7d79",
+            dark: "#009c94ff",
           },
           error: { main: "#ff4d4f" },
           success: { main: "#81c784" },
@@ -230,8 +230,8 @@ export const createAppTheme = (mode: AppMode): Theme => {
               transform: "translateY(-1px)",
               boxShadow:
                 theme.palette.mode === "light"
-                  ? "0 8px 22px rgba(255,140,66,0.18)"
-                  : "0 8px 22px rgba(255,181,107,0.25)",
+                  ? "0 8px 22px rgba(122, 122, 122, 0.18)"
+                  : "0 8px 22px rgba(18, 18, 18, 0.25)",
             },
             "&:active": { transform: "translateY(0)" },
           },
@@ -241,7 +241,7 @@ export const createAppTheme = (mode: AppMode): Theme => {
             props: { variant: "gradient-primary" as unknown },
             style: {
               background: theme.palette.primary.main,
-              color: "#fff",
+              color: "#ffffffff",
               "&:hover": {
                 background: theme.palette.primary.dark,
               },
@@ -251,9 +251,10 @@ export const createAppTheme = (mode: AppMode): Theme => {
             props: { variant: "gradient-secondary" as unknown },
             style: {
               background: theme.palette.secondary.main,
-              color: "#fff",
+              color: "#0b5159ff",
               "&:hover": {
                 background: theme.palette.secondary.dark,
+                color: "white",
               },
             },
           },

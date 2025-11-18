@@ -169,7 +169,11 @@ export default function FiltersSidebar() {
             sx={{
               fontWeight: 600,
               fontSize: "0.9rem",
-              color: theme.palette.secondary.dark,
+              color:
+                theme.palette.mode === "light"
+                  ? theme.palette.secondary.dark
+                  : theme.palette.secondary.light,
+
               display: "flex",
               alignItems: "center",
               gap: "2px",
@@ -244,7 +248,10 @@ export default function FiltersSidebar() {
             sx={{
               fontWeight: 600,
               fontSize: "0.9rem",
-              color: theme.palette.secondary.dark,
+              color:
+                theme.palette.mode === "light"
+                  ? theme.palette.secondary.dark
+                  : theme.palette.secondary.light,
             }}
           >
             ${priceRange[0]} – ${priceRange[1]}
@@ -324,12 +331,24 @@ export default function FiltersSidebar() {
                   onChange={() => handleAmenityToggle(a.name || "")}
                   color="secondary"
                   sx={{
-                    "&.Mui-checked": { color: theme.palette.secondary.dark },
+                    "&.Mui-checked": {
+                      color:
+                        theme.palette.mode === "light"
+                          ? theme.palette.secondary.dark
+                          : theme.palette.secondary.light,
+                    },
                   }}
                 />
               }
               label={
-                <Typography sx={{ color: theme.palette.secondary.main }}>
+                <Typography
+                  sx={{
+                    color:
+                      theme.palette.mode === "light"
+                        ? theme.palette.secondary.dark
+                        : theme.palette.secondary.light,
+                  }}
+                >
                   {a.name}
                 </Typography>
               }
