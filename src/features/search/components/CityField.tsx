@@ -23,10 +23,10 @@ export default function CityField() {
         "& .MuiOutlinedInput-root": {
           borderRadius: "12px",
           "& fieldset": {
-            borderColor: theme.palette.text.primary,
+            borderColor: theme.palette.divider,
           },
           "&:hover fieldset": {
-            borderColor: theme.palette.text.primary,
+            borderColor: theme.palette.divider,
           },
           "&.Mui-focused fieldset": {
             borderColor: theme.palette.primary.main,

@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardMedia, Box, Typography } from "@mui/material";
 import type { Destination } from "../../../api/Api";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
-import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
+import { MUI_TYPOGRAPHY, MUI_VARIANTS } from "../../../constants/muiTokens";
 
 interface DestinationCardProps {
   destination: Destination;
@@ -10,7 +10,6 @@ interface DestinationCardProps {
 
 const DestinationCard = React.memo(({ destination }: DestinationCardProps) => {
   const { cityName, countryName, thumbnailUrl, description } = destination;
-
   return (
     <Box
       sx={{
@@ -47,17 +46,16 @@ const DestinationCard = React.memo(({ destination }: DestinationCardProps) => {
             bottom: 0,
             left: 0,
             right: 0,
-            background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
+            background:
+              "linear-gradient(to top, rgba(187, 87, 0, 0.72), transparent)",
             color: "white",
             p: 1.2,
           }}
         >
-          <Typography variant="subtitle2" fontWeight={600}>
+          <Typography variant={MUI_TYPOGRAPHY.SUBTITLE1} fontWeight={600}>
             {cityName}
           </Typography>
-          <Typography variant="caption" sx={{ opacity: 0.8 }}>
-            {countryName}
-          </Typography>
+          <Typography variant={MUI_VARIANTS.CAPTION}>{countryName}</Typography>
         </Box>
       </Card>
 
@@ -67,7 +65,7 @@ const DestinationCard = React.memo(({ destination }: DestinationCardProps) => {
           sx={{
             mt: 1,
             textAlign: "center",
-            opacity: 0.8,
+
             wordBreak: "break-word",
             whiteSpace: "normal",
             lineHeight: 1.4,

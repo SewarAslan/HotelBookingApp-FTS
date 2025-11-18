@@ -182,7 +182,7 @@ export default function RoomCard({
         </Box>
         {checkInDate && checkOutDate && (
           <Button
-            variant="gradient"
+            variant="gradient-secondary"
             sx={{
               fontWeight: 600,
               my: 2,

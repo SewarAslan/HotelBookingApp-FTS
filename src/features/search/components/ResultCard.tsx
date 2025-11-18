@@ -14,6 +14,7 @@ import type { SearchResultDto } from "../../../api/Api";
 import { PLACEHOLDERS } from "../../../constants/placeHolders";
 import { MUI_SIZES, MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useHotelDetails } from "../../hotel/hooks";
 
 interface ResultCardProps {
   data: SearchResultDto;
@@ -34,7 +35,8 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
     roomPrice,
     discount,
   } = data;
-
+  console.log(hotelId);
+  const hotel = useHotelDetails(hotelId as number);
   const discountedPrice = discount
     ? roomPrice && roomPrice - roomPrice * discount
     : roomPrice;
@@ -152,7 +154,12 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
             ))}
           </Box>
         </Box>
-
+        <Typography
+          variant={MUI_TYPOGRAPHY.BODY2}
+          color={theme.palette.text.secondary}
+        >
+          {hotel.data?.description}
+        </Typography>
         <Box
           sx={{
             mt: 2,
@@ -183,7 +190,7 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
           </Box>
 
           <Button
-            variant="gradient"
+            variant="gradient-secondary"
             sx={{
               fontWeight: 600,
               px: 3,
@@ -195,7 +202,7 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
               handleNavigate();
             }}
           >
-            More Details!
+            More Details
           </Button>
         </Box>
       </CardContent>

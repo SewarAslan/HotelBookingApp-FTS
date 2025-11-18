@@ -79,8 +79,17 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
     mode,
     ...(mode === "light"
       ? {
-          primary: { main: "#ff8c42", light: "#ffb56b", dark: "#c35e00" }, // برتقالي رئيسي
-          secondary: { main: "#23a79eff", light: "#8fd3cdff", dark: "#009e91" }, // تركواز ثانوي
+          primary: {
+            main: "#ff944d",
+            light: "#ffbb85",
+            dark: "#c8641e",
+          },
+          secondary: {
+            main: "#1dbbb4",
+            light: "#a6eae8",
+            dark: "#0f7d79",
+          },
+
           error: { main: "#ff4d4f" },
           success: { main: "#4caf50" },
           warning: { main: "#ffdf5d" },
@@ -91,15 +100,15 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
           },
           text: { primary: "#112127ff", secondary: "#6b3d1cff" },
           brand: {
-            white: "#ffffff",
-            orange: "#ff8c42",
+            turquoise: "#1dbbb4",
+            orange: "#ff944d",
             yellow: "#ffdf5d",
-            turquoise: "#00cfc1",
+            white: "#ffffff",
           },
           gradient: {
-            primary: "linear-gradient(135deg, #ffb56b, #ff8c42)",
-            secondary: "linear-gradient(135deg, #6df3e8, #00cfc1)",
-            tertiary: "linear-gradient(135deg, #ffffff, #00cfc1, #ffdf5d)",
+            secondary: "linear-gradient(135deg, #a6eae8, #1dbbb4)",
+            primary: "linear-gradient(135deg, #ffbb85, #ff944d)",
+            tertiary: "linear-gradient(135deg, #ffffff, #1dbbb4, #ffdf5d)",
           },
           customBackgrounds: {
             gradient: "linear-gradient(135deg, #a8edea 0%, #fed6a3 100%)",
@@ -107,8 +116,16 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
           },
         }
       : {
-          primary: { main: "#dfa871ff", light: "#ffd18f", dark: "#c35e00" },
-          secondary: { main: "#6df3e8", light: "#a7fbf9", dark: "#009e91" },
+          primary: {
+            main: "#dfa871",
+            light: "#ffd1a6",
+            dark: "#c8641e",
+          },
+          secondary: {
+            main: "#6df3e8",
+            light: "#a6eae8",
+            dark: "#0f7d79",
+          },
           error: { main: "#ff4d4f" },
           success: { main: "#81c784" },
           warning: { main: "#ffdf5d" },
@@ -119,19 +136,18 @@ const getDesignTokens = (mode: AppMode): ThemeOptions => ({
           },
           text: { primary: "#f3f4f6", secondary: "#cbd5e1" },
           brand: {
-            white: "#f8f9fa",
-            orange: "#ffd18f",
+            turquoise: "#6df3e8",
+            orange: "#ffd1a6",
             yellow: "#ffea91",
-            turquoise: "#a7fbf9",
+            white: "#f8f9fa",
           },
           gradient: {
-            primary: "linear-gradient(135deg, #ff8c42, #ffb56b)",
-            secondary: "linear-gradient(135deg, #00cfc1, #6df3e8)",
-            tertiary:
-              "linear-gradient(135deg, #0f0b0bff, #2e5c5bff, #706538ff)",
+            secondary: "linear-gradient(135deg, #1dbbb4, #a6eae8)",
+            primary: "linear-gradient(135deg, #c8641e, #ffd1a6)",
+            tertiary: "linear-gradient(135deg, #0f0b0b, #2e5c5b, #706538)",
           },
           customBackgrounds: {
-            gradient: "linear-gradient(135deg, #1b1b1b 0%, #141817ff 100%)",
+            gradient: "linear-gradient(135deg, #1b1b1b 0%, #141817 100%)",
             glass: "rgba(60, 60, 60, 0.35)",
           },
         }),
@@ -222,12 +238,22 @@ export const createAppTheme = (mode: AppMode): Theme => {
         },
         variants: [
           {
-            props: { variant: "gradient" as unknown },
+            props: { variant: "gradient-primary" as unknown },
             style: {
-              background: theme.palette.gradient.primary,
+              background: theme.palette.primary.main,
               color: "#fff",
               "&:hover": {
-                background: theme.palette.gradient.secondary,
+                background: theme.palette.primary.dark,
+              },
+            },
+          },
+          {
+            props: { variant: "gradient-secondary" as unknown },
+            style: {
+              background: theme.palette.secondary.main,
+              color: "#fff",
+              "&:hover": {
+                background: theme.palette.secondary.dark,
               },
             },
           },

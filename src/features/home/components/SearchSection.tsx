@@ -42,7 +42,7 @@ export default function SearchSection() {
           variant={MUI_TYPOGRAPHY.H4}
           sx={{
             mb: 2,
-            color: theme.palette.secondary.main,
+            color: theme.palette.primary.main,
             textAlign: "center",
             height: "56px",
           }}

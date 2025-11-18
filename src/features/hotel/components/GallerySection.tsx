@@ -140,7 +140,7 @@ const arrowStyles = (side: "left" | "right", theme: Theme) => ({
   WebkitBackdropFilter: "blur(8px) saturate(160%)",
   backgroundColor: "rgba(255, 255, 255, 0.15)",
   border: "1px solid rgba(255,255,255,0.2)",
-  color: theme.palette.secondary.dark,
+  color: theme.palette.text.primary,
   transition: "opacity 0.3s ease, background-color 0.3s ease",
   "&:hover": {
     backgroundColor: "rgba(255, 255, 255, 0.25)",

@@ -141,7 +141,7 @@ export default function ConfirmationPage() {
 
       <Box sx={{ mt: 4 }}>
         <Button
-          variant="gradient"
+          variant="gradient-primary"
           onClick={() => navigate("/")}
           sx={{ px: 5, py: 1.5, borderRadius: 3, fontWeight: 700 }}
         >

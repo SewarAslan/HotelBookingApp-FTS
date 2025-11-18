@@ -144,7 +144,7 @@ export default function FiltersSidebar() {
 
       <Typography
         variant={MUI_TYPOGRAPHY.H5}
-        sx={{ mb: 1, color: theme.palette.secondary.main, fontWeight: 700 }}
+        sx={{ mb: 1, color: theme.palette.primary.main, fontWeight: 700 }}
       >
         Filters
       </Typography>
@@ -169,7 +169,7 @@ export default function FiltersSidebar() {
             sx={{
               fontWeight: 600,
               fontSize: "0.9rem",
-              color: theme.palette.primary.dark,
+              color: theme.palette.secondary.dark,
               display: "flex",
               alignItems: "center",
               gap: "2px",
@@ -220,7 +220,7 @@ export default function FiltersSidebar() {
           }
           onChange={handleStarChange}
           valueLabelDisplay="auto"
-          sx={{ mb: 2, color: theme.palette.primary.main }}
+          sx={{ mb: 2, color: theme.palette.secondary.main }}
         />
       </Collapse>
 
@@ -244,7 +244,7 @@ export default function FiltersSidebar() {
             sx={{
               fontWeight: 600,
               fontSize: "0.9rem",
-              color: theme.palette.primary.dark,
+              color: theme.palette.secondary.dark,
             }}
           >
             ${priceRange[0]} – ${priceRange[1]}
@@ -324,12 +324,12 @@ export default function FiltersSidebar() {
                   onChange={() => handleAmenityToggle(a.name || "")}
                   color="secondary"
                   sx={{
-                    "&.Mui-checked": { color: theme.palette.primary.dark },
+                    "&.Mui-checked": { color: theme.palette.secondary.dark },
                   }}
                 />
               }
               label={
-                <Typography sx={{ color: theme.palette.primary.main }}>
+                <Typography sx={{ color: theme.palette.secondary.main }}>
                   {a.name}
                 </Typography>
               }
@@ -338,7 +338,7 @@ export default function FiltersSidebar() {
         ) : (
           <Typography
             variant={MUI_TYPOGRAPHY.BODY2}
-            sx={{ color: theme.palette.primary.main, opacity: 0.7 }}
+            sx={{ color: theme.palette.secondary.main, opacity: 0.7 }}
           >
             Loading amenities...
           </Typography>
