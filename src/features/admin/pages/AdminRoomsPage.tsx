@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import AdminToolbar from "../components/AdminToolbar";
 import AdminTable, { type Column } from "../components/AdminTable";
 import MessageCard from "../../../components/MessageCard";
@@ -14,36 +14,43 @@ import { showSnackbar } from "../../../store/snackbarSlice";
 import * as Yup from "yup";
 import { useAdminRooms } from "../hooks/useAdminRooms";
 import type { AdminRoom } from "../../../api/adminApi";
+import HotelSelector from "../components/HotelSelector";
 
-//
-// ------------------------------------------------------------
-// Types
-// ------------------------------------------------------------
-//
-
-// Table rows type
 type AdminRoomRow = {
   roomId: number;
   roomNumber: number;
   roomType: string;
   price: number;
-  availability: boolean;
+  availability: string;
   capacityOfAdults: number;
   capacityOfChildren: number;
 };
 
-//
-// ------------------------------------------------------------
-// Component
-// ------------------------------------------------------------
-//
+export default function AdminRoomsPage() {
+  const [hotelId, setHotelId] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
 
-export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
-  const { data, status, error, refetch, createRoom, updateRoom, deleteRoom } =
-    useAdminRooms(hotelId);
+  const dispatch = useDispatch();
+
+  const roomsHook = useAdminRooms(hotelId);
+
+  const data = roomsHook?.data ?? [];
+  const status = roomsHook?.status ?? STATUS.IDLE;
+  const error = roomsHook?.error ?? null;
+
+  const refetch = roomsHook?.refetch ?? (() => {});
+  const createRoom =
+    roomsHook?.createRoom ?? (() => Promise.resolve({ success: false }));
+  const updateRoom =
+    roomsHook?.updateRoom ?? (() => Promise.resolve({ success: false }));
+  const deleteRoom =
+    roomsHook?.deleteRoom ?? (() => Promise.resolve({ success: false }));
 
   const rooms: AdminRoom[] = data ?? [];
-  const dispatch = useDispatch();
+
+  function handleSearch(query: string) {
+    setSearch(query.trim());
+  }
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRoom, setEditingRoom] = useState<AdminRoom | null>(null);
@@ -51,41 +58,27 @@ export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<AdminRoom | null>(null);
 
-  //
-  // ------------------------------------------------------------
-  // Prepare rows for table
-  // ------------------------------------------------------------
-  //
+  const filteredRooms = rooms.filter((r) =>
+    r.roomNumber.toString().includes(search)
+  );
 
-  const preparedRows: AdminRoomRow[] = rooms.map((r) => ({
+  const preparedRows: AdminRoomRow[] = filteredRooms.map((r) => ({
     roomId: r.roomId,
     roomNumber: r.roomNumber,
     roomType: r.roomType,
     price: r.price,
-    availability: r.availability,
+    availability: r.availability ? "Available" : "Not Available",
     capacityOfAdults: r.capacityOfAdults,
     capacityOfChildren: r.capacityOfChildren,
   }));
-
-  //
-  // ------------------------------------------------------------
-  // Columns
-  // ------------------------------------------------------------
-  //
 
   const columns: Column[] = [
     { field: "roomId", headerName: "ID", width: 80 },
     { field: "roomNumber", headerName: "Room Number" },
     { field: "roomType", headerName: "Type" },
     { field: "price", headerName: "Price" },
-    { field: "availability", headerName: "Available" },
+    { field: "availability", headerName: "Availability" },
   ];
-
-  //
-  // ------------------------------------------------------------
-  // Handlers
-  // ------------------------------------------------------------
-  //
 
   function handleCreate() {
     setEditingRoom(null);
@@ -123,12 +116,6 @@ export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
     refetch();
   }
 
-  //
-  // ------------------------------------------------------------
-  // Submit form
-  // ------------------------------------------------------------
-  //
-
   async function handleFormSubmit(values: Record<string, unknown>) {
     const payload = {
       roomNumber: Number(values.roomNumber),
@@ -137,7 +124,7 @@ export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
       capacityOfAdults: Number(values.capacityOfAdults),
       capacityOfChildren: Number(values.capacityOfChildren),
       price: Number(values.price),
-      availability: Boolean(values.availability),
+      availability: values.availability === "true",
     };
 
     let result;
@@ -165,53 +152,56 @@ export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
     }
   }
 
-  //
-  // ------------------------------------------------------------
-  // Validation Schema
-  // ------------------------------------------------------------
-  //
-
   const roomSchema = Yup.object({
     roomNumber: Yup.number()
       .typeError("Room number must be a number")
-      .required("Required"),
-    roomType: Yup.string().required("Room Type is required"),
-    price: Yup.number().typeError("Price must be number").required("Required"),
-    capacityOfAdults: Yup.number()
-      .typeError("Adults capacity must be a number")
       .required(),
-    capacityOfChildren: Yup.number()
-      .typeError("Children capacity must be a number")
-      .required(),
-    availability: Yup.boolean().required(),
+    roomType: Yup.string().required(),
+    price: Yup.number().typeError("Price must be a number").required(),
+    capacityOfAdults: Yup.number().required(),
+    capacityOfChildren: Yup.number().required(),
+    availability: Yup.string().required(),
     roomPhotoUrl: Yup.string().optional(),
   });
-
-  //
-  // ------------------------------------------------------------
-  // Render
-  // ------------------------------------------------------------
-  //
-
+  const theme = useTheme();
   return (
-    <Box sx={{ p: 2 }}>
-      <AdminToolbar onCreate={handleCreate} />
+    <Box
+      sx={{
+        px: { xs: 2, sm: 3 },
+        py: 3,
+        animation: theme.animations.fadeInUp,
+      }}
+    >
+      <HotelSelector value={hotelId} onChange={setHotelId} />
 
-      {status === STATUS.ERROR ? (
+      {!hotelId && (
         <MessageCard
-          status="error"
-          error={error || "Failed to load rooms"}
-          onRetry={refetch}
-          data={null}
+          status="info"
+          data="Please choose a hotel to view its rooms."
         />
-      ) : (
-        <AdminTable<AdminRoomRow>
-          columns={columns}
-          rows={preparedRows}
-          loading={status === STATUS.LOADING}
-          onRowClick={handleRowClick}
-          onDeleteClick={handleDeleteClick}
-        />
+      )}
+
+      {hotelId && (
+        <Box sx={{ marginTop: "10px" }}>
+          <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
+
+          {status === STATUS.ERROR ? (
+            <MessageCard
+              status="error"
+              error={error || "Failed to load rooms"}
+              onRetry={refetch}
+              data={null}
+            />
+          ) : (
+            <AdminTable<AdminRoomRow>
+              columns={columns}
+              rows={preparedRows}
+              loading={status === STATUS.LOADING}
+              onRowClick={handleRowClick}
+              onDeleteClick={handleDeleteClick}
+            />
+          )}
+        </Box>
       )}
 
       <AdminFormDialog
@@ -223,7 +213,7 @@ export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
           roomNumber: editingRoom?.roomNumber ?? "",
           roomType: editingRoom?.roomType ?? "",
           price: editingRoom?.price ?? "",
-          availability: editingRoom?.availability ?? false,
+          availability: editingRoom?.availability ? "true" : "false",
           capacityOfAdults: editingRoom?.capacityOfAdults ?? "",
           capacityOfChildren: editingRoom?.capacityOfChildren ?? "",
           roomPhotoUrl: editingRoom?.roomPhotoUrl ?? "",
@@ -235,7 +225,6 @@ export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
           { name: "price", label: "Price", type: "number" },
           { name: "capacityOfAdults", label: "Adults", type: "number" },
           { name: "capacityOfChildren", label: "Children", type: "number" },
-
           {
             name: "availability",
             label: "Available",
@@ -245,7 +234,6 @@ export default function AdminRoomsPage({ hotelId }: { hotelId: number }) {
               { label: "Not Available", value: "false" },
             ],
           },
-
           { name: "roomPhotoUrl", label: "Photo URL", type: "text" },
         ]}
         onSubmit={handleFormSubmit}

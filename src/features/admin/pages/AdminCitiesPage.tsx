@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import AdminToolbar from "../components/AdminToolbar";
 import AdminTable, { type Column } from "../components/AdminTable";
 import { useAdminCities } from "../hooks";
@@ -14,24 +14,11 @@ import { useDispatch } from "react-redux";
 import { showSnackbar } from "../../../store/snackbarSlice";
 import type { AdminCity } from "../../../api/adminApi";
 
-//
-// ------------------------------------------------------------
-// Types
-// ------------------------------------------------------------
-//
-
-// what table rows actually look like
 type AdminCityRow = {
   id: number;
   name: string;
   description: string;
 };
-
-//
-// ------------------------------------------------------------
-// Component
-// ------------------------------------------------------------
-//
 
 export default function AdminCitiesPage() {
   const {
@@ -55,35 +42,17 @@ export default function AdminCitiesPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState<AdminCity | null>(null);
 
-  //
-  // ------------------------------------------------------------
-  // Prepare rows
-  // ------------------------------------------------------------
-  //
-
   const preparedRows: AdminCityRow[] = cities.map((city) => ({
     id: city.id,
     name: city.name || "",
     description: city.description || "",
   }));
 
-  //
-  // ------------------------------------------------------------
-  // Columns
-  // ------------------------------------------------------------
-  //
-
   const columns: Column[] = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "name", headerName: "City Name" },
     { field: "description", headerName: "Description" },
   ];
-
-  //
-  // ------------------------------------------------------------
-  // Handlers
-  // ------------------------------------------------------------
-  //
 
   function handleSearch(query: string) {
     setPage(1);
@@ -95,7 +64,6 @@ export default function AdminCitiesPage() {
     setDialogOpen(true);
   }
 
-  // row from table → convert back to original AdminCity
   function handleRowClick(row: AdminCityRow) {
     const city = cities.find((c) => c.id === row.id) ?? null;
     setEditingCity(city);
@@ -126,12 +94,6 @@ export default function AdminCitiesPage() {
     setSelectedCity(null);
     refetch();
   }
-
-  //
-  // ------------------------------------------------------------
-  // Submit form
-  // ------------------------------------------------------------
-  //
 
   async function handleFormSubmit(values: Record<string, unknown>) {
     const payload = {
@@ -164,25 +126,20 @@ export default function AdminCitiesPage() {
     }
   }
 
-  //
-  // ------------------------------------------------------------
-  // Validation Schema
-  // ------------------------------------------------------------
-  //
-
   const citySchema = Yup.object({
     name: Yup.string().required("City name is required"),
     description: Yup.string().optional(),
   });
 
-  //
-  // ------------------------------------------------------------
-  // Render
-  // ------------------------------------------------------------
-  //
-
+  const theme = useTheme();
   return (
-    <Box sx={{ p: 2 }}>
+    <Box
+      sx={{
+        px: { xs: 2, sm: 3 },
+        py: 3,
+        animation: theme.animations.fadeInUp,
+      }}
+    >
       <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
 
       {status === STATUS.ERROR ? (

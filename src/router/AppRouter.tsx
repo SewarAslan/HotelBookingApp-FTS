@@ -14,6 +14,7 @@ import AdminLayout from "../features/admin/layout/AdminLayout";
 import AdminCitiesPage from "../features/admin/pages/AdminCitiesPage";
 import AdminRoomsPage from "../features/admin/pages/AdminRoomsPage";
 import AdminHotelsPage from "../features/admin/pages/AdminHotelsPage";
+import AdminHomePage from "../features/admin/pages/AdminHomePage";
 
 export function AppRouter() {
   return (
@@ -69,11 +70,13 @@ export function AppRouter() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<AdminCitiesPage />} />
+            <Route index element={<AdminHomePage />} />
+
             <Route path="cities" element={<AdminCitiesPage />} />
             <Route path="hotels" element={<AdminHotelsPage />} />
-            <Route path="rooms" element={<AdminRoomsPage hotelId={0} />} />
+            <Route path="rooms" element={<AdminRoomsPage />} />
           </Route>
+
           <Route
             path="/hotel/:id"
             element={

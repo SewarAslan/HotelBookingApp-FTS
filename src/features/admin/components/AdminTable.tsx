@@ -42,21 +42,47 @@ export default function AdminTable<T extends Record<string, ReactNode>>({
     return <MessageCard status="success" data={[]} message="No results" />;
 
   return (
-    <Paper sx={{ overflow: "hidden", borderRadius: 3 }}>
+    <Paper
+      elevation={3}
+      sx={{
+        overflow: "hidden",
+        borderRadius: 3,
+        backdropFilter: "blur(12px) saturate(160%)",
+        backgroundColor: theme.palette.customBackgrounds.glass,
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow:
+          theme.palette.mode === "light"
+            ? "0 8px 32px rgba(0,0,0,0.05)"
+            : "0 8px 32px rgba(0,0,0,0.25)",
+        animation: theme.animations.fadeInUp,
+      }}
+    >
       <Table>
         <TableHead sx={{ bgcolor: theme.palette.primary.light + "22" }}>
           <TableRow>
             {columns.map((col) => (
               <TableCell
                 key={col.field}
-                sx={{ fontWeight: 700, width: col.width || "auto" }}
+                sx={{
+                  fontWeight: 700,
+                  width: col.width || "auto",
+                  color: theme.palette.primary.main,
+                }}
               >
                 {col.headerName}
               </TableCell>
             ))}
 
             {onDeleteClick && (
-              <TableCell sx={{ width: 80, fontWeight: 700 }}>Delete</TableCell>
+              <TableCell
+                sx={{
+                  width: 80,
+                  fontWeight: 700,
+                  color: theme.palette.error.main,
+                }}
+              >
+                Delete
+              </TableCell>
             )}
           </TableRow>
         </TableHead>
@@ -69,6 +95,10 @@ export default function AdminTable<T extends Record<string, ReactNode>>({
               onClick={() => onRowClick?.(row)}
               sx={{
                 cursor: onRowClick ? "pointer" : "default",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover,
+                },
               }}
             >
               {columns.map((col) => (

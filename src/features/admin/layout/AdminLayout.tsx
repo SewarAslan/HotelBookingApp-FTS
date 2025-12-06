@@ -1,9 +1,8 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import { Outlet, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import AdminSidebar from "../components/AdminSidebar";
 import { ROUTES } from "../../../constants/routes";
-import { useAuthActions } from "../../auth";
 
 function getPageTitle(pathname: string) {
   if (pathname.startsWith(ROUTES.ADMIN_CITIES)) return "Manage Cities";
@@ -15,7 +14,6 @@ function getPageTitle(pathname: string) {
 export default function AdminLayout() {
   const theme = useTheme();
   const location = useLocation();
-  const { authUser } = useAuthActions();
   const title = getPageTitle(location.pathname);
 
   return (
@@ -23,7 +21,7 @@ export default function AdminLayout() {
       sx={{
         display: "flex",
         minHeight: "100vh",
-        bgcolor: theme.palette.background.default,
+        bgcolor: "transparent",
       }}
     >
       <AdminSidebar />
@@ -32,31 +30,46 @@ export default function AdminLayout() {
         component="main"
         sx={{
           flexGrow: 1,
-          py: 3,
-          px: 3,
+          py: 4,
+          px: { xs: 2, sm: 3, md: 5 },
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Container maxWidth="xl" sx={{ animation: theme.animations.fadeInUp }}>
-          <Typography
-            variant="h4"
-            fontWeight={700}
-            color="text.primary"
-            sx={{ mb: 3 }}
-          >
-            {title}
-          </Typography>
+        <Card
+          elevation={3}
+          sx={{
+            width: "100%",
+            maxWidth: "xl",
+            borderRadius: 3,
+            background: theme.palette.customBackgrounds.glass,
+            animation: theme.animations.fadeInUp,
+          }}
+        >
+          <CardContent>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
 
-          {location.pathname === ROUTES.ADMIN ? (
-            <Box>
-              <Typography variant="body1" color="text.secondary">
-                Welcome {authUser?.givenName + " " + authUser?.familyName} you
-                can manage (cities, hotels, rooms)
+                px: 2,
+              }}
+            >
+              <Typography
+                variant="h4"
+                fontWeight={800}
+                color={theme.palette.primary.main}
+                sx={{ mb: 3 }}
+              >
+                {title}
               </Typography>
             </Box>
-          ) : (
             <Outlet />
-          )}
-        </Container>
+          </CardContent>
+        </Card>
       </Box>
     </Box>
   );

@@ -7,8 +7,10 @@ import {
   TextField,
   MenuItem,
   Box,
+  useTheme,
 } from "@mui/material";
 import { Formik, Form } from "formik";
+import { MUI_VARIANTS } from "../../../constants/muiTokens";
 
 export interface FieldConfig {
   name: string;
@@ -38,9 +40,36 @@ export default function AdminFormDialog({
   onSubmit,
   submitLabel = "Save",
 }: AdminFormDialogProps) {
+  const theme = useTheme();
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 700 }}>{title}</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        elevation: 3,
+        sx: {
+          borderRadius: 3,
+          backdropFilter: "blur(12px) saturate(160%)",
+          backgroundColor: theme.palette.customBackgrounds.glass,
+          border: `1px solid ${theme.palette.divider}`,
+          boxShadow:
+            theme.palette.mode === "light"
+              ? "0 8px 32px rgba(0,0,0,0.05)"
+              : "0 8px 32px rgba(0,0,0,0.25)",
+          animation: theme.animations.fadeInUp,
+        },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          fontWeight: 700,
+          color: theme.palette.primary.main,
+        }}
+      >
+        {title}
+      </DialogTitle>
 
       <Formik
         initialValues={initialValues}
@@ -96,9 +125,19 @@ export default function AdminFormDialog({
               </Box>
             </DialogContent>
 
-            <DialogActions>
-              <Button onClick={onClose}>Cancel</Button>
-              <Button type="submit" variant="gradient-primary" sx={{ px: 4 }}>
+            <DialogActions sx={{ px: 3, pb: 2 }}>
+              <Button
+                onClick={onClose}
+                variant={MUI_VARIANTS.GRADIENT2}
+                color="inherit"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant={MUI_VARIANTS.GRADIENT}
+                sx={{ px: 4 }}
+              >
                 {submitLabel}
               </Button>
             </DialogActions>

@@ -18,26 +18,14 @@ import {
   type HotelPayload,
 } from "../hooks/useAdminHotels";
 
-//
-// ------------------------------------------------------------
-// Types
-// ------------------------------------------------------------
-//
-
 type AdminHotelRow = {
   id: number;
-  hotelName: string;
+  name: string;
   hotelType: string;
   starRating: number | string;
   location: string;
   description: string;
 };
-
-//
-// ------------------------------------------------------------
-// Component
-// ------------------------------------------------------------
-//
 
 export default function AdminHotelsPage() {
   const {
@@ -61,40 +49,22 @@ export default function AdminHotelsPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState<AdminHotel | null>(null);
 
-  //
-  // ------------------------------------------------------------
-  // Prepare rows for table
-  // ------------------------------------------------------------
-  //
-
   const preparedRows: AdminHotelRow[] = hotels.map((h) => ({
     id: h.id,
-    hotelName: h.hotelName || h.name || "",
-    hotelType: h.hotelType || "",
+    name: h.name,
+    hotelType: h.hotelType ?? "",
     starRating: h.starRating ?? "",
-    location: h.location || "",
-    description: h.description || "",
+    location: h.location ?? "",
+    description: h.description ?? "",
   }));
-
-  //
-  // ------------------------------------------------------------
-  // Columns
-  // ------------------------------------------------------------
-  //
 
   const columns: Column[] = [
     { field: "id", headerName: "ID", width: 80 },
-    { field: "hotelName", headerName: "Hotel Name" },
+    { field: "name", headerName: "Hotel Name" },
     { field: "hotelType", headerName: "Type" },
     { field: "starRating", headerName: "Stars" },
     { field: "location", headerName: "Location" },
   ];
-
-  //
-  // ------------------------------------------------------------
-  // Handlers
-  // ------------------------------------------------------------
-  //
 
   function handleSearch(query: string) {
     setPage(1);
@@ -106,7 +76,6 @@ export default function AdminHotelsPage() {
     setDialogOpen(true);
   }
 
-  // Table sends AdminHotelRow → we convert back to AdminHotel
   function handleRowClick(row: AdminHotelRow) {
     const hotel = hotels.find((h) => h.id === row.id) ?? null;
     setEditingHotel(hotel);
@@ -138,15 +107,9 @@ export default function AdminHotelsPage() {
     refetch();
   }
 
-  //
-  // ------------------------------------------------------------
-  // Form submit
-  // ------------------------------------------------------------
-  //
-
   async function handleFormSubmit(values: Record<string, unknown>) {
     const payload: HotelPayload = {
-      hotelName: String(values.hotelName ?? values.name ?? ""),
+      name: String(values.name ?? ""),
       description: String(values.description ?? ""),
       hotelType: String(values.hotelType ?? ""),
       starRating: Number(values.starRating),
@@ -178,14 +141,8 @@ export default function AdminHotelsPage() {
     }
   }
 
-  //
-  // ------------------------------------------------------------
-  // Validation Schema
-  // ------------------------------------------------------------
-  //
-
   const hotelSchema = Yup.object({
-    hotelName: Yup.string().required("Hotel name is required"),
+    name: Yup.string().required("Hotel name is required"),
     description: Yup.string(),
     hotelType: Yup.string(),
     starRating: Yup.number()
@@ -195,12 +152,6 @@ export default function AdminHotelsPage() {
       .required("Star rating is required"),
     location: Yup.string(),
   });
-
-  //
-  // ------------------------------------------------------------
-  // Render
-  // ------------------------------------------------------------
-  //
 
   return (
     <Box sx={{ p: 2 }}>
@@ -229,7 +180,7 @@ export default function AdminHotelsPage() {
         title={editingHotel ? "Update Hotel" : "Create Hotel"}
         submitLabel={editingHotel ? "Update" : "Create"}
         initialValues={{
-          hotelName: editingHotel?.hotelName ?? editingHotel?.name ?? "",
+          name: editingHotel?.name ?? "",
           description: editingHotel?.description ?? "",
           hotelType: editingHotel?.hotelType ?? "",
           starRating: editingHotel?.starRating ?? 1,
@@ -237,7 +188,7 @@ export default function AdminHotelsPage() {
         }}
         validationSchema={hotelSchema}
         fields={[
-          { name: "hotelName", label: "Hotel Name", type: "text" },
+          { name: "name", label: "Hotel Name", type: "text" },
           { name: "description", label: "Description", type: "textarea" },
           { name: "hotelType", label: "Hotel Type", type: "text" },
           { name: "starRating", label: "Star Rating", type: "number" },
@@ -253,9 +204,7 @@ export default function AdminHotelsPage() {
         title="Delete Hotel"
         message={
           selectedHotel
-            ? `Are you sure you want to delete "${
-                selectedHotel.hotelName ?? selectedHotel.name
-              }"?`
+            ? `Are you sure you want to delete "${selectedHotel.name}"?`
             : "Are you sure you want to delete this hotel?"
         }
       />

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
-import { requestJson, type AdminRoom } from "../../../api/adminApi";
+import { requestJson } from "../../../api/adminApi";
+import type { AdminRoom } from "../../../api/adminApi";
 
-interface RoomPayload {
+export interface RoomPayload {
   roomNumber: number;
   roomPhotoUrl?: string;
   roomType: string;
@@ -12,92 +13,95 @@ interface RoomPayload {
   availability: boolean;
 }
 
-interface UseAdminRoomsResult {
-  data: AdminRoom[] | null;
-  status: StatusType;
-  error: string | null;
-  refetch: () => void;
+// ---------------------------------------------
+// Helper — check if room belongs to selected hotel
+// ---------------------------------------------
+function roomBelongsToHotel(roomId: number, hotelId: number | null): boolean {
+  if (!hotelId) return false;
 
-  createRoom: (
-    payload: RoomPayload
-  ) => Promise<{ success: boolean; error?: string }>;
-  updateRoom: (
-    roomId: number,
-    payload: RoomPayload
-  ) => Promise<{ success: boolean; error?: string }>;
-  deleteRoom: (roomId: number) => Promise<{ success: boolean; error?: string }>;
+  const start = hotelId * 100; // example: hotelId=3 → 300–399
+  const end = hotelId * 100 + 99;
+
+  return roomId >= start && roomId <= end;
 }
 
-export function useAdminRooms(hotelId: number): UseAdminRoomsResult {
+// ---------------------------------------------
+// The main hook
+// ---------------------------------------------
+export function useAdminRooms(selectedHotelId: number | null) {
   const [data, setData] = useState<AdminRoom[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<string | null>(null);
 
   const fetchRooms = useCallback(async () => {
-    if (!hotelId) return;
+    // إذا ما اختار هوتيل → رجع rooms فاضي
+    if (!selectedHotelId) {
+      setData([]);
+      setStatus(STATUS.IDLE);
+      return;
+    }
 
     try {
       setStatus(STATUS.LOADING);
       setError(null);
 
-      const rooms = await requestJson<AdminRoom[]>(`/hotels/${hotelId}/rooms`);
-      setData(rooms);
+      const allRooms = await requestJson<AdminRoom[]>(
+        `/hotels/${selectedHotelId}/rooms`
+      );
+
+      const filtered = allRooms.filter((room) =>
+        roomBelongsToHotel(room.roomId, selectedHotelId)
+      );
+
+      setData(filtered);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
       console.error("Failed to load rooms:", err);
       setError("Failed to load rooms");
       setStatus(STATUS.ERROR);
     }
-  }, [hotelId]);
+  }, [selectedHotelId]);
 
   useEffect(() => {
     fetchRooms();
   }, [fetchRooms]);
 
-  const createRoom: UseAdminRoomsResult["createRoom"] = async (payload) => {
+  // CRUD operations
+  async function createRoom(payload: RoomPayload) {
     try {
-      // backend عندك ما برتبط الـ room بالـ hotel في POST /api/rooms
-      await requestJson<AdminRoom>("/rooms", {
+      await requestJson("/rooms", {
         method: "POST",
         body: JSON.stringify(payload),
       });
       await fetchRooms();
       return { success: true };
-    } catch (err) {
-      console.error("Create room failed:", err);
+    } catch {
       return { success: false, error: "Failed to create room" };
     }
-  };
+  }
 
-  const updateRoom: UseAdminRoomsResult["updateRoom"] = async (
-    roomId,
-    payload
-  ) => {
+  async function updateRoom(id: number, payload: RoomPayload) {
     try {
-      await requestJson<AdminRoom>(`/rooms/${roomId}`, {
+      await requestJson(`/rooms/${id}`, {
         method: "PUT",
         body: JSON.stringify(payload),
       });
       await fetchRooms();
       return { success: true };
-    } catch (err) {
-      console.error("Update room failed:", err);
+    } catch {
       return { success: false, error: "Failed to update room" };
     }
-  };
+  }
 
-  const deleteRoom: UseAdminRoomsResult["deleteRoom"] = async (roomId) => {
+  async function deleteRoom(id: number) {
     try {
-      await requestJson<AdminRoom[]>(`/rooms/${roomId}`, {
-        method: "DELETE",
-      });
+      await requestJson(`/rooms/${id}`, { method: "DELETE" });
       await fetchRooms();
       return { success: true };
-    } catch (err) {
-      console.error("Delete room failed:", err);
+    } catch {
       return { success: false, error: "Failed to delete room" };
     }
-  };
+  }
 
   return {
     data,
