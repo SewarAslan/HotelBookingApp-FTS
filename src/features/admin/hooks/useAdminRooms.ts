@@ -13,28 +13,21 @@ export interface RoomPayload {
   availability: boolean;
 }
 
-// ---------------------------------------------
-// Helper — check if room belongs to selected hotel
-// ---------------------------------------------
 function roomBelongsToHotel(roomId: number, hotelId: number | null): boolean {
   if (!hotelId) return false;
 
-  const start = hotelId * 100; // example: hotelId=3 → 300–399
+  const start = hotelId * 100;
   const end = hotelId * 100 + 99;
 
   return roomId >= start && roomId <= end;
 }
 
-// ---------------------------------------------
-// The main hook
-// ---------------------------------------------
 export function useAdminRooms(selectedHotelId: number | null) {
   const [data, setData] = useState<AdminRoom[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<string | null>(null);
 
   const fetchRooms = useCallback(async () => {
-    // إذا ما اختار هوتيل → رجع rooms فاضي
     if (!selectedHotelId) {
       setData([]);
       setStatus(STATUS.IDLE);
@@ -66,7 +59,6 @@ export function useAdminRooms(selectedHotelId: number | null) {
     fetchRooms();
   }, [fetchRooms]);
 
-  // CRUD operations
   async function createRoom(payload: RoomPayload) {
     try {
       await requestJson("/rooms", {

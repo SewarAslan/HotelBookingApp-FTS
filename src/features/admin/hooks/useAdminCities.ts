@@ -45,17 +45,14 @@ export function useAdminCities(): UseAdminCitiesResult {
       setStatus(STATUS.LOADING);
       setError(null);
 
-      // الـ backend تبع زميلك بيرجع كل المدن بدون query params
       const cities = await requestJson<AdminCity[]>("/cities");
 
-      // نعمل search من الـ frontend
       const filtered = search
         ? cities.filter((c) =>
             c.name.toLowerCase().includes(search.toLowerCase())
           )
         : cities;
 
-      // نعمل pagination من الـ frontend
       const start = (page - 1) * PAGE_SIZE;
       const paginated = filtered.slice(start, start + PAGE_SIZE);
 

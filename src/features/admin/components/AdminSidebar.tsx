@@ -47,7 +47,7 @@ export default function AdminSidebar() {
         flexDirection: "column",
         py: 3,
         px: 1,
-        mx: 1, // optional spacing from left
+        mx: 1,
       }}
     >
       <Box sx={{ px: 2.5, mb: 2 }}>

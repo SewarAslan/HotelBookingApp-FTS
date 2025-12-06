@@ -78,9 +78,7 @@ export default function CheckoutPage() {
             phone: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={() => {
-            // التحكم الكامل في btn نفسه (CheckoutButton)
-          }}
+          onSubmit={() => {}}
         >
           <Form>
             <ItemsSection items={items} />
