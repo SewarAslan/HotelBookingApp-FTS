@@ -93,7 +93,7 @@ export default function ConfirmationPage() {
           sx={{
             letterSpacing: 2,
             textTransform: "uppercase",
-            color: theme.palette.text.secondary,
+            color: theme.palette.secondary.main,
             textAlign: "center",
             mb: 1,
           }}
@@ -110,13 +110,18 @@ export default function ConfirmationPage() {
             color: theme.palette.primary.main,
           }}
         >
-          Booking Confirmed 🎉
+          Booking Confirmed
         </Typography>
 
         {bookingId && (
           <Box sx={{ textAlign: "center", mb: 2 }}>
             <Chip
-              icon={<ConfirmationNumberOutlinedIcon />}
+              icon={
+                <ConfirmationNumberOutlinedIcon
+                  fontSize="small"
+                  sx={{ color: theme.palette.primary.main }}
+                />
+              }
               label={`Booking ID: ${bookingId}`}
               variant="outlined"
               sx={{
@@ -154,13 +159,19 @@ export default function ConfirmationPage() {
           >
             <Box>
               <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-                <CheckCircleOutlineIcon sx={{ fontSize: 52 }} />
+                <CheckCircleOutlineIcon
+                  sx={{
+                    fontSize: 52,
+                    color: theme.palette.background.paper,
+                  }}
+                />
               </Box>
 
               <Typography
                 variant={MUI_TYPOGRAPHY.H6}
-                fontWeight={800}
+                fontWeight={700}
                 textAlign="center"
+                sx={{ color: theme.palette.background.paper }}
               >
                 Your stay is all set!
               </Typography>
@@ -168,7 +179,12 @@ export default function ConfirmationPage() {
               {final && (
                 <Typography
                   variant={MUI_TYPOGRAPHY.BODY2}
-                  sx={{ mt: 1.5, textAlign: "center", opacity: 0.9 }}
+                  sx={{
+                    mt: 1.5,
+                    textAlign: "center",
+                    opacity: 0.9,
+                    color: theme.palette.background.paper,
+                  }}
                 >
                   A confirmation email has been sent to{" "}
                   <strong>{final.email}</strong>. We&apos;re excited to welcome
@@ -186,10 +202,17 @@ export default function ConfirmationPage() {
                   }}
                 />
                 <Stack spacing={0.5}>
-                  <Typography variant={MUI_TYPOGRAPHY.CAPTION}>
+                  <Typography
+                    variant={MUI_TYPOGRAPHY.CAPTION}
+                    sx={{ color: theme.palette.background.paper }}
+                  >
                     Guest
                   </Typography>
-                  <Typography variant={MUI_TYPOGRAPHY.BODY1} fontWeight={700}>
+                  <Typography
+                    variant={MUI_TYPOGRAPHY.BODY1}
+                    fontWeight={700}
+                    sx={{ color: theme.palette.background.paper }}
+                  >
                     {final.customerName}
                   </Typography>
                 </Stack>
@@ -259,13 +282,19 @@ export default function ConfirmationPage() {
                     </Typography>
                     <Stack spacing={0.5}>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <EmailOutlinedIcon fontSize="small" />
+                        <EmailOutlinedIcon
+                          fontSize="small"
+                          sx={{ color: theme.palette.secondary.main }}
+                        />
                         <Typography variant={MUI_TYPOGRAPHY.BODY2}>
                           {final.email}
                         </Typography>
                       </Stack>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <PhoneIphoneOutlinedIcon fontSize="small" />
+                        <PhoneIphoneOutlinedIcon
+                          fontSize="small"
+                          sx={{ color: theme.palette.secondary.main }}
+                        />
                         <Typography variant={MUI_TYPOGRAPHY.BODY2}>
                           {final.phone}
                         </Typography>
@@ -282,14 +311,20 @@ export default function ConfirmationPage() {
                     </Typography>
                     <Stack spacing={0.8} sx={{ mt: 0.5 }}>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <MeetingRoomOutlinedIcon fontSize="small" />
+                        <MeetingRoomOutlinedIcon
+                          fontSize="small"
+                          sx={{ color: theme.palette.secondary.main }}
+                        />
                         <Typography variant={MUI_TYPOGRAPHY.BODY2}>
                           Rooms: <strong>{final.numberOfRooms}</strong>
                         </Typography>
                       </Stack>
 
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <CalendarMonthOutlinedIcon fontSize="small" />
+                        <CalendarMonthOutlinedIcon
+                          fontSize="small"
+                          sx={{ color: theme.palette.secondary.main }}
+                        />
                         <Typography variant={MUI_TYPOGRAPHY.BODY2}>
                           Date:{" "}
                           <strong>

@@ -38,7 +38,7 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
   console.log(hotelId);
   const hotel = useHotelDetails(hotelId as number);
   const discountedPrice = discount
-    ? roomPrice && roomPrice - roomPrice * discount
+    ? roomPrice && roomPrice - (roomPrice * discount) / 100
     : roomPrice;
 
   const currentParams = new URLSearchParams(location.search);
@@ -90,7 +90,7 @@ const ResultCard = React.memo(({ data }: ResultCardProps) => {
         />
         {discount && discount > 0 && (
           <Chip
-            label={`-${Math.round(discount * 100)}%`}
+            label={`-${discount}%`}
             size={MUI_SIZES.SMALL}
             sx={{
               position: "absolute",
