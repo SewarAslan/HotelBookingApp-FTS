@@ -22,6 +22,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PhoneIphoneOutlinedIcon from "@mui/icons-material/PhoneIphoneOutlined";
 import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import { useReceiptPdf } from "../hooks/useReceiptPdf";
 
 interface BookingSummary {
   customerName: string;
@@ -43,6 +44,7 @@ export default function ConfirmationPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const bookingId = searchParams.get("bookingId");
+  const { generatePDF } = useReceiptPdf();
 
   const location = useLocation();
   const state = location.state as LocationState | null;
@@ -361,6 +363,19 @@ export default function ConfirmationPage() {
                     sx={{ px: 5, py: 1.5, borderRadius: 3, fontWeight: 700 }}
                   >
                     Back to Home
+                  </Button>
+                  <Button
+                    variant="gradient-secondary"
+                    onClick={() => generatePDF(final)}
+                    sx={{
+                      ml: 2,
+                      px: 5,
+                      py: 1.5,
+                      borderRadius: 3,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Download Receipt (PDF)
                   </Button>
                 </Box>
               </>
