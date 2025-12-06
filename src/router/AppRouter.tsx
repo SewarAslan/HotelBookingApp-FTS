@@ -72,7 +72,7 @@ export function AppRouter() {
             <Route index element={<AdminCitiesPage />} />
             <Route path="cities" element={<AdminCitiesPage />} />
             <Route path="hotels" element={<AdminHotelsPage />} />
-            <Route path="rooms" element={<AdminRoomsPage />} />
+            <Route path="rooms" element={<AdminRoomsPage hotelId={0} />} />
           </Route>
           <Route
             path="/hotel/:id"

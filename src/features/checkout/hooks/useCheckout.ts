@@ -1,15 +1,17 @@
 import { useCallback, useState } from "react";
-import dayjs from "dayjs";
 import { apiClient } from "../../../api/client";
-import type { BookingRequest } from "../../../api/Api";
 import { STATUS, type StatusType } from "../../../constants/status";
 import type { CartItem } from "../../../store/cartSlice";
 
 interface CheckoutParams {
-  customerName: string;
-  hotelName: string;
+  userId: number;
   items: CartItem[];
-  paymentMethod: string;
+}
+interface BookingResponse {
+  bookingId: number;
+  hotelId: number;
+  roomId: number;
+  userId: number;
 }
 
 export function useCheckout() {
@@ -17,44 +19,36 @@ export function useCheckout() {
   const [error, setError] = useState<string | null>(null);
 
   const createBooking = useCallback(
-    async ({
-      customerName,
-      hotelName,
-      items,
-      paymentMethod,
-    }: CheckoutParams) => {
-      if (!items.length) return false;
-
+    async ({ userId, items }: CheckoutParams) => {
       setStatus(STATUS.LOADING);
       setError(null);
 
       try {
-        for (const item of items) {
-          const start = dayjs(item.checkInDate);
-          const end = dayjs(item.checkOutDate);
-          const nights = Math.max(end.diff(start, "day"), 1);
-          const totalCost = (item.price ?? 0) * nights;
+        const bookingIds: number[] = [];
 
-          const payload: BookingRequest = {
-            customerName,
-            hotelName,
-            roomNumber: String(item.roomId ?? ""),
-            roomType: item.roomType ?? "",
-            bookingDateTime: new Date().toISOString(),
-            totalCost,
-            paymentMethod,
+        for (const item of items) {
+          const payload = {
+            hotelId: item.hotelId!,
+            roomId: item.roomId!,
+            userId,
           };
 
-          await apiClient.api.bookingsCreate(payload);
+          const res = await apiClient.api.bookingsCreate(payload);
+
+          const data = res.data as BookingResponse | undefined;
+          const bookingId = data?.bookingId;
+          if (bookingId) {
+            bookingIds.push(bookingId);
+          }
         }
 
         setStatus(STATUS.SUCCESS);
-        return true;
+        return bookingIds;
       } catch (e) {
         console.error("Failed to create bookings", e);
         setError("Failed to complete booking. Please try again.");
         setStatus(STATUS.ERROR);
-        return false;
+        return [];
       }
     },
     []

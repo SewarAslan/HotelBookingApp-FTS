@@ -5,8 +5,10 @@ import {
   TableRow,
   TableCell,
   Paper,
+  IconButton,
   useTheme,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import MessageCard from "../../../components/MessageCard";
 import type { ReactNode } from "react";
 
@@ -21,6 +23,7 @@ interface AdminTableProps<T extends Record<string, ReactNode>> {
   rows: T[];
   loading?: boolean;
   onRowClick?: (row: T) => void;
+  onDeleteClick?: (row: T) => void;
 }
 
 export default function AdminTable<T extends Record<string, ReactNode>>({
@@ -28,18 +31,15 @@ export default function AdminTable<T extends Record<string, ReactNode>>({
   rows,
   loading = false,
   onRowClick,
+  onDeleteClick,
 }: AdminTableProps<T>) {
   const theme = useTheme();
 
   if (loading)
-    return (
-      <MessageCard status="loading" message="Loading data..." data={null} />
-    );
+    return <MessageCard status="loading" data={null} message="Loading..." />;
 
   if (!loading && rows.length === 0)
-    return (
-      <MessageCard status="success" data={[]} message="No results found." />
-    );
+    return <MessageCard status="success" data={[]} message="No results" />;
 
   return (
     <Paper sx={{ overflow: "hidden", borderRadius: 3 }}>
@@ -54,6 +54,10 @@ export default function AdminTable<T extends Record<string, ReactNode>>({
                 {col.headerName}
               </TableCell>
             ))}
+
+            {onDeleteClick && (
+              <TableCell sx={{ width: 80, fontWeight: 700 }}>Delete</TableCell>
+            )}
           </TableRow>
         </TableHead>
 
@@ -62,12 +66,24 @@ export default function AdminTable<T extends Record<string, ReactNode>>({
             <TableRow
               key={i}
               hover
-              onClick={() => onRowClick && onRowClick(row)}
-              sx={{ cursor: onRowClick ? "pointer" : "default" }}
+              onClick={() => onRowClick?.(row)}
+              sx={{
+                cursor: onRowClick ? "pointer" : "default",
+              }}
             >
               {columns.map((col) => (
-                <TableCell key={col.field}>{row[col.field]}</TableCell>
+                <TableCell key={col.field}>
+                  {String(row[col.field] ?? "")}
+                </TableCell>
               ))}
+
+              {onDeleteClick && (
+                <TableCell onClick={(e) => e.stopPropagation()}>
+                  <IconButton color="error" onClick={() => onDeleteClick(row)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

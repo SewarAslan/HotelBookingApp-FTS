@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { useState, useMemo } from "react";
 import { useHotelDetails } from "../../hotel/hooks/useHotelDetails";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../store/store";
 
 interface UserInfoFormValues {
   customerName: string;
@@ -15,7 +17,8 @@ interface UserInfoFormValues {
 
 export default function CheckoutButton() {
   const navigate = useNavigate();
-
+  const { authUser } = useSelector((state: RootState) => state.auth);
+  const userId = authUser?.userId;
   const { values, isValid } = useFormikContext<UserInfoFormValues>();
   const { items, clearCart } = useCart();
   const [openError, setOpenError] = useState(false);
@@ -36,14 +39,9 @@ export default function CheckoutButton() {
   }, [items]);
 
   const handleCheckout = async () => {
-    if (!isValid || items.length === 0 || !hotel?.hotelName) return;
+    if (!isValid || items.length === 0 || !userId) return;
 
-    const ok = await createBooking({
-      customerName: values.customerName,
-      hotelName: hotel.hotelName,
-      items,
-      paymentMethod: "visa",
-    });
+    const ok = await createBooking({ userId, items });
 
     if (ok) {
       const bookingDateTime = new Date().toISOString();
@@ -51,17 +49,18 @@ export default function CheckoutButton() {
         10000000 + Math.random() * 90000000
       ).toString();
 
-      const bookingId = confirmationNumber; // نستخدمه كـ bookingId في الـ URL
+      const bookingId = confirmationNumber;
 
       const summary = {
         customerName: values.customerName,
         email: values.email,
         phone: values.phone,
-        hotelName: hotel.hotelName,
+        hotelName: hotel?.hotelName,
         totalCost,
         bookingDateTime,
         confirmationNumber,
         numberOfRooms: items.length,
+        items,
       };
 
       clearCart();

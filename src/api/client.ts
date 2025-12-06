@@ -3,7 +3,7 @@ import { Api } from "./Api";
 import Cookies from "js-cookie";
 
 export const apiClient = new Api({
-  baseUrl: "https://hotel.foothilltech.net",
+  baseUrl: "http://localhost:5000",
 
   securityWorker: () => {
     const token = Cookies.get("token");
