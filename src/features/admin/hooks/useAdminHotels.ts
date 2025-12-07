@@ -2,20 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { requestJson } from "../../../api/adminApi";
 
-interface AdminHotelRaw {
-  id: number;
-  hotelName?: string;
-  name?: string;
-  description: string;
-  hotelType: string;
-  starRating: number;
-  latitude?: number;
-  longitude?: number;
-  location?: string;
-  imageUrl?: string;
-  cityId?: number;
-}
-
 export interface AdminHotel {
   id: number;
   name: string;
@@ -42,25 +28,42 @@ export interface HotelPayload {
 }
 
 const PAGE_SIZE = 10;
-
 export function useAdminHotels() {
-  const [data, setData] = useState<AdminHotel[] | null>(null);
+  const [data, setData] = useState<AdminHotel[]>([]);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<string | null>(null);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const fetchHotels = useCallback(async () => {
     try {
       setStatus(STATUS.LOADING);
       setError(null);
 
-      const hotelsRaw = await requestJson<AdminHotelRaw[]>("/hotels");
+      // 1) Fetch hotels for specific page
+      const hotelsRaw = await requestJson<AdminHotel[]>(
+        `/hotels?pageNumber=${page}&pageSize=${PAGE_SIZE}&searchQuery=${search}`
+      );
 
-      const hotels: AdminHotel[] = hotelsRaw.map((h) => ({
+      // 2) Fetch ALL hotels once to compute total count
+      const allHotels = await requestJson<AdminHotel[]>(
+        "/hotels?pageSize=9999"
+      );
+
+      const filteredTotal = search
+        ? allHotels.filter((h) =>
+            (h.name ?? "").toLowerCase().includes(search.toLowerCase())
+          ).length
+        : allHotels.length;
+
+      setTotalItems(filteredTotal);
+
+      // 3) Normalize hotels
+      const hotels = hotelsRaw.map((h) => ({
         id: h.id,
-        name: h.hotelName ?? h.name ?? "",
+        name: h.name ?? "",
         description: h.description ?? "",
         hotelType: h.hotelType ?? "",
         starRating: h.starRating ?? 0,
@@ -71,44 +74,29 @@ export function useAdminHotels() {
         cityId: h.cityId,
       }));
 
-      const filtered = search
-        ? hotels.filter((h) => {
-            const q = search.toLowerCase();
-            return (
-              h.name.toLowerCase().includes(q) ||
-              h.description.toLowerCase().includes(q) ||
-              (h.location?.toLowerCase().includes(q) ?? false)
-            );
-          })
-        : hotels;
-
-      const start = (page - 1) * PAGE_SIZE;
-      const paginated = filtered.slice(start, start + PAGE_SIZE);
-
-      setData(paginated);
+      setData(hotels);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
       console.error("Failed to load hotels:", err);
       setError("Failed to load hotels");
       setStatus(STATUS.ERROR);
     }
-  }, [search, page]);
+  }, [page, search]);
 
   useEffect(() => {
     fetchHotels();
   }, [fetchHotels]);
 
+  // CRUD
   const createHotel = async (payload: HotelPayload) => {
     try {
       await requestJson("/hotels", {
         method: "POST",
         body: JSON.stringify(payload),
       });
-
-      await fetchHotels();
+      fetchHotels();
       return { success: true };
-    } catch (err) {
-      console.error("Create hotel failed:", err);
+    } catch {
       return { success: false, error: "Failed to create hotel" };
     }
   };
@@ -119,25 +107,19 @@ export function useAdminHotels() {
         method: "PUT",
         body: JSON.stringify(payload),
       });
-
-      await fetchHotels();
+      fetchHotels();
       return { success: true };
-    } catch (err) {
-      console.error("Update hotel failed:", err);
+    } catch {
       return { success: false, error: "Failed to update hotel" };
     }
   };
 
   const deleteHotel = async (id: number) => {
     try {
-      await requestJson(`/hotels/${id}`, {
-        method: "DELETE",
-      });
-
-      await fetchHotels();
+      await requestJson(`/hotels/${id}`, { method: "DELETE" });
+      fetchHotels();
       return { success: true };
-    } catch (err) {
-      console.error("Delete hotel failed:", err);
+    } catch {
       return { success: false, error: "Failed to delete hotel" };
     }
   };
@@ -148,13 +130,15 @@ export function useAdminHotels() {
     error,
     refetch: fetchHotels,
 
+    // pagination state
     search,
     setSearch,
-
     page,
     setPage,
+    totalItems,
     pageSize: PAGE_SIZE,
 
+    // crud
     createHotel,
     updateHotel,
     deleteHotel,

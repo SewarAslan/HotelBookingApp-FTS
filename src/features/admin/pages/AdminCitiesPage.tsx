@@ -5,6 +5,7 @@ import AdminTable, { type Column } from "../components/AdminTable";
 import { useAdminCities } from "../hooks";
 import MessageCard from "../../../components/MessageCard";
 import { STATUS } from "../../../constants/status";
+import { TablePagination } from "@mui/material";
 
 import AdminFormDialog from "../components/AdminFormDialog";
 import ConfirmDialog from "../components/ConfirmDialog";
@@ -27,10 +28,13 @@ export default function AdminCitiesPage() {
     error,
     refetch,
     setSearch,
+    page,
     setPage,
+    pageSize,
     createCity,
     updateCity,
     deleteCity,
+    totalItems,
   } = useAdminCities();
 
   const cities: AdminCity[] = data ?? [];
@@ -132,6 +136,8 @@ export default function AdminCitiesPage() {
   });
 
   const theme = useTheme();
+  const tablePage = page > 0 ? page - 1 : 0;
+
   return (
     <Box
       sx={{
@@ -141,6 +147,14 @@ export default function AdminCitiesPage() {
       }}
     >
       <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
+      <TablePagination
+        component="div"
+        count={totalItems}
+        page={tablePage}
+        onPageChange={(_, newPage) => setPage(newPage + 1)}
+        rowsPerPage={pageSize}
+        rowsPerPageOptions={[pageSize]}
+      />
 
       {status === STATUS.ERROR ? (
         <MessageCard

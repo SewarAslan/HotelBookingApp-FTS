@@ -7,6 +7,7 @@ import { STATUS } from "../../../constants/status";
 
 import AdminFormDialog from "../components/AdminFormDialog";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { TablePagination } from "@mui/material";
 
 import { useDispatch } from "react-redux";
 import { showSnackbar } from "../../../store/snackbarSlice";
@@ -34,7 +35,10 @@ export default function AdminHotelsPage() {
     error,
     refetch,
     setSearch,
+    page,
     setPage,
+    totalItems,
+    pageSize,
     createHotel,
     updateHotel,
     deleteHotel,
@@ -152,10 +156,19 @@ export default function AdminHotelsPage() {
       .required("Star rating is required"),
     location: Yup.string(),
   });
+  const tablePage = page > 0 ? page - 1 : 0;
 
   return (
     <Box sx={{ p: 2 }}>
       <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
+      <TablePagination
+        component="div"
+        count={totalItems}
+        page={tablePage}
+        onPageChange={(_, newPage) => setPage(newPage + 1)}
+        rowsPerPage={pageSize}
+        rowsPerPageOptions={[pageSize]}
+      />
 
       {status === STATUS.ERROR ? (
         <MessageCard

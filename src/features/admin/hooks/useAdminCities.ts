@@ -28,14 +28,15 @@ interface UseAdminCitiesResult {
     payload: CityPayload
   ) => Promise<{ success: boolean; error?: string }>;
   deleteCity: (id: number) => Promise<{ success: boolean; error?: string }>;
+  totalItems: number;
 }
 
 const PAGE_SIZE = 10;
-
 export function useAdminCities(): UseAdminCitiesResult {
   const [data, setData] = useState<AdminCity[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
   const [error, setError] = useState<string | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -54,6 +55,7 @@ export function useAdminCities(): UseAdminCitiesResult {
         : cities;
 
       const start = (page - 1) * PAGE_SIZE;
+      setTotalItems(filtered.length);
       const paginated = filtered.slice(start, start + PAGE_SIZE);
 
       setData(paginated);
@@ -123,6 +125,7 @@ export function useAdminCities(): UseAdminCitiesResult {
     page,
     setPage,
     pageSize: PAGE_SIZE,
+    totalItems,
     createCity,
     updateCity,
     deleteCity,
