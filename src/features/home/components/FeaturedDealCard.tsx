@@ -76,7 +76,7 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
 
         {discount && discount > 0 && (
           <Chip
-            label={`-${discount * 100}%`}
+            label={`-${discount}%`}
             size={MUI_SIZES.SMALL}
             sx={{
               position: "absolute",

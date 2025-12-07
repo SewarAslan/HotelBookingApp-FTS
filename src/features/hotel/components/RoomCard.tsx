@@ -40,6 +40,8 @@ export default function RoomCard({
   const { addToCart } = useCart();
   const dispatch = useDispatch();
   const { authUser } = useAuthActions();
+  console.log("ROOM CARD DATA:", room);
+
   return (
     <Card
       elevation={3}

@@ -48,19 +48,14 @@ export interface BookingDetailsDto {
 }
 
 export interface BookingRequest {
-  customerName?: string | null;
-  hotelName?: string | null;
-  roomNumber?: string | null;
-  roomType?: string | null;
-  /** @format date-time */
-  bookingDateTime?: string;
-  /** @format double */
-  totalCost?: number;
-  paymentMethod?: string | null;
+  hotelId: number;
+  roomId: number;
+  userId: number;
 }
 
 export interface CityDto {
   /** @format int32 */
+  [key: string]: unknown;
   id?: number;
   name?: string | null;
   description?: string | null;
@@ -79,6 +74,7 @@ export interface CityForUpdateDto {
 
 export interface CityWithoutHotels {
   /** @format int32 */
+  [key: string]: unknown;
   id?: number;
   name?: string | null;
   description?: string | null;
@@ -395,7 +391,7 @@ export interface ApiConfig<SecurityDataType = unknown> {
   baseUrl?: string;
   baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
   securityWorker?: (
-    securityData: SecurityDataType | null,
+    securityData: SecurityDataType | null
   ) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
 }
@@ -441,7 +437,9 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected encodeQueryParam(key: string, value: any) {
     const encodedKey = encodeURIComponent(key);
-    return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
+    return `${encodedKey}=${encodeURIComponent(
+      typeof value === "number" ? value : `${value}`
+    )}`;
   }
 
   protected addQueryParam(query: QueryParamsType, key: string) {
@@ -456,13 +454,13 @@ export class HttpClient<SecurityDataType = unknown> {
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
     const keys = Object.keys(query).filter(
-      (key) => "undefined" !== typeof query[key],
+      (key) => "undefined" !== typeof query[key]
     );
     return keys
       .map((key) =>
         Array.isArray(query[key])
           ? this.addArrayQueryParam(query, key)
-          : this.addQueryParam(query, key),
+          : this.addQueryParam(query, key)
       )
       .join("&");
   }
@@ -497,8 +495,8 @@ export class HttpClient<SecurityDataType = unknown> {
           property instanceof Blob
             ? property
             : typeof property === "object" && property !== null
-              ? JSON.stringify(property)
-              : `${property}`,
+            ? JSON.stringify(property)
+            : `${property}`
         );
         return formData;
       }, new FormData());
@@ -508,7 +506,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected mergeRequestParams(
     params1: RequestParams,
-    params2?: RequestParams,
+    params2?: RequestParams
   ): RequestParams {
     return {
       ...this.baseApiParams,
@@ -523,7 +521,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }
 
   protected createAbortSignal = (
-    cancelToken: CancelToken,
+    cancelToken: CancelToken
   ): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
       const abortController = this.abortControllers.get(cancelToken);
@@ -569,7 +567,9 @@ export class HttpClient<SecurityDataType = unknown> {
     const responseFormat = format || requestParams.format;
 
     return this.customFetch(
-      `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
+      `${baseUrl || this.baseUrl || ""}${path}${
+        queryString ? `?${queryString}` : ""
+      }`,
       {
         ...requestParams,
         headers: {
@@ -586,7 +586,7 @@ export class HttpClient<SecurityDataType = unknown> {
           typeof body === "undefined" || body === null
             ? null
             : payloadFormatter(body),
-      },
+      }
     ).then(async (response) => {
       const r = response as HttpResponse<T, E>;
       r.data = null as unknown as T;
@@ -624,7 +624,7 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version 1.0
  */
 export class Api<
-  SecurityDataType extends unknown,
+  SecurityDataType extends unknown
 > extends HttpClient<SecurityDataType> {
   api = {
     /**
@@ -637,7 +637,7 @@ export class Api<
      */
     authAuthenticateCreate: (
       data: AuthenticationRequestBody,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<string, ProblemDetails>({
         path: `/api/auth/authenticate`,
@@ -712,7 +712,7 @@ export class Api<
          */
         pageNumber?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<CityWithoutHotels[], any>({
         path: `/api/cities`,
@@ -761,7 +761,7 @@ export class Api<
          */
         includeHotels?: boolean;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/cities/${cityId}`,
@@ -783,7 +783,7 @@ export class Api<
     citiesUpdate: (
       cityId: number,
       data: CityForUpdateDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/cities/${cityId}`,
@@ -806,7 +806,7 @@ export class Api<
     citiesPartialUpdate: (
       cityId: number,
       data: Operation[],
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/cities/${cityId}`,
@@ -864,7 +864,7 @@ export class Api<
     citiesHotelsCreate: (
       cityId: number,
       data: HotelForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<HotelDto, ProblemDetails>({
         path: `/api/cities/${cityId}/hotels`,
@@ -888,7 +888,7 @@ export class Api<
     citiesHotelsDelete: (
       cityId: number,
       hotelId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/cities/${cityId}/hotels/${hotelId}`,
@@ -927,7 +927,7 @@ export class Api<
     citiesPhotosCreate: (
       cityId: number,
       data: PhotoForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<PhotoDto, ProblemDetails>({
         path: `/api/cities/${cityId}/photos`,
@@ -951,7 +951,7 @@ export class Api<
     citiesPhotosDelete: (
       cityId: number,
       photoId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/cities/${cityId}/photos/${photoId}`,
@@ -992,7 +992,7 @@ export class Api<
          */
         children?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<SearchResultDto[], any>({
         path: `/api/home/search`,
@@ -1080,7 +1080,7 @@ export class Api<
          */
         pageNumber?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<HotelAmenity[], any>({
         path: `/api/hotel-Amenities`,
@@ -1120,7 +1120,7 @@ export class Api<
     hotelAmenitiesUpdate: (
       hotelAmenityId: number,
       data: HotelAmenityForUpdateDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/hotel-Amenities/${hotelAmenityId}`,
@@ -1143,7 +1143,7 @@ export class Api<
     hotelAmenitiesPartialUpdate: (
       hotelAmenityId: number,
       data: Operation[],
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/hotel-Amenities/${hotelAmenityId}`,
@@ -1182,7 +1182,7 @@ export class Api<
          */
         pageNumber?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<HotelWithoutRooms[], any>({
         path: `/api/hotels`,
@@ -1211,7 +1211,7 @@ export class Api<
          */
         includeRooms?: boolean;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<HotelDto, ProblemDetails>({
         path: `/api/hotels/${hotelId}`,
@@ -1234,7 +1234,7 @@ export class Api<
     hotelsUpdate: (
       hotelId: number,
       data: HotelForUpdateDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/hotels/${hotelId}`,
@@ -1257,7 +1257,7 @@ export class Api<
     hotelsPartialUpdate: (
       hotelId: number,
       data: Operation[],
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/hotels/${hotelId}`,
@@ -1283,7 +1283,7 @@ export class Api<
         checkInDate?: string;
         checkOutDate?: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomAvailabilityResultDto[], ProblemDetails>({
         path: `/api/hotels/${hotelId}/rooms`,
@@ -1306,7 +1306,7 @@ export class Api<
     hotelsRoomsCreate: (
       hotelId: number,
       data: RoomForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<HotelDto, ProblemDetails>({
         path: `/api/hotels/${hotelId}/rooms`,
@@ -1332,7 +1332,7 @@ export class Api<
         checkInDate: string;
         CheckOutDate: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomAvailabilityResultDto[], ProblemDetails>({
         path: `/api/hotels/${hotelId}/available-rooms`,
@@ -1373,7 +1373,7 @@ export class Api<
     hotelsRoomsDelete: (
       hotelId: number,
       roomId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/hotels/${hotelId}/rooms/${roomId}`,
@@ -1412,7 +1412,7 @@ export class Api<
     hotelsPhotosCreate: (
       hotelId: number,
       data: PhotoForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<PhotoDto, ProblemDetails>({
         path: `/api/hotels/${hotelId}/photos`,
@@ -1436,7 +1436,7 @@ export class Api<
     hotelsPhotosDelete: (
       hotelId: number,
       photoId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/hotels/${hotelId}/photos/${photoId}`,
@@ -1475,7 +1475,7 @@ export class Api<
     hotelsAmenitiesCreate: (
       hotelId: number,
       data: HotelAmenityForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<HotelAmenityDto, ProblemDetails>({
         path: `/api/hotels/${hotelId}/amenities`,
@@ -1499,7 +1499,7 @@ export class Api<
     hotelsAmenitiesDelete: (
       hotelId: number,
       hotelAmenityId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/hotels/${hotelId}/amenities/${hotelAmenityId}`,
@@ -1537,7 +1537,7 @@ export class Api<
     photosUpdate: (
       photoId: number,
       data: PhotoForUpdateDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/photos/${photoId}`,
@@ -1560,7 +1560,7 @@ export class Api<
     photosPartialUpdate: (
       photoId: number,
       data: Operation[],
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/photos/${photoId}`,
@@ -1585,7 +1585,7 @@ export class Api<
         /** @format binary */
         files?: File;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/photos`,
@@ -1622,7 +1622,7 @@ export class Api<
          */
         pageNumber?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomAmenity[], any>({
         path: `/api/room-amenities`,
@@ -1662,7 +1662,7 @@ export class Api<
     roomAmenitiesUpdate: (
       roomAmenityId: number,
       data: RoomAmenityForUpdateDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/room-amenities/${roomAmenityId}`,
@@ -1685,7 +1685,7 @@ export class Api<
     roomAmenitiesPartialUpdate: (
       roomAmenityId: number,
       data: Operation[],
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/room-amenities/${roomAmenityId}`,
@@ -1725,7 +1725,7 @@ export class Api<
     roomClassesUpdate: (
       roomClassId: number,
       data: RoomClassForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}`,
@@ -1748,7 +1748,7 @@ export class Api<
     roomClassesPartialUpdate: (
       roomClassId: number,
       data: Operation[],
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}`,
@@ -1770,7 +1770,7 @@ export class Api<
      */
     roomClassesCreate: (
       data: RoomClassForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomClassDto, any>({
         path: `/api/room-classes`,
@@ -1812,7 +1812,7 @@ export class Api<
     roomClassesPhotosCreate: (
       roomClassId: number,
       data: PhotoForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<PhotoDto, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}/photos`,
@@ -1836,7 +1836,7 @@ export class Api<
     roomClassesPhotosDelete: (
       roomClassId: number,
       photoId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}/photos/${photoId}`,
@@ -1856,7 +1856,7 @@ export class Api<
      */
     roomClassesAmenitiesList: (
       roomClassId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomAmenityDto[], ProblemDetails>({
         path: `/api/room-classes/${roomClassId}/amenities`,
@@ -1878,7 +1878,7 @@ export class Api<
     roomClassesAmenitiesCreate: (
       roomClassId: number,
       data: RoomAmenityForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomAmenityDto, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}/amenities`,
@@ -1902,7 +1902,7 @@ export class Api<
     roomClassesAmenitiesDelete: (
       roomClassId: number,
       roomAmenityId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}/amenities/${roomAmenityId}`,
@@ -1947,7 +1947,7 @@ export class Api<
          */
         roomId?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomDto, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}/rooms`,
@@ -1970,7 +1970,7 @@ export class Api<
     roomClassesRoomsDelete: (
       roomClassId: number,
       roomId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/room-classes/${roomClassId}/rooms/${roomId}`,
@@ -2008,7 +2008,7 @@ export class Api<
     roomsUpdate: (
       roomId: number,
       data: RoomForUpdateDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/rooms/${roomId}`,
@@ -2031,7 +2031,7 @@ export class Api<
     roomsPartialUpdate: (
       roomId: number,
       data: Operation[],
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/rooms/${roomId}`,
@@ -2072,7 +2072,7 @@ export class Api<
     roomsPhotosCreate: (
       roomId: number,
       data: PhotoForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<PhotoDto, ProblemDetails>({
         path: `/api/rooms/${roomId}/photos`,
@@ -2096,7 +2096,7 @@ export class Api<
     roomsPhotosDelete: (
       roomId: number,
       photoId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/rooms/${roomId}/photos/${photoId}`,
@@ -2135,7 +2135,7 @@ export class Api<
     roomsAmenitiesCreate: (
       roomId: number,
       data: RoomAmenityForCreationDto,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<RoomAmenityDto, ProblemDetails>({
         path: `/api/rooms/${roomId}/amenities`,
@@ -2159,7 +2159,7 @@ export class Api<
     roomsAmenitiesDelete: (
       roomId: number,
       roomAmenityId: number,
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, ProblemDetails>({
         path: `/api/rooms/${roomId}/amenities/${roomAmenityId}`,

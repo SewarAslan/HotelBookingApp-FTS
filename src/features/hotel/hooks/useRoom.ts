@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { STATUS, type StatusType } from "../../../constants/status";
 import { apiClient } from "../../../api/client";
 import type { RoomAvailabilityResultDto } from "../../../api/Api";
+
 export function useRoom(hotelId: number) {
   const [data, setData] = useState<RoomAvailabilityResultDto[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
@@ -12,10 +13,7 @@ export function useRoom(hotelId: number) {
     setError(null);
 
     try {
-      const res = await apiClient.api.hotelsRoomsList(hotelId, {
-        checkInDate: "2042-11-30",
-        checkOutDate: "2088-11-18",
-      });
+      const res = await apiClient.api.hotelsRoomsList(hotelId);
 
       setData(res.data ?? []);
       setStatus(STATUS.SUCCESS);
@@ -27,9 +25,7 @@ export function useRoom(hotelId: number) {
   }, [hotelId]);
 
   useEffect(() => {
-    if (hotelId) {
-      fetchRooms();
-    }
+    if (hotelId) fetchRooms();
   }, [fetchRooms, hotelId]);
 
   return { data, status, error, refetch: fetchRooms };

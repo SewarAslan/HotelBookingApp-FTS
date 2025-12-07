@@ -251,7 +251,7 @@ export const createAppTheme = (mode: AppMode): Theme => {
             props: { variant: "gradient-secondary" as unknown },
             style: {
               background: theme.palette.secondary.main,
-              color: "#0b5159ff",
+              color: theme.palette.mode === "light" ? "#ffffffff" : "#122524ff",
               "&:hover": {
                 background: theme.palette.secondary.dark,
                 color: "white",
