@@ -23,6 +23,8 @@ export interface AdminCity {
   id: number;
   name: string;
   description: string;
+  postOffice: string;
+  numberOfHotels: number;
 }
 
 export interface AdminHotel {

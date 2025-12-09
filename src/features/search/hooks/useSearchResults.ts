@@ -33,18 +33,27 @@ export function useSearchResults(): HookResult<SearchResultDto> {
 
       let results = response.data;
 
+      // filter by city
+      if (params.city && results) {
+        const targetCity = params.city.trim().toLowerCase();
+
+        results = results.filter(
+          (hotel) => (hotel.cityName || "").toLowerCase() === targetCity
+        );
+      }
+
       if (params.starRate && results) {
         const targetStars = Number(params.starRate);
         results = results.filter((hotel) => hotel.starRating === targetStars);
       }
-
       if (params.amenities && results) {
         const selected = params.amenities
           .split(",")
           .map((a) => a.trim().toLowerCase());
+
         results = results.filter((hotel) =>
-          hotel.amenities?.some((a) =>
-            selected.includes((a.name || "").toLowerCase())
+          selected.every((sel) =>
+            hotel.amenities?.some((a) => (a.name || "").toLowerCase() === sel)
           )
         );
       }
@@ -74,6 +83,33 @@ export function useSearchResults(): HookResult<SearchResultDto> {
             results.sort((a, b) => (b.discount ?? 0) - (a.discount ?? 0));
             break;
         }
+      }
+      if (params.city && results) {
+        const targetCity = params.city.trim().toLowerCase();
+
+        results = results.filter(
+          (hotel) => (hotel.cityName || "").toLowerCase() === targetCity
+        );
+      }
+      if (params.adults && results) {
+        const adults = Number(params.adults);
+        results = results.filter(
+          (hotel) => (hotel.roomCapacityAdults ?? 0) >= adults
+        );
+      }
+
+      if (params.children && results) {
+        const children = Number(params.children);
+        results = results.filter(
+          (hotel) => (hotel.roomCapacityChildren ?? 0) >= children
+        );
+      }
+
+      if (params.rooms && results) {
+        const rooms = Number(params.rooms);
+        results = results.filter(
+          (hotel) => (hotel.availableRooms ?? 1) >= rooms
+        );
       }
 
       setData(results);

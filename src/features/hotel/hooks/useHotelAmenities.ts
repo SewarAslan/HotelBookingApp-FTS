@@ -19,7 +19,7 @@ export function useHotelAmenities(
     try {
       const res = await apiClient.api.hotelsAmenitiesList(hotelId);
 
-      setData(res.data || []);
+      setData(res.data ?? []);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
       console.error(err);

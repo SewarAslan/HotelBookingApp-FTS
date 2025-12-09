@@ -59,20 +59,26 @@ export function useAdminHotels() {
         : allHotels.length;
 
       setTotalItems(filteredTotal);
+      const cities = await requestJson<{ id: number; name: string }[]>(
+        "/cities"
+      );
 
-      // 3) Normalize hotels
-      const hotels = hotelsRaw.map((h) => ({
-        id: h.id,
-        name: h.name ?? "",
-        description: h.description ?? "",
-        hotelType: h.hotelType ?? "",
-        starRating: h.starRating ?? 0,
-        latitude: h.latitude,
-        longitude: h.longitude,
-        location: h.location,
-        imageUrl: h.imageUrl,
-        cityId: h.cityId,
-      }));
+      const hotels = hotelsRaw.map((h) => {
+        const cityName = cities.find((c) => c.id === h.cityId)?.name;
+
+        return {
+          id: h.id,
+          name: h.name ?? "",
+          description: h.description ?? "",
+          hotelType: h.hotelType ?? "",
+          starRating: h.starRating ?? 0,
+          latitude: h.latitude,
+          longitude: h.longitude,
+          imageUrl: h.imageUrl,
+          cityId: h.cityId,
+          location: cityName,
+        };
+      });
 
       setData(hotels);
       setStatus(STATUS.SUCCESS);
