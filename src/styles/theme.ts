@@ -323,3 +323,5 @@ export const createAppTheme = (mode: AppMode): Theme => {
 
   return responsiveFontSizes(theme);
 };
+export const lightTheme = createAppTheme("light");
+export const darkTheme = createAppTheme("dark");

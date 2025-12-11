@@ -13,15 +13,6 @@ export interface RoomPayload {
   availability: boolean;
 }
 
-function roomBelongsToHotel(roomId: number, hotelId: number | null): boolean {
-  if (!hotelId) return false;
-
-  const start = hotelId * 100;
-  const end = hotelId * 100 + 99;
-
-  return roomId >= start && roomId <= end;
-}
-
 export function useAdminRooms(selectedHotelId: number | null) {
   const [data, setData] = useState<AdminRoom[] | null>(null);
   const [status, setStatus] = useState<StatusType>(STATUS.IDLE);
@@ -42,11 +33,8 @@ export function useAdminRooms(selectedHotelId: number | null) {
         `/hotels/${selectedHotelId}/rooms`
       );
 
-      const filtered = allRooms.filter((room) =>
-        roomBelongsToHotel(room.roomId, selectedHotelId)
-      );
+      setData(allRooms);
 
-      setData(filtered);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
       console.error("Failed to load rooms:", err);

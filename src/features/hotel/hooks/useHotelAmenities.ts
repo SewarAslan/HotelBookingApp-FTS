@@ -19,7 +19,7 @@ export function useHotelAmenities(
     try {
       const res = await apiClient.api.hotelsAmenitiesList(hotelId);
 
-      setData(res.data || []);
+      setData(res.data ?? []);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
       console.error(err);
@@ -38,32 +38,19 @@ export function useHotelAmenities(
         {
           id: 1,
           name: "Free Wi-Fi",
-          description: "High-speed internet available in all rooms.",
+          description:
+            "Stay connected with high-speed internet throughout the resort.",
         },
         {
           id: 2,
           name: "Swimming Pool",
-          description: "Outdoor pool available for all guests.",
+          description: "An infinity pool with stunning ocean views.",
         },
         {
           id: 3,
-          name: "Fitness Center",
-          description: "Modern gym with cardio and weight equipment.",
-        },
-        {
-          id: 4,
-          name: "Room Service",
-          description: "24/7 room service for all guests.",
-        },
-        {
-          id: 5,
-          name: "Parking",
-          description: "Free secure parking available on site.",
-        },
-        {
-          id: 6,
-          name: "Air Conditioning",
-          description: "Individually controlled AC in every room.",
+          name: "Spa",
+          description:
+            "A full-service spa offering massages and beauty treatments.",
         },
       ],
       status: STATUS.SUCCESS,

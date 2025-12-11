@@ -51,6 +51,8 @@ export interface BookingRequest {
   hotelId: number;
   roomId: number;
   userId: number;
+  checkInDate: string;
+  checkOutDate: string;
 }
 
 export interface CityDto {
@@ -278,6 +280,10 @@ export interface RoomAmenityDto {
   name?: string | null;
   description?: string | null;
 }
+export interface AmenityDto {
+  id: number;
+  name: string;
+}
 
 export interface RoomAmenityForCreationDto {
   name?: string | null;
@@ -341,6 +347,9 @@ export interface RoomForUpdateDto {
 }
 
 export interface SearchResultDto {
+  availableRooms?: number;
+  roomCapacityChildren?: number;
+  roomCapacityAdults?: number;
   /** @format int32 */
   hotelId?: number;
   hotelName?: string | null;
@@ -357,7 +366,7 @@ export interface SearchResultDto {
   roomPhotoUrl?: string | null;
   /** @format double */
   discount?: number;
-  amenities?: RoomAmenityDto[] | null;
+  amenities?: AmenityDto[] | null;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -675,7 +684,7 @@ export class Api<
      * @secure
      */
     bookingsCreate: (data: BookingRequest, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<BookingResponse, any>({
         path: `/api/bookings`,
         method: "POST",
         body: data,
@@ -995,7 +1004,7 @@ export class Api<
       params: RequestParams = {}
     ) =>
       this.request<SearchResultDto[], any>({
-        path: `/api/home/search`,
+        path: `/api/hotels/search`,
         method: "GET",
         query: query,
         secure: true,
@@ -1013,7 +1022,7 @@ export class Api<
      */
     homeUsersRecentHotelsList: (userId: number, params: RequestParams = {}) =>
       this.request<RecentHotelResultDto[], any>({
-        path: `/api/home/users/${userId}/recent-hotels`,
+        path: `/api/users/${userId}/recent-visited/details`,
         method: "GET",
         secure: true,
         format: "json",
@@ -1030,7 +1039,7 @@ export class Api<
      */
     homeFeaturedDealsList: (params: RequestParams = {}) =>
       this.request<FeaturedDealDto[], any>({
-        path: `/api/home/featured-deals`,
+        path: `/api/hotels/featured`,
         method: "GET",
         secure: true,
         format: "json",
@@ -1335,7 +1344,7 @@ export class Api<
       params: RequestParams = {}
     ) =>
       this.request<RoomAvailabilityResultDto[], ProblemDetails>({
-        path: `/api/hotels/${hotelId}/available-rooms`,
+        path: `/api/hotels/${hotelId}/rooms/available`,
         method: "GET",
         query: query,
         secure: true,
@@ -1454,9 +1463,9 @@ export class Api<
      * @request GET:/api/hotels/{hotelId}/amenities
      * @secure
      */
-    hotelsAmenitiesList: (hotelId: number, params: RequestParams = {}) =>
-      this.request<HotelAmenityDto[], ProblemDetails>({
-        path: `/api/hotels/${hotelId}/amenities`,
+    hotelsAmenitiesList: (id: number, params: RequestParams = {}) =>
+      this.request<HotelAmenityDto[], any>({
+        path: `/api/hotels/${id}/amenities`,
         method: "GET",
         secure: true,
         format: "json",

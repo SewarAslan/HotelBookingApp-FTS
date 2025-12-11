@@ -31,11 +31,20 @@ export function useCheckout() {
             hotelId: item.hotelId!,
             roomId: item.roomId!,
             userId,
+            checkInDate: item.checkInDate!,
+            checkOutDate: item.checkOutDate!,
           };
 
           const res = await apiClient.api.bookingsCreate(payload);
+          console.log("RAW RESPONSE:", res);
+          console.log("DATAAA:", res.data);
 
-          const data = res.data as BookingResponse | undefined;
+          const text = await res.text();
+          console.log("TEXT:", text);
+
+          const data = JSON.parse(text) as BookingResponse;
+          console.log("PARSED:", data);
+
           const bookingId = data?.bookingId;
           if (bookingId) {
             bookingIds.push(bookingId);

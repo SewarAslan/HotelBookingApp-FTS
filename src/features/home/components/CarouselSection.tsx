@@ -144,7 +144,7 @@ const CarouselSection = <T,>({
                     scrollBehavior: "smooth",
                     pt: 1,
                     pb: 3,
-                    px: 4,
+                    px: 10,
                     msOverflowStyle: "none",
                     scrollbarWidth: "none",
                     "&::-webkit-scrollbar": { display: "none" },

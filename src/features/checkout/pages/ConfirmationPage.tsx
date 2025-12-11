@@ -23,6 +23,7 @@ import PhoneIphoneOutlinedIcon from "@mui/icons-material/PhoneIphoneOutlined";
 import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import { useReceiptPdf } from "../hooks/useReceiptPdf";
+import type { CartItem } from "../../../store/cartSlice";
 
 interface BookingSummary {
   customerName: string;
@@ -33,6 +34,21 @@ interface BookingSummary {
   bookingDateTime: string;
   confirmationNumber: string;
   numberOfRooms: number;
+  items: CartItem[];
+}
+interface BookingApiResponse {
+  bookingId: number;
+  hotelId: number;
+  roomId: number;
+  userId: number;
+  checkInDate: string;
+  checkOutDate: string;
+  price: number;
+  status: string;
+  bookingDate: string;
+  hotel?: {
+    hotelName: string;
+  };
 }
 
 interface LocationState {
@@ -63,10 +79,21 @@ export default function ConfirmationPage() {
       try {
         setLoading(true);
         const res = await apiClient.api.getBooking(Number(bookingId));
+        const b = res.data as BookingApiResponse;
 
-        setBookingData(res.data as BookingSummary);
+        setBookingData({
+          customerName: "",
+          email: "",
+          phone: "",
+          hotelName: b.hotel?.hotelName ?? "",
+          totalCost: b.price ?? 0,
+          bookingDateTime: b.bookingDate,
+          confirmationNumber: b.bookingId.toString(),
+          numberOfRooms: 1,
+          items: [],
+        });
       } catch (e) {
-        console.error("Failed to load booking details:", e);
+        console.error(e);
       } finally {
         setLoading(false);
       }
@@ -358,21 +385,22 @@ export default function ConfirmationPage() {
 
                 <Box sx={{ mt: 3, textAlign: "right" }}>
                   <Button
-                    variant="gradient-primary"
-                    onClick={() => navigate("/")}
-                    sx={{ px: 5, py: 1.5, borderRadius: 3, fontWeight: 700 }}
-                  >
-                    Back to Home
-                  </Button>
-                  <Button
                     variant="gradient-secondary"
-                    onClick={() => generatePDF(final)}
-                    sx={{
-                      ml: 2,
-                      px: 5,
-                      py: 1.5,
-                      borderRadius: 3,
-                      fontWeight: 700,
+                    onClick={() => {
+                      if (!final) return;
+
+                      const pdfData = {
+                        ...final,
+                        items: final.items.map((item) => ({
+                          roomType: item.roomType!,
+                          roomId: item.roomId,
+                          checkInDate: item.checkInDate!,
+                          checkOutDate: item.checkOutDate!,
+                          price: item.price,
+                        })),
+                      };
+
+                      generatePDF(pdfData);
                     }}
                   >
                     Download Receipt (PDF)

@@ -78,6 +78,8 @@ export default function AdminRoomsPage() {
     { field: "roomType", headerName: "Type" },
     { field: "price", headerName: "Price" },
     { field: "availability", headerName: "Availability" },
+    { field: "capacityOfAdults", headerName: "Adults" },
+    { field: "capacityOfChildren", headerName: "Children" },
   ];
 
   function handleCreate() {

@@ -41,36 +41,34 @@ export default function CheckoutButton() {
   const handleCheckout = async () => {
     if (!isValid || items.length === 0 || !userId) return;
 
-    const ok = await createBooking({ userId, items });
+    const bookingIds = await createBooking({ userId, items });
 
-    if (ok) {
-      const bookingDateTime = new Date().toISOString();
-      const confirmationNumber = Math.floor(
-        10000000 + Math.random() * 90000000
-      ).toString();
-
-      const bookingId = confirmationNumber;
-
-      const summary = {
-        customerName: values.customerName,
-        email: values.email,
-        phone: values.phone,
-        hotelName: hotel?.hotelName,
-        totalCost,
-        bookingDateTime,
-        confirmationNumber,
-        numberOfRooms: items.length,
-        items,
-      };
-
-      clearCart();
-
-      navigate(`/confirmation?bookingId=${bookingId}`, {
-        state: { bookingSummary: summary },
-      });
-    } else {
+    if (!Array.isArray(bookingIds) || bookingIds.length === 0) {
       setOpenError(true);
+      return;
     }
+
+    const bookingDateTime = new Date().toISOString();
+
+    const bookingId = bookingIds[0];
+
+    const summary = {
+      customerName: values.customerName,
+      email: values.email,
+      phone: values.phone,
+      hotelName: hotel?.hotelName,
+      totalCost,
+      bookingDateTime,
+      confirmationNumber: bookingId,
+      numberOfRooms: items.length,
+      items,
+    };
+
+    clearCart();
+
+    navigate(`/confirmation?bookingId=${bookingId}`, {
+      state: { bookingSummary: summary },
+    });
   };
 
   return (

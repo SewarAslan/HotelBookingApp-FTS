@@ -5,6 +5,8 @@ import { requestJson, type AdminCity } from "../../../api/adminApi";
 interface CityPayload {
   name: string;
   description: string;
+  postOffice: string;
+  numberOfHotels: number;
 }
 
 interface UseAdminCitiesResult {

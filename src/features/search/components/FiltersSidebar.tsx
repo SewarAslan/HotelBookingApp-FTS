@@ -30,7 +30,7 @@ export default function FiltersSidebar() {
   const [openAmenities, setOpenAmenities] = useState(true);
   const [openPrice, setOpenPrice] = useState(true);
 
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 300]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 700]);
   const starRateFromUrl =
     Number(new URLSearchParams(location.search).get("starRate")) || 0;
 
@@ -272,8 +272,8 @@ export default function FiltersSidebar() {
       <Collapse in={openPrice}>
         <Slider
           min={0}
-          max={300}
-          step={10}
+          max={700}
+          step={50}
           value={priceRange}
           onChange={(_, newValue) => {
             isDraggingRef.current = true;

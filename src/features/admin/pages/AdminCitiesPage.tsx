@@ -19,6 +19,8 @@ type AdminCityRow = {
   id: number;
   name: string;
   description: string;
+  postOffice: string;
+  numberOfHotels: number;
 };
 
 export default function AdminCitiesPage() {
@@ -50,12 +52,16 @@ export default function AdminCitiesPage() {
     id: city.id,
     name: city.name || "",
     description: city.description || "",
+    postOffice: city.postOffice ?? "",
+    numberOfHotels: city.numberOfHotels ?? 0,
   }));
 
   const columns: Column[] = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "name", headerName: "City Name" },
     { field: "description", headerName: "Description" },
+    { field: "postOffice", headerName: "Post Office" },
+    { field: "numberOfHotels", headerName: "Hotels" },
   ];
 
   function handleSearch(query: string) {
@@ -103,6 +109,8 @@ export default function AdminCitiesPage() {
     const payload = {
       name: String(values.name ?? ""),
       description: String(values.description ?? ""),
+      postOffice: String(values.postOffice ?? ""),
+      numberOfHotels: Number(values.numberOfHotels ?? 0),
     };
 
     let result;
@@ -181,11 +189,15 @@ export default function AdminCitiesPage() {
         initialValues={{
           name: editingCity?.name ?? "",
           description: editingCity?.description ?? "",
+          postOffice: editingCity?.postOffice ?? "",
+          numberOfHotels: editingCity?.numberOfHotels ?? 0,
         }}
         validationSchema={citySchema}
         fields={[
           { name: "name", label: "City Name", type: "text" },
           { name: "description", label: "Description", type: "textarea" },
+          { name: "postOffice", label: "Post Office", type: "text" },
+          { name: "numberOfHotels", label: "Number of Hotels", type: "number" },
         ]}
         onSubmit={handleFormSubmit}
       />
