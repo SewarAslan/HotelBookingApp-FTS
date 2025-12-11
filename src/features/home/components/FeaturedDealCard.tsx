@@ -138,7 +138,7 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
         )}
 
         <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-          {originalRoomPrice && (
+          {finalPrice && (
             <Typography
               variant={MUI_TYPOGRAPHY.BODY2}
               sx={{
@@ -146,16 +146,16 @@ const FeaturedDealCard = React.memo(({ deal }: FeaturedDealCardProps) => {
                 color: theme.palette.text.disabled,
               }}
             >
-              ${originalRoomPrice}
+              ${finalPrice}
             </Typography>
           )}
-          {finalPrice && (
+          {originalRoomPrice && (
             <Typography
               variant={MUI_TYPOGRAPHY.BODY2}
               fontWeight={600}
               color={MUI_COLORS.PRIMARY}
             >
-              ${finalPrice}
+              ${originalRoomPrice}
             </Typography>
           )}
         </Box>
