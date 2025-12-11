@@ -33,7 +33,6 @@ export function useSearchResults(): HookResult<SearchResultDto> {
 
       let results = response.data;
 
-      // filter by city
       if (params.city && results) {
         const targetCity = params.city.trim().toLowerCase();
 
