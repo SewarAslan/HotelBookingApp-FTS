@@ -8,7 +8,7 @@ type ThemeCtx = {
   toggleMode: () => void;
 };
 
-// Custom wrapper to inject context
+
 function renderWithThemeContext(ctxValue: ThemeCtx) {
   return renderWithProviders(
     <ThemeControllerContext.Provider value={ctxValue}>
@@ -23,7 +23,7 @@ describe("ThemeToggleButton", () => {
 
     renderWithThemeContext(ctx);
 
-    // DarkModeIcon should appear
+
     expect(screen.getByTestId("DarkModeIcon")).toBeInTheDocument();
     expect(screen.queryByTestId("LightModeIcon")).not.toBeInTheDocument();
   });
