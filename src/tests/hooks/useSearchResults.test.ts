@@ -240,25 +240,43 @@ describe("useSearchResults", () => {
       "A",
     ]);
   });
-  test("filters results when multiple amenities are selected", async () => {
-    mockSearch = "?amenities=spa,gym";
+  test("filters results when multiple amenities must ALL be present (AND logic)", async () => {
+    mockSearch = "?amenities=spa,pool";
 
     const mockHomeSearch = apiClient.api.homeSearchList as Mock;
 
     const hotels = [
-      { hotelId: 1, hotelName: "Spa Hotel", amenities: [{ name: "Spa" }] },
-      { hotelId: 2, hotelName: "Gym Hotel", amenities: [{ name: "Gym" }] },
-      { hotelId: 3, hotelName: "None", amenities: [{ name: "Parking" }] },
+      {
+        hotelId: 1,
+        hotelName: "Spa & Pool Hotel",
+        amenities: [{ name: "Spa" }, { name: "Pool" }],
+      },
+      {
+        hotelId: 2,
+        hotelName: "Spa Only",
+        amenities: [{ name: "Spa" }],
+      },
+      {
+        hotelId: 3,
+        hotelName: "Pool Only",
+        amenities: [{ name: "Pool" }],
+      },
     ];
 
     mockHomeSearch.mockResolvedValue({ data: hotels });
 
     const { result } = renderHook(() => useSearchResults());
 
-    await waitFor(() => expect(result.current.status).toBe(STATUS.SUCCESS));
+    await waitFor(() => {
+      expect(result.current.status).toBe(STATUS.SUCCESS);
+    });
 
-    expect(result.current.data!.length).toBe(2);
+    const returned = result.current.data!;
+
+    expect(returned.length).toBe(1);
+    expect(returned[0].hotelName).toBe("Spa & Pool Hotel");
   });
+
   test("returns empty results when filters match no hotels", async () => {
     mockSearch = "?starRate=5";
 

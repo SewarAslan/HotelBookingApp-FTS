@@ -55,7 +55,12 @@ describe("Header Component", () => {
 
   test("renders login avatar when user is logged in", () => {
     renderWithProviders(<Header />);
-    expect(screen.getByText("SA")).toBeInTheDocument();
+
+    const toolbar = screen.getByRole("banner");
+
+    const avatarText = within(toolbar).getByText("SA");
+
+    expect(avatarText).toBeInTheDocument();
   });
 
   test("navigates to Home when clicking logo", () => {
