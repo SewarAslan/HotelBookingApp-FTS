@@ -37,9 +37,6 @@ export default function SearchForm({ compact = false }: { compact?: boolean }) {
 
     const errors: Record<string, string> = {};
 
-    if (!values.checkInDate) errors.checkInDate = "Required";
-    if (!values.checkOutDate) errors.checkOutDate = "Required";
-
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
       return;
