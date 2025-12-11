@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import ConfirmDialog from "../features/admin/components/ConfirmDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ThemeProviderWithToggle from "../styles/ThemeProviderWithToggle";
 import { Box } from "@mui/material";
 
@@ -34,7 +34,6 @@ const meta: Meta<typeof ConfirmDialog> = {
 export default meta;
 
 type Story = StoryObj<typeof ConfirmDialog>;
-
 export const Default: Story = {
   args: {
     open: true,
@@ -47,6 +46,10 @@ export const Default: Story = {
   render: (args) => {
     const [open, setOpen] = useState(args.open);
 
+    useEffect(() => {
+      setOpen(args.open);
+    }, [args.open]);
+
     return (
       <ConfirmDialog
         {...args}
@@ -55,6 +58,27 @@ export const Default: Story = {
         onConfirm={() => setOpen(false)}
       />
     );
+  },
+};
+export const ClosedDialog: Story = {
+  name: "Closed State",
+  args: {
+    open: false,
+    title: "Delete Item",
+    message: "This dialog is closed by default.",
+    confirmLabel: "Delete",
+    cancelLabel: "Cancel",
+  },
+};
+
+export const OpenConfirmDialog: Story = {
+  name: "Open State",
+  args: {
+    open: true,
+    title: "Delete Item",
+    message: "This dialog appears open by default.",
+    confirmLabel: "Delete",
+    cancelLabel: "Cancel",
   },
 };
 
@@ -70,7 +94,9 @@ export const DeleteWarning: Story = {
 
   render: (args) => {
     const [open, setOpen] = useState(args.open);
-
+    useEffect(() => {
+      setOpen(args.open);
+    }, [args.open]);
     return (
       <ConfirmDialog
         {...args}
@@ -93,7 +119,9 @@ export const Info: Story = {
 
   render: (args) => {
     const [open, setOpen] = useState(args.open);
-
+    useEffect(() => {
+      setOpen(args.open);
+    }, [args.open]);
     return (
       <ConfirmDialog
         {...args}
