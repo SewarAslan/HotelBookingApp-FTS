@@ -26,7 +26,11 @@ import { ThemeToggleButton } from "./ThemeToggleButton";
 import { useAuthActions } from "../features/auth/hooks";
 import { useCart } from "../features/checkout/hooks/useCart";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { MUI_COLORS } from "../constants/muiTokens";
+import {
+  MUI_COLORS,
+  MUI_TYPOGRAPHY,
+  MUI_VARIANTS,
+} from "../constants/muiTokens";
 
 export default function Header() {
   const theme = useTheme();
@@ -73,7 +77,7 @@ export default function Header() {
       position="sticky"
       sx={{
         top: 0,
-        zIndex: theme.zIndex.drawer + 1,
+        zIndex: theme.zIndex.drawer,
         backdropFilter: "blur(12px) saturate(160%)",
         WebkitBackdropFilter: "blur(12px) saturate(160%)",
         backgroundColor:
@@ -242,6 +246,13 @@ export default function Header() {
 
         {isMobile && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Tooltip title="Cart">
+              <IconButton onClick={() => navigate("/checkout")}>
+                <Badge badgeContent={count} color={MUI_COLORS.SECONDARY}>
+                  <ShoppingCartOutlinedIcon color={MUI_COLORS.PRIMARY} />
+                </Badge>
+              </IconButton>
+            </Tooltip>
             <ThemeToggleButton />
             <IconButton onClick={() => setDrawerOpen(true)}>
               <MenuIcon sx={{ color: theme.palette.text.primary }} />
@@ -257,58 +268,98 @@ export default function Header() {
         ModalProps={{ keepMounted: true }}
         PaperProps={{
           sx: {
-            width: 220,
-            background: theme.palette.background.paper,
-            p: 2,
+            width: "75vw",
+            maxWidth: 320,
+            background: "rgba(255, 255, 255, 0.9)",
+            zIndex: theme.zIndex.drawer + 4,
+            p: 0,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
           },
         }}
       >
-        {links.map(({ label, path }) => (
-          <ListItemButton
-            key={label}
-            onClick={() => handleNavigate(path)}
-            sx={{
-              borderRadius: 2,
-              mb: 1,
-              backgroundColor:
-                location.pathname === path
-                  ? theme.palette.action.selected
-                  : "transparent",
-              "&:hover": { backgroundColor: theme.palette.action.hover },
-            }}
-          >
-            <ListItemText
-              primary={label}
-              primaryTypographyProps={{
-                fontWeight: 600,
-                color:
-                  location.pathname === path
-                    ? theme.palette.primary.main
-                    : theme.palette.text.primary,
-              }}
-            />
-          </ListItemButton>
-        ))}
-
-        <Divider sx={{ my: 1 }} />
-
-        <ListItemButton
-          onClick={handleLogout}
+        <Box
           sx={{
-            borderRadius: 2,
-            mt: 1,
-            color: theme.palette.error.main,
-            "&:hover": {
-              backgroundColor: theme.palette.action.hover,
-            },
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            p: 2,
+            borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
-          <LogoutIcon sx={{ mr: 1 }} />
-          <ListItemText
-            primary="Logout"
-            primaryTypographyProps={{ fontWeight: 600 }}
-          />
-        </ListItemButton>
+          <Avatar
+            sx={{
+              bgcolor: theme.palette.secondary.main,
+              color: "#fff",
+              fontWeight: 700,
+            }}
+          >
+            {authUser?.givenName?.[0]}
+            {authUser?.familyName?.[0]}
+          </Avatar>
+
+          <Box>
+            <Typography
+              fontWeight={700}
+              color={theme.palette.primary.main}
+              variant={MUI_TYPOGRAPHY.H5}
+            >
+              {authUser?.givenName} {authUser?.familyName}
+            </Typography>
+            <Typography
+              variant={MUI_TYPOGRAPHY.H6}
+              color={theme.palette.secondary.main}
+            >
+              {authUser?.userType}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box sx={{ p: 1 }}>
+          {links.map(({ label, path }) => (
+            <ListItemButton
+              key={label}
+              onClick={() => handleNavigate(path)}
+              sx={{
+                borderRadius: 1.5,
+                mb: 0.5,
+                py: 1.6,
+                color: theme.palette.primary.main,
+                backgroundColor:
+                  location.pathname === path
+                    ? theme.palette.action.selected
+                    : "transparent",
+              }}
+            >
+              <ListItemText
+                primary={label}
+                primaryTypographyProps={{
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                }}
+              />
+            </ListItemButton>
+          ))}
+        </Box>
+
+        <Box sx={{ flexGrow: 1 }} />
+
+        <Box sx={{ p: 2 }}>
+          <Button
+            fullWidth
+            variant={MUI_VARIANTS.GRADIENT}
+            color="error"
+            sx={{
+              borderRadius: 2,
+              py: 1.2,
+              fontWeight: 700,
+            }}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </Box>
       </Drawer>
     </AppBar>
   );
