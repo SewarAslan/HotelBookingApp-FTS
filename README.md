@@ -8,7 +8,7 @@ This project includes user authentication, admin management, CRUD dialogs, form 
 
 ## 🌐 Live Demo
 
-> **Test Credentials (for the reviewer / mentor)**
+> **Test Credentials**
 
 ### 👤 User Login
 
@@ -33,10 +33,6 @@ password: admin
 
 🔗 **Backend Repository:**
 [https://github.com/SewarAslan/HotelBookingAppBE-FTS](https://github.com/SewarAslan/HotelBookingAppBE-FTS)
-
----
-
-Here’s a clean, ready-to-paste version:
 
 ---
 
