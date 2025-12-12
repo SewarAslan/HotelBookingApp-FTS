@@ -9,9 +9,10 @@ import {
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import HotelIcon from "@mui/icons-material/Hotel";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
+import { ROUTES } from "../../../constants/routes";
 
 interface NavItem {
   label: string;
@@ -27,7 +28,7 @@ const navItems: NavItem[] = [
 
 export default function AdminSidebar() {
   const theme = useTheme();
-
+  const navigate = useNavigate();
   return (
     <Box
       component="nav"
@@ -57,7 +58,11 @@ export default function AdminSidebar() {
             variant="h6"
             fontWeight={700}
             color={theme.palette.primary.main}
-            sx={{ letterSpacing: 0.4 }}
+            sx={{
+              letterSpacing: 0.4,
+              cursor: "pointer",
+            }}
+            onClick={() => navigate(ROUTES.ADMIN)}
           >
             Admin Panel
           </Typography>
