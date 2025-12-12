@@ -13,6 +13,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import { ROUTES } from "../../../constants/routes";
+import { Tooltip } from "@mui/material";
 
 interface NavItem {
   label: string;
@@ -33,8 +34,17 @@ export default function AdminSidebar() {
     <Box
       component="nav"
       sx={{
-        width: 260,
+        display: "flex",
+        width: {
+          xs: "100%",
+          md: 260,
+        },
         flexShrink: 0,
+        height: {
+          xs: 64,
+          md: "100vh",
+        },
+
         borderRight: `1px solid ${theme.palette.divider}`,
         borderRadius: 3,
         backdropFilter: "blur(12px) saturate(160%)",
@@ -44,10 +54,23 @@ export default function AdminSidebar() {
             ? "0 8px 32px rgba(0,0,0,0.05)"
             : "0 8px 32px rgba(0,0,0,0.25)",
         animation: theme.animations.fadeInUp,
-        display: "flex",
-        flexDirection: "column",
-        py: 3,
-        px: 1,
+        flexDirection: {
+          xs: "row",
+          md: "column",
+        },
+        alignItems: {
+          xs: "center",
+          md: "stretch",
+        },
+        justifyContent: {
+          xs: "space-around",
+          md: "flex-start",
+        },
+        py: {
+          xs: 1,
+          md: 3,
+        },
+        px: { xs: 1, md: 2 },
         mx: 1,
       }}
     >
@@ -67,14 +90,27 @@ export default function AdminSidebar() {
             Admin Panel
           </Typography>
         </Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ mt: 0.5, display: { xs: "none", md: "block" } }}
+        >
           Manage cities, hotels & rooms
         </Typography>
       </Box>
 
-      <Divider sx={{ mx: 2, mb: 1 }} />
+      <Divider sx={{ mx: 2, mb: 1, display: { xs: "none", md: "block" } }} />
 
-      <List>
+      <List
+        sx={{
+          display: "flex",
+          flexDirection: {
+            xs: "row",
+            md: "column",
+          },
+          p: 0,
+        }}
+      >
         {navItems.map((item) => (
           <ListItemButton
             key={item.to}
@@ -86,14 +122,23 @@ export default function AdminSidebar() {
               borderRadius: 2,
               mx: 1,
               py: 1.2,
-              px: 2,
+              px: {
+                xs: 1,
+                md: 2,
+              },
+              justifyContent: {
+                xs: "center",
+                md: "flex-start",
+              },
+              alignItems: "center",
               transition: "all 0.3s",
+              color: theme.palette.secondary.main,
               "&.active": {
                 bgcolor:
                   theme.palette.mode === "light"
                     ? "rgba(255,140,66,0.1)"
                     : "rgba(255,181,107,0.12)",
-                color: theme.palette.secondary.main,
+                color: theme.palette.secondary.dark,
                 fontWeight: 600,
               },
               "&:hover": {
@@ -101,8 +146,29 @@ export default function AdminSidebar() {
               },
             }}
           >
-            {item.icon}
+            <Tooltip
+              title={item.label}
+              placement="bottom"
+              arrow
+              disableHoverListener={false}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: 20,
+                }}
+              >
+                {item.icon}
+              </Box>
+            </Tooltip>
+
             <ListItemText
+              sx={{ display: { xs: "none", md: "block" } }}
               primary={
                 <Typography
                   fontSize="0.9rem"

@@ -20,7 +20,6 @@ export default function AdminHomePage() {
     <Box sx={{ px: 3, py: 4 }}>
       <Box
         sx={{
-          minHeight: "35vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
