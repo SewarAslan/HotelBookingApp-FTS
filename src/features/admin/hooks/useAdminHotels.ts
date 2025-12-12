@@ -42,12 +42,10 @@ export function useAdminHotels() {
       setStatus(STATUS.LOADING);
       setError(null);
 
-      // 1) Fetch hotels for specific page
       const hotelsRaw = await requestJson<AdminHotel[]>(
         `/hotels?pageNumber=${page}&pageSize=${PAGE_SIZE}&searchQuery=${search}`
       );
 
-      // 2) Fetch ALL hotels once to compute total count
       const allHotels = await requestJson<AdminHotel[]>(
         "/hotels?pageSize=9999"
       );
@@ -93,7 +91,6 @@ export function useAdminHotels() {
     fetchHotels();
   }, [fetchHotels]);
 
-  // CRUD
   const createHotel = async (payload: HotelPayload) => {
     try {
       await requestJson("/hotels", {
@@ -136,7 +133,6 @@ export function useAdminHotels() {
     error,
     refetch: fetchHotels,
 
-    // pagination state
     search,
     setSearch,
     page,
@@ -144,7 +140,6 @@ export function useAdminHotels() {
     totalItems,
     pageSize: PAGE_SIZE,
 
-    // crud
     createHotel,
     updateHotel,
     deleteHotel,
