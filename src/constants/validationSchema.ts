@@ -6,4 +6,5 @@ export const validationSchema = Yup.object().shape({
     .email("Invalid email format")
     .required("Email is required"),
   phone: Yup.string().required("Phone number is required"),
+  paymentMethod: Yup.string().required("Please select a payment method"),
 });

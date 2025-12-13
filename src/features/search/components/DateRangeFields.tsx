@@ -1,6 +1,6 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 interface DateRangeFieldsProps {
   values: {
@@ -25,6 +25,7 @@ export default function DateRangeFields({
         label="Check-in"
         value={values.checkInDate}
         onChange={(v) => setFieldValue("checkInDate", v)}
+        minDate={dayjs()}
         slotProps={{
           textField: {
             fullWidth: true,

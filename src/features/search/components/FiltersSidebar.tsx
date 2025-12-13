@@ -40,7 +40,7 @@ export default function FiltersSidebar() {
     const params = new URLSearchParams(location.search);
 
     const min = params.has("priceMin") ? Number(params.get("priceMin")) : 0;
-    const max = params.has("priceMax") ? Number(params.get("priceMax")) : 300;
+    const max = params.has("priceMax") ? Number(params.get("priceMax")) : 700;
 
     if (!isDraggingRef.current) {
       setPriceRange([min, max]);

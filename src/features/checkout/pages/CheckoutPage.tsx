@@ -7,6 +7,7 @@ import { useCart } from "../hooks/useCart";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 import { validationSchema } from "../../../constants/validationSchema";
 import { useAuthActions } from "../../auth";
+import PaymentMethodSection from "../components/PaymentMethodSection";
 
 export default function CheckoutPage() {
   const theme = useTheme();
@@ -76,14 +77,17 @@ export default function CheckoutPage() {
               : "",
             email: "",
             phone: "",
+            paymentMethod: "",
           }}
           validationSchema={validationSchema}
+          validateOnMount
           onSubmit={() => {}}
         >
           <Form>
             <ItemsSection items={items} />
             <Box mt={3} />
             <UserInfoSection />
+            <PaymentMethodSection />
             <CheckoutButton />
           </Form>
         </Formik>

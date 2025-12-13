@@ -75,6 +75,7 @@ export default function CheckoutButton() {
     <>
       <Box sx={{ textAlign: "center", mt: 3 }}>
         <Button
+          type="submit"
           variant="gradient-secondary"
           onClick={handleCheckout}
           disabled={!isValid || items.length === 0 || loading}
