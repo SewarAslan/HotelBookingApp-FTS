@@ -21,6 +21,7 @@ export default function AdminToolbar({
       elevation={3}
       sx={{
         display: "flex",
+        flexWrap: "wrap",
         gap: 2,
         alignItems: "center",
         px: 3,
@@ -42,14 +43,20 @@ export default function AdminToolbar({
         variant="outlined"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        sx={{ flex: 1 }}
+        sx={{
+          flex: 1,
+          minWidth: { xs: "100%", sm: 260 },
+        }}
       />
 
       <Button
         variant={MUI_VARIANTS.OUTLINED}
         startIcon={<SearchIcon />}
         onClick={() => onSearch(value)}
-        sx={{ height: 56 }}
+        sx={{
+          height: 56,
+          flex: { xs: "1 1 100%", sm: "0 0 auto" },
+        }}
       >
         Search
       </Button>
@@ -58,7 +65,10 @@ export default function AdminToolbar({
         variant={MUI_VARIANTS.GRADIENT2}
         startIcon={<AddIcon />}
         onClick={onCreate}
-        sx={{ height: 56 }}
+        sx={{
+          height: 56,
+          flex: { xs: "1 1 100%", sm: "0 0 auto" },
+        }}
       >
         Create
       </Button>
