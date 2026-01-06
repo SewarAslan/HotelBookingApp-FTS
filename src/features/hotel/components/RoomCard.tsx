@@ -18,8 +18,6 @@ import {
   MUI_TYPOGRAPHY,
   MUI_VARIANTS,
 } from "../../../constants/muiTokens";
-import ChildCareOutlinedIcon from "@mui/icons-material/ChildCareOutlined";
-import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined";
 import { useCart } from "../../checkout/hooks/useCart";
 import { useDispatch } from "react-redux";
 import { showSnackbar } from "../../../store/snackbarSlice";
@@ -144,14 +142,14 @@ export default function RoomCard({
               color="text.secondary"
               fontWeight={700}
             >
-              <EmojiEmotionsOutlinedIcon /> : {room.capacityOfAdults}
+              Adults : {room.capacityOfAdults}
             </Typography>
             <Typography
               variant={MUI_TYPOGRAPHY.BODY2}
               color="text.secondary"
               fontWeight={700}
             >
-              <ChildCareOutlinedIcon /> : {room.capacityOfChildren}
+              Children : {room.capacityOfChildren}
             </Typography>
           </Container>
 
@@ -183,40 +181,53 @@ export default function RoomCard({
             </Box>
           )}
         </Box>
-        {authUser?.userType === "User" && checkInDate && checkOutDate && (
-          <Button
-            variant="gradient-secondary"
-            sx={{
-              fontWeight: 600,
-              my: 2,
+        {authUser?.userType === "User" && (
+          <>
+            <Button
+              variant="gradient-secondary"
+              disabled={!(checkInDate && checkOutDate)}
+              sx={{
+                fontWeight: 600,
+                mt: 2,
+                mb: 1,
 
-              borderRadius: 2,
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
+                borderRadius: 2,
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
 
-              addToCart({
-                roomId: room.roomId,
-                hotelId,
-                roomType: room.roomType,
-                roomPhotoUrl: room.roomPhotoUrl,
-                price: room.price,
-                capacityOfAdults: room.capacityOfAdults,
-                capacityOfChildren: room.capacityOfChildren,
-                checkInDate,
-                checkOutDate,
-              });
+                addToCart({
+                  roomId: room.roomId,
+                  hotelId,
+                  roomType: room.roomType,
+                  roomPhotoUrl: room.roomPhotoUrl,
+                  price: room.price,
+                  capacityOfAdults: room.capacityOfAdults,
+                  capacityOfChildren: room.capacityOfChildren,
+                  checkInDate: checkInDate!,
+                  checkOutDate: checkOutDate!,
+                });
 
-              dispatch(
-                showSnackbar({
-                  message: "Room added to cart!",
-                  severity: "success",
-                })
-              );
-            }}
-          >
-            Book Now
-          </Button>
+                dispatch(
+                  showSnackbar({
+                    message: "Room added to cart!",
+                    severity: "success",
+                  })
+                );
+              }}
+            >
+              Book Now
+            </Button>
+            {authUser?.userType === "User" && !checkInDate && !checkOutDate && (
+              <Typography
+                variant={MUI_TYPOGRAPHY.CAPTION}
+                color="text.secondary"
+                fontWeight={400}
+              >
+                You have to select the Check-In and the check-Out date to book
+              </Typography>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

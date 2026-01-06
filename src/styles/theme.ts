@@ -234,6 +234,13 @@ export const createAppTheme = (mode: AppMode): Theme => {
                   : "0 8px 22px rgba(18, 18, 18, 0.25)",
             },
             "&:active": { transform: "translateY(0)" },
+            "&.Mui-disabled": {
+              padding: "4px 10px",
+              fontSize: "0.75rem",
+              minWidth: "80px",
+              opacity: 0.5,
+              color: "black",
+            },
           },
         },
         variants: [
