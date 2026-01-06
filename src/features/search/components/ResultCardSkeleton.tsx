@@ -1,22 +1,63 @@
-import { Box, Skeleton, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent, Skeleton } from "@mui/material";
 
 export default function ResultCardSkeleton() {
   return (
     <Card
+      elevation={3}
       sx={{
-        width: 300,
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
         borderRadius: 3,
         overflow: "hidden",
-        p: 0,
+        width: "100%",
+        maxWidth: 900,
+        mx: "auto",
       }}
     >
-      <Skeleton variant="rectangular" height={160} animation="wave" />
-      <CardContent>
-        <Skeleton variant="text" width="80%" height={28} />
-        <Skeleton variant="text" width="60%" height={20} />
-        <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-          <Skeleton variant="text" width="40%" height={24} />
-          <Skeleton variant="text" width="30%" height={24} />
+      <Box
+        sx={{
+          flexShrink: 0,
+          width: { xs: "100%", sm: 180 },
+          alignSelf: "stretch",
+          display: "flex",
+        }}
+      >
+        <Skeleton
+          variant="rectangular"
+          sx={{ width: "100%", height: "100%" }}
+        />
+      </Box>
+
+      <CardContent sx={{ flex: 1, p: 2.5 }}>
+        <Box>
+          <Skeleton variant="text" width="40%" height={32} />
+          <Skeleton variant="text" width="30%" height={22} sx={{ mt: 1 }} />
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 1 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} variant="circular" width={18} height={18} />
+            ))}
+          </Box>
+        </Box>
+
+        <Skeleton variant="text" width="90%" height={20} sx={{ mt: 2 }} />
+        <Skeleton variant="text" width="70%" height={20} />
+
+        <Box
+          sx={{
+            mt: 3,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Skeleton variant="rectangular" width={90} height={30} />
+          <Skeleton
+            variant="rectangular"
+            width={120}
+            height={40}
+            sx={{ borderRadius: 2 }}
+          />
         </Box>
       </CardContent>
     </Card>
