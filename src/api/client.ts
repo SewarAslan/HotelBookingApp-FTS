@@ -3,7 +3,7 @@ import { Api } from "./Api";
 import Cookies from "js-cookie";
 
 export const apiClient = new Api({
-  baseUrl: "http://localhost:5000",
+  baseUrl: import.meta.env.VITE_ADMIN_API_URL,
 
   securityWorker: () => {
     const token = Cookies.get("token");

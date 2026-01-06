@@ -1,4 +1,4 @@
-const ADMIN_API_BASE_URL = "http://localhost:5000/api";
+const ADMIN_API_BASE_URL = import.meta.env.VITE_ADMIN_API_URL + "/api";
 
 async function requestJson<T>(
   path: string,
