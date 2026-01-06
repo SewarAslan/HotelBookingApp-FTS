@@ -49,6 +49,7 @@ export default function GuestRoomSelector({
           fontWeight: 600,
           borderColor: theme.palette.primary.main,
           color: theme.palette.primary.main,
+          fontSize: "10px",
         }}
       >
         {summary}
@@ -163,8 +164,8 @@ export default function GuestRoomSelector({
             mt: 1.5,
             textTransform: "uppercase",
             fontWeight: 600,
-            borderColor: theme.palette.secondary.main,
-            color: theme.palette.secondary.main,
+            backgroundColor: theme.palette.primary.main,
+            color: "#ffff",
             height: "56px",
             "& .MuiOutlinedInput-root": {
               height: "100%",

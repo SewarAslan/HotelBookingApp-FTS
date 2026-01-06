@@ -128,7 +128,11 @@ export default function HotelInfoSection({ hotelId }: HotelInfoSectionProps) {
         >
           Location
         </Typography>
-        <MapSection hotelId={hotelId} />
+        <MapSection
+          lat={hotel.latitude ?? 0}
+          lng={hotel.longitude ?? 0}
+          hotelName={hotel.hotelName ?? ""}
+        />
         <Divider sx={{ my: 2 }} />
 
         <Typography

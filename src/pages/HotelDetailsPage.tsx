@@ -11,7 +11,7 @@ export default function HotelDetailsPage() {
   if (!id) return null;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box
         sx={{
           display: "flex",
@@ -36,7 +36,7 @@ export default function HotelDetailsPage() {
         <Box
           sx={{
             flex: "1 1 550px",
-            maxWidth: { md: "62%" },
+            maxWidth: { md: "60%" },
             display: "flex",
             flexDirection: "column",
             gap: 1,

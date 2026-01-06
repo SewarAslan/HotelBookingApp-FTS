@@ -1,19 +1,17 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
-import { useHotelDetails } from "../hooks/useHotelDetails";
+
 import { STATUS } from "../../../constants/status";
 import "leaflet/dist/leaflet.css";
 
 interface Props {
-  hotelId: number;
+  lat: number;
+  lng: number;
+  hotelName: string;
 }
 
-export default function MapSection({ hotelId }: Props) {
-  const { data: hotel, status } = useHotelDetails(hotelId);
-
-  const lat = hotel?.latitude;
-  const lng = hotel?.longitude;
+export default function MapSection({ lat, lng, hotelName }: Props) {
   const position: LatLngExpression | null = lat && lng ? [lat, lng] : null;
 
   if (status === STATUS.LOADING) {
@@ -53,7 +51,7 @@ export default function MapSection({ hotelId }: Props) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Marker position={position}>
-          <Popup>{hotel?.hotelName || "Hotel Location"}</Popup>
+          <Popup>{hotelName || "Hotel Location"}</Popup>
         </Marker>
       </MapContainer>
     </Box>

@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { buildSearchParams } from "../../../utils/url";
 import { formatDate } from "../../../utils/date";
 import SearchFields from "./SearchFields";
+import { searchSchema } from "../../../constants/searchSchema";
 
 export interface SearchValues {
   city: string;
@@ -55,7 +56,11 @@ export default function SearchForm({ compact = false }: { compact?: boolean }) {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={searchSchema}
+    >
       {({ values, setFieldValue, errors }) => (
         <Form>
           <SearchFields

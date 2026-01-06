@@ -11,10 +11,7 @@ interface SearchFieldsProps {
   values: SearchValues;
   setFieldValue: FormikHelpers<SearchValues>["setFieldValue"];
   compact?: boolean;
-  errors?: {
-    checkInDate?: string;
-    checkOutDate?: string;
-  };
+  errors?: Record<string, string>;
 }
 
 export default function SearchFields({
@@ -69,23 +66,48 @@ export default function SearchFields({
         <GuestRoomSelector values={values} setFieldValue={setFieldValue} />
 
         {compact && (
-          <IconButton
-            type="submit"
-            size="large"
-            color="primary"
-            sx={{
-              borderRadius: 4,
-              backgroundColor: theme.palette.primary.main,
-              color: "#fff",
-              height: "56px",
-              width: "56px",
-              "&:hover": {
-                backgroundColor: theme.palette.primary.dark,
-              },
-            }}
-          >
-            <SearchIcon />
-          </IconButton>
+          <>
+            <IconButton
+              type="submit"
+              size="large"
+              color="primary"
+              sx={{
+                borderRadius: 4,
+                backgroundColor: theme.palette.primary.main,
+                color: "#fff",
+                height: "50px",
+                width: "50px",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.dark,
+                },
+              }}
+            >
+              <SearchIcon />
+            </IconButton>
+            <IconButton
+              type="button"
+              onClick={() => {
+                setFieldValue("city", "");
+                setFieldValue("checkInDate", null);
+                setFieldValue("checkOutDate", null);
+                setFieldValue("adults", 2);
+                setFieldValue("children", 0);
+                setFieldValue("rooms", 1);
+              }}
+              sx={{
+                borderRadius: 4,
+                backgroundColor: theme.palette.secondary.main,
+                color: "#fff",
+                height: "50px",
+                width: "50px",
+                "&:hover": {
+                  backgroundColor: theme.palette.secondary.dark,
+                },
+              }}
+            >
+              ✕
+            </IconButton>
+          </>
         )}
       </Box>
 
@@ -95,9 +117,36 @@ export default function SearchFields({
             flexBasis: "100%",
             display: "flex",
             justifyContent: "center",
-            mt: 2,
+            mt: 1,
+            gap: 2,
           }}
         >
+          <Button
+            type="button"
+            onClick={() => {
+              setFieldValue("city", "");
+              setFieldValue("checkInDate", null);
+              setFieldValue("checkOutDate", null);
+              setFieldValue("adults", 2);
+              setFieldValue("children", 0);
+              setFieldValue("rooms", 1);
+            }}
+            sx={{
+              px: 4,
+              py: 1.2,
+              borderRadius: 3,
+              fontWeight: 600,
+              backgroundColor: theme.palette.secondary.main,
+              color: "#fff",
+              height: "48px",
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.dark,
+              },
+            }}
+          >
+            Clear
+          </Button>
+
           <Button
             type="submit"
             variant={MUI_VARIANTS.GRADIENT}
@@ -107,6 +156,7 @@ export default function SearchFields({
               py: 1.5,
               borderRadius: 3,
               fontWeight: 700,
+              height: "48px",
             }}
           >
             Search Hotels

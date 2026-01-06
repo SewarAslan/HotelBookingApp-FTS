@@ -46,8 +46,8 @@ export default function DateRangeFields({
           textField: {
             fullWidth: true,
             variant: "outlined",
-            error: Boolean(errors?.checkInDate),
-            helperText: errors?.checkInDate,
+            error: Boolean(errors?.checkOutDate),
+            helperText: errors?.checkOutDate,
           },
         }}
         sx={{ flexBasis: { xs: "48%", md: "20%" } }}
