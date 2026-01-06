@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import { useAuthActions } from "../../auth";
 import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 import { useAdminAnalytics } from "../hooks/useAdminAnalytics";
@@ -188,6 +188,31 @@ export default function AdminHomePage() {
             >
               <RevenueLineChart data={analytics.revenueChart} />
             </Box>
+          </Box>
+          <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+            <Card
+              sx={{
+                p: 2,
+                minWidth: 250,
+                backgroundColor: theme.palette.customBackgrounds.glass,
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="h6"
+                  fontWeight={700}
+                  color={theme.palette.primary.main}
+                >
+                  Most Booked Hotel
+                </Typography>
+                <Typography color={theme.palette.secondary.main}>
+                  Hotel ID: {analytics.mostBookedHotel?.hotelId}
+                </Typography>
+                <Typography color={theme.palette.secondary.main}>
+                  Bookings: {analytics.mostBookedHotel?.bookings}
+                </Typography>
+              </CardContent>
+            </Card>
           </Box>
         </>
       )}
