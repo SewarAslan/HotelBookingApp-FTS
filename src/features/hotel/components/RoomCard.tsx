@@ -19,9 +19,10 @@ import {
   MUI_VARIANTS,
 } from "../../../constants/muiTokens";
 import { useCart } from "../../checkout/hooks/useCart";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showSnackbar } from "../../../store/snackbarSlice";
 import { useAuthActions } from "../../auth";
+import type { RootState } from "../../../store/store";
 export default function RoomCard({
   room,
   hotelId,
@@ -36,8 +37,12 @@ export default function RoomCard({
   const amenities = room.roomAmenities ?? [];
   const theme = useTheme();
   const { addToCart } = useCart();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const roomInCart = cartItems.some((item) => item.roomId === room.roomId);
+
   const dispatch = useDispatch();
   const { authUser } = useAuthActions();
+
   console.log("ROOM CARD DATA:", room);
 
   return (
@@ -185,7 +190,7 @@ export default function RoomCard({
           <>
             <Button
               variant="gradient-secondary"
-              disabled={!(checkInDate && checkOutDate)}
+              disabled={roomInCart || !(checkInDate && checkOutDate)}
               sx={{
                 fontWeight: 600,
                 mt: 2,
@@ -195,7 +200,7 @@ export default function RoomCard({
               }}
               onClick={(e) => {
                 e.stopPropagation();
-
+                if (roomInCart) return;
                 addToCart({
                   roomId: room.roomId,
                   hotelId,
@@ -218,15 +223,23 @@ export default function RoomCard({
             >
               Book Now
             </Button>
-            {authUser?.userType === "User" && !checkInDate && !checkOutDate && (
+            {roomInCart ? (
+              <Typography
+                variant={MUI_TYPOGRAPHY.CAPTION}
+                color="error.main"
+                fontWeight={500}
+              >
+                This room is already in your cart
+              </Typography>
+            ) : !checkInDate || !checkOutDate ? (
               <Typography
                 variant={MUI_TYPOGRAPHY.CAPTION}
                 color="text.secondary"
                 fontWeight={400}
               >
-                You have to select the Check-In and the check-Out date to book
+                You have to select the Check-In and Check-Out dates to book
               </Typography>
-            )}
+            ) : null}
           </>
         )}
       </CardContent>

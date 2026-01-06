@@ -238,8 +238,8 @@ export const createAppTheme = (mode: AppMode): Theme => {
               padding: "4px 10px",
               fontSize: "0.75rem",
               minWidth: "80px",
-              opacity: 0.5,
-              color: "black",
+              backgroundColor:
+                theme.palette.mode === "light" ? "lightgrey" : "grey",
             },
           },
         },
