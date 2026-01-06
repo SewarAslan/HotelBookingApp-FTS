@@ -20,6 +20,7 @@ export default function AdminToolbar({
     <Paper
       elevation={3}
       sx={{
+        flex: 1,
         display: "flex",
         flexWrap: "wrap",
         gap: 2,
@@ -43,6 +44,11 @@ export default function AdminToolbar({
         variant="outlined"
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onSearch(value.trim());
+          }
+        }}
         sx={{
           flex: 1,
           minWidth: { xs: "100%", sm: 260 },

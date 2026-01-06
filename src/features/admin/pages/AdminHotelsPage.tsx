@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import AdminToolbar from "../components/AdminToolbar";
 import AdminTable, { type Column } from "../components/AdminTable";
 import MessageCard from "../../../components/MessageCard";
 import { STATUS } from "../../../constants/status";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 import AdminFormDialog from "../components/AdminFormDialog";
 import ConfirmDialog from "../components/ConfirmDialog";
@@ -46,7 +47,7 @@ export default function AdminHotelsPage() {
 
   const hotels: AdminHotel[] = data ?? [];
   const dispatch = useDispatch();
-
+  const theme = useTheme();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingHotel, setEditingHotel] = useState<AdminHotel | null>(null);
 
@@ -160,7 +161,20 @@ export default function AdminHotelsPage() {
 
   return (
     <Box sx={{ p: 2 }}>
-      <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
+        <Tooltip title="Reset page">
+          <IconButton
+            onClick={() => {
+              setSearch("");
+              setPage(1);
+              refetch();
+            }}
+          >
+            <RestartAltIcon sx={{ color: theme.palette.primary.main }} />
+          </IconButton>
+        </Tooltip>
+      </Box>{" "}
       <TablePagination
         component="div"
         count={totalItems}
@@ -169,7 +183,6 @@ export default function AdminHotelsPage() {
         rowsPerPage={pageSize}
         rowsPerPageOptions={[pageSize]}
       />
-
       {status === STATUS.ERROR ? (
         <MessageCard
           status="error"
@@ -186,7 +199,6 @@ export default function AdminHotelsPage() {
           onDeleteClick={handleDeleteClick}
         />
       )}
-
       <AdminFormDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
@@ -209,7 +221,6 @@ export default function AdminHotelsPage() {
         ]}
         onSubmit={handleFormSubmit}
       />
-
       <ConfirmDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}

@@ -9,7 +9,6 @@ import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 import { validationSchema } from "../../../constants/validationSchema";
 import { useAuthActions } from "../../auth";
 import PaymentMethodSection from "../components/PaymentMethodSection";
-import { CardPaymentFields } from "../components/CardPaymentFields";
 import { paymentDetailsSchema } from "../../../constants/paymentDetailsSchema";
 
 export default function CheckoutPage() {

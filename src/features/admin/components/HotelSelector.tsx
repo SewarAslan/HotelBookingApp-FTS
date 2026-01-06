@@ -22,14 +22,32 @@ export default function HotelSelector({ value, onChange }: HotelSelectorProps) {
   const [hotels, setHotels] = useState<SimpleHotel[]>([]);
 
   useEffect(() => {
-    requestJson<HotelApiResponse[]>("/hotels").then((res) => {
-      const cleaned: SimpleHotel[] = res.map((h) => ({
-        id: h.id,
-        name: h.hotelName || h.name || "Unknown Hotel",
-      }));
+    async function fetchAllHotels() {
+      const PAGE_SIZE = 5;
+      const all: SimpleHotel[] = [];
+      let page = 1;
 
-      setHotels(cleaned);
-    });
+      while (true) {
+        const res = await requestJson<HotelApiResponse[]>(
+          `/hotels?pageNumber=${page}&pageSize=${PAGE_SIZE}`
+        );
+
+        if (res.length === 0) break;
+
+        all.push(
+          ...res.map((h) => ({
+            id: h.id,
+            name: h.hotelName || h.name || "Unknown Hotel",
+          }))
+        );
+
+        page++;
+      }
+
+      setHotels(all);
+    }
+
+    fetchAllHotels();
   }, []);
 
   return (

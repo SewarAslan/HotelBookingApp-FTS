@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import AdminToolbar from "../components/AdminToolbar";
 import AdminTable, { type Column } from "../components/AdminTable";
 import { useAdminCities } from "../hooks";
 import MessageCard from "../../../components/MessageCard";
 import { STATUS } from "../../../constants/status";
 import { TablePagination } from "@mui/material";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 import AdminFormDialog from "../components/AdminFormDialog";
 import ConfirmDialog from "../components/ConfirmDialog";
@@ -154,7 +155,20 @@ export default function AdminCitiesPage() {
         animation: theme.animations.fadeInUp,
       }}
     >
-      <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <AdminToolbar onSearch={handleSearch} onCreate={handleCreate} />
+        <Tooltip title="Reset page">
+          <IconButton
+            onClick={() => {
+              setSearch("");
+              setPage(1);
+              refetch();
+            }}
+          >
+            <RestartAltIcon sx={{ color: theme.palette.primary.main }} />
+          </IconButton>
+        </Tooltip>
+      </Box>
       <TablePagination
         component="div"
         count={totalItems}
