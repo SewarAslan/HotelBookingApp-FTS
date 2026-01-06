@@ -158,13 +158,23 @@ export default function AdminRoomsPage() {
   const roomSchema = Yup.object({
     roomNumber: Yup.number()
       .typeError("Room number must be a number")
+      .min(1, "Room number cannot be negative or zero")
       .required(),
     roomType: Yup.string().required(),
-    price: Yup.number().typeError("Price must be a number").required(),
-    capacityOfAdults: Yup.number().required(),
-    capacityOfChildren: Yup.number().required(),
+    price: Yup.number()
+      .typeError("Price must be a number")
+      .min(0, "Price cannot be negative")
+      .required(),
+    capacityOfAdults: Yup.number()
+      .typeError("Adults capacity must be a number")
+      .min(0, "Adults capacity cannot be negative")
+      .required(),
+    capacityOfChildren: Yup.number()
+      .typeError("Children capacity must be a number")
+      .min(0, "Children capacity cannot be negative")
+      .required(),
     availability: Yup.string().required(),
-    roomPhotoUrl: Yup.string().optional(),
+    roomPhotoUrl: Yup.string().url("Must be a valid URL").optional(),
   });
   const theme = useTheme();
   return (

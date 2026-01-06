@@ -156,6 +156,11 @@ export default function AdminHotelsPage() {
       .max(5)
       .required("Star rating is required"),
     location: Yup.string(),
+    rooms: Yup.number()
+      .typeError("Rooms must be a number")
+      .min(0, "Number of rooms cannot be negative")
+      .nullable()
+      .notRequired(),
   });
   const tablePage = page > 0 ? page - 1 : 0;
 

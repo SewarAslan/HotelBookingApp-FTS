@@ -142,6 +142,8 @@ export default function AdminCitiesPage() {
   const citySchema = Yup.object({
     name: Yup.string().required("City name is required"),
     description: Yup.string().optional(),
+    postOffice: Yup.string().notRequired(),
+    numberOfHotels: Yup.number().min(0, "can't be negative").notRequired(),
   });
 
   const theme = useTheme();
