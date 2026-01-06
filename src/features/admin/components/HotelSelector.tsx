@@ -54,7 +54,7 @@ export default function HotelSelector({ value, onChange }: HotelSelectorProps) {
     <Autocomplete
       options={hotels}
       value={hotels.find((h) => h.id === value) || null}
-      onChange={(e, newValue) => onChange(newValue?.id ?? null)}
+      onChange={(_, newValue) => onChange(newValue?.id ?? null)}
       getOptionLabel={(option) => option.name}
       renderInput={(params) => (
         <TextField {...params} label="Select Hotel" fullWidth />
