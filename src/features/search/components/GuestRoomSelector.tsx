@@ -45,11 +45,19 @@ export default function GuestRoomSelector({
         sx={{
           height: "56px",
           textTransform: "none",
-          backgroundColor: theme.palette.customBackgrounds.glass,
-          fontWeight: 600,
-          borderColor: theme.palette.primary.main,
-          color: theme.palette.primary.main,
-          fontSize: "10px",
+          backgroundColor: "transparent",
+          fontWeight: 400,
+          border: `1px solid #c5d3cb`,
+          color: theme.palette.text.secondary,
+          fontSize: "12px",
+          "&:hover": {
+            borderColor: "#6a706c",
+            backgroundColor: theme.palette.action.hover,
+          },
+          "&.Mui-disabled": {
+            borderColor: theme.palette.divider,
+            color: theme.palette.text.disabled,
+          },
         }}
       >
         {summary}
