@@ -1,5 +1,6 @@
 import { Box, Container, Typography, useTheme } from "@mui/material";
 import { Formik, Form } from "formik";
+import * as Yup from "yup";
 import ItemsSection from "../components/ItemsSection";
 import UserInfoSection from "../components/UserInfoSection";
 import CheckoutButton from "../components/CheckoutButton";
@@ -8,6 +9,8 @@ import { MUI_TYPOGRAPHY } from "../../../constants/muiTokens";
 import { validationSchema } from "../../../constants/validationSchema";
 import { useAuthActions } from "../../auth";
 import PaymentMethodSection from "../components/PaymentMethodSection";
+import { CardPaymentFields } from "../components/CardPaymentFields";
+import { paymentDetailsSchema } from "../../../constants/paymentDetailsSchema";
 
 export default function CheckoutPage() {
   const theme = useTheme();
@@ -78,18 +81,47 @@ export default function CheckoutPage() {
             email: "",
             phone: "",
             paymentMethod: "",
+            cardHolder: "",
+            cardNumber: "",
+            expiryDate: "",
+            cvc: "",
           }}
-          validationSchema={validationSchema}
-          validateOnMount
           onSubmit={() => {}}
+          validationSchema={validationSchema}
+          validate={(values) => {
+            const errors: { [key: string]: string } = {};
+
+            if (values.paymentMethod === "card") {
+              try {
+                paymentDetailsSchema.validateSync(values, {
+                  abortEarly: false,
+                });
+              } catch (err) {
+                if (err instanceof Yup.ValidationError) {
+                  err.inner.forEach((e) => {
+                    if (e.path) {
+                      errors[e.path] = e.message;
+                    }
+                  });
+                }
+              }
+            }
+
+            return errors;
+          }}
+          validateOnMount
+          validateOnChange={true}
+          validateOnBlur={true}
         >
-          <Form>
-            <ItemsSection items={items} />
-            <Box mt={3} />
-            <UserInfoSection />
-            <PaymentMethodSection />
-            <CheckoutButton />
-          </Form>
+          {
+            <Form>
+              <ItemsSection items={items} />
+              <UserInfoSection />
+              <PaymentMethodSection />
+
+              <CheckoutButton />
+            </Form>
+          }
         </Formik>
       )}
     </Container>

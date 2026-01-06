@@ -6,13 +6,18 @@ import {
   FormControlLabel,
   Radio,
   useTheme,
+  FormHelperText,
 } from "@mui/material";
 import { Field, useFormikContext, type FieldProps } from "formik";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
+import type { PaymentFormValues } from "../types/PaymentFormValues";
+import { CardPaymentFields } from "./CardPaymentFields";
 
 export default function PaymentMethodSection() {
-  const { errors, touched } = useFormikContext<{ paymentMethod: string }>();
+  const { values, errors, touched, handleChange } =
+    useFormikContext<PaymentFormValues>();
+
   const theme = useTheme();
 
   return (
@@ -36,17 +41,11 @@ export default function PaymentMethodSection() {
 
         <Field name="paymentMethod">
           {({ field }: FieldProps) => (
-            <RadioGroup {...field}>
-              <FormControlLabel
-                value="card"
-                control={<Radio />}
-                label={
-                  <Typography display="flex" alignItems="center" gap={1}>
-                    <CreditCardIcon /> Credit / Debit Card
-                  </Typography>
-                }
-              />
-
+            <RadioGroup
+              {...field}
+              value={values.paymentMethod}
+              onChange={handleChange}
+            >
               <FormControlLabel
                 value="cash"
                 control={<Radio />}
@@ -56,14 +55,25 @@ export default function PaymentMethodSection() {
                   </Typography>
                 }
               />
+              <FormControlLabel
+                value="card"
+                control={<Radio />}
+                label={
+                  <Typography display="flex" alignItems="center" gap={1}>
+                    <CreditCardIcon /> Credit / Debit Card
+                  </Typography>
+                }
+              />
             </RadioGroup>
           )}
         </Field>
-
-        {touched.paymentMethod && errors.paymentMethod && (
-          <Typography color="error" variant="caption">
-            {errors.paymentMethod}
-          </Typography>
+        {values.paymentMethod === "card" && (
+          <>
+            <CardPaymentFields />
+          </>
+        )}
+        {touched.paymentMethod && typeof errors.paymentMethod === "string" && (
+          <FormHelperText error>{errors.paymentMethod}</FormHelperText>
         )}
       </CardContent>
     </Card>
