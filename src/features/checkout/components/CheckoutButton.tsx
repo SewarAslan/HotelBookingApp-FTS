@@ -8,6 +8,8 @@ import { useState, useMemo } from "react";
 import { useHotelDetails } from "../../hotel/hooks/useHotelDetails";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
+import type { PaymentFormValues } from "../types/PaymentFormValues";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 interface UserInfoFormValues {
   customerName: string;
@@ -19,7 +21,11 @@ export default function CheckoutButton() {
   const navigate = useNavigate();
   const { authUser } = useSelector((state: RootState) => state.auth);
   const userId = authUser?.userId;
-  const { values, isValid } = useFormikContext<UserInfoFormValues>();
+  const { values: userValues, isValid: isUserValid } =
+    useFormikContext<UserInfoFormValues>();
+  const { values: paymentValues } = useFormikContext<PaymentFormValues>();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const { items, clearCart } = useCart();
   const [openError, setOpenError] = useState(false);
 
@@ -39,8 +45,11 @@ export default function CheckoutButton() {
   }, [items]);
 
   const handleCheckout = async () => {
-    if (!isValid || items.length === 0 || !userId) return;
-
+    if (!isUserValid || items.length === 0 || !userId) return;
+    if (paymentValues.paymentMethod === "card") {
+      setDialogOpen(true);
+      return;
+    }
     const bookingIds = await createBooking({ userId, items });
 
     if (!Array.isArray(bookingIds) || bookingIds.length === 0) {
@@ -53,9 +62,9 @@ export default function CheckoutButton() {
     const bookingId = bookingIds[0];
 
     const summary = {
-      customerName: values.customerName,
-      email: values.email,
-      phone: values.phone,
+      customerName: userValues.customerName,
+      email: userValues.email,
+      phone: userValues.phone,
       hotelName: hotel?.hotelName,
       totalCost,
       bookingDateTime,
@@ -78,7 +87,7 @@ export default function CheckoutButton() {
           type="submit"
           variant="gradient-secondary"
           onClick={handleCheckout}
-          disabled={!isValid || items.length === 0 || loading}
+          disabled={!isUserValid || items.length === 0 || loading}
           sx={{
             px: 6,
             py: 1.5,
@@ -105,6 +114,44 @@ export default function CheckoutButton() {
           {error || "Failed to complete booking. Try again."}
         </Alert>
       </Snackbar>
+      <ConfirmationDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSuccess={async () => {
+          if (!userId || items.length === 0) {
+            setOpenError(true);
+            return;
+          }
+
+          const bookingIds = await createBooking({ userId, items });
+
+          if (!Array.isArray(bookingIds) || bookingIds.length === 0) {
+            setOpenError(true);
+            return;
+          }
+
+          const bookingId = bookingIds[0];
+          const bookingDateTime = new Date().toISOString();
+
+          const summary = {
+            customerName: userValues.customerName,
+            email: userValues.email,
+            phone: userValues.phone,
+            hotelName: hotel?.hotelName,
+            totalCost,
+            confirmationNumber: bookingId,
+            numberOfRooms: items.length,
+            bookingDateTime,
+            items,
+          };
+
+          clearCart();
+
+          navigate(`/confirmation?bookingId=${bookingId}`, {
+            state: { bookingSummary: summary },
+          });
+        }}
+      />
     </>
   );
 }
